@@ -1,0 +1,64 @@
+<form id="edit-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Currency_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-currency_id" data-rule="required" data-source="currency/index" class="form-control selectpage" name="row[currency_id]" type="text" value="{$row.currency_id|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Min')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-min" class="form-control" step="0.01" name="row[min]" type="number" value="{$row.min|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Max')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-max" class="form-control" step="0.01" name="row[max]" type="number" value="{$row.max|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Cardinal_number')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-cardinal_number" class="form-control" name="row[cardinal_number]" type="number" value="{$row.cardinal_number|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Rate')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-rate" class="form-control" step="0.01" name="row[rate]" type="number" value="{$row.rate|htmlentities}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Is_show')}:</label>
+        <div class="col-xs-12 col-sm-8">
+                        
+            <select  id="c-is_show" class="form-control selectpicker" name="row[is_show]">
+                {foreach name="isShowList" item="vo"}
+                    <option value="{$key}" {in name="key" value="$row.is_show"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Is_del')}:</label>
+        <div class="col-xs-12 col-sm-8">
+                        
+            <select  id="c-is_del" class="form-control selectpicker" name="row[is_del]">
+                {foreach name="isDelList" item="vo"}
+                    <option value="{$key}" {in name="key" value="$row.is_del"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

@@ -1,0 +1,403 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">是否是盲盒:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <select  id="c-is_manghe" class="form-control selectpicker" name="row[is_manghe]" onchange="mhChange(this)">
+                {foreach name="isMangheList" item="vo"}
+                <option value="{$key}" {in name="key" value="0"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group" id="is_can_buy">
+        <label class="control-label col-xs-12 col-sm-2">是否参与购买:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <select  id="c-is_can_buy" class="form-control selectpicker" name="row[is_can_buy]">
+                {foreach name="isCanBuyList" item="vo"}
+                <option value="{$key}" {in name="key" value="1"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <!--<div class="form-group">-->
+    <!--    <label class="control-label col-xs-12 col-sm-2">是否是碎片:</label>-->
+    <!--    <div class="col-xs-12 col-sm-8">-->
+
+    <!--        <select  id="c-is_chip" class="form-control selectpicker" name="row[is_chip]">-->
+    <!--            {foreach name="isChipList" item="vo"}-->
+    <!--            <option value="{$key}" {in name="key" value="0"}selected{/in}>{$vo}</option>-->
+    <!--            {/foreach}-->
+    <!--        </select>-->
+    <!--    </div>-->
+    <!--</div>-->
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-name" data-rule="required"  class="form-control" name="row[name]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Goods_category_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-goods_category_id"  data-source="goods_category/index" class="form-control selectpage" name="row[goods_category_id]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Title')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-title" data-rule="required"  class="form-control" name="row[title]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Image')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-image" class="form-control"  size="50" name="row[image]" type="text">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-image" class="btn btn-danger faupload" data-input-id="c-image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-image" class="btn btn-primary fachoose" data-input-id="c-image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-image"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-image"></ul>
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Images')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-images" class="form-control" size="50" name="row[images]" type="text" value="">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-images" class="btn btn-danger faupload" data-input-id="c-images" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="true" data-preview-id="p-images"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-images" class="btn btn-primary fachoose" data-input-id="c-images" data-mimetype="image/*" data-multiple="true"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-images"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-images"></ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Price')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-price" data-rule="required" class="form-control" data-rule="required" step="0.01" name="row[price]" type="number">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Type')}:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <select  id="c-type" class="form-control selectpicker" name="row[type]">
+                {foreach name="typeList" item="vo"}
+                    <option value="{$key}" {in name="key" value="1"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+    <div class="form-group" id="selectHidden">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Fnstatus')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select  id="c-fnstatus" class="form-control selectpicker" name="row[fnstatus]" onchange="selectChange(this)">
+                {foreach name="fnstatusList" item="vo"}
+                    <option value="{$key}" {in name="key" value="0"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+    <div style="width：100%;height: 50px;">
+            <p  class="col-sm-8" style="color: red;font-size:13px;margin-left:17%;padding-left:0;padding-right:0;">
+                权益说明: 1.持有赋能藏品，将可购买指定藏品指定份数; 2.持有赋能藏品，可享受提前购
+            </p>
+     </div>
+    <div class="form-group" id="Fncount">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Fncount')}:</label>
+        <div class="col-xs-12 col-sm-8">
+           <input id="c-fncount" class="form-control" name="row[fncount]" type="number">
+
+        </div>
+    </div>
+    <div class="form-group" id="hiddenDiv">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Goods_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+          <input id="c-goods_category_id"  data-source="goods/fnindex" class="form-control selectpage" name="row[goods_id]" type="text" value="">
+        </div>
+    </div>
+    
+      <div class="form-group" id="Hcstatus" style="display:none;">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Hcstatus')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <select  id="c-hcstatus" class="form-control selectpicker" name="row[hcstatus]" onchange="HcstatusSelect(this)">
+                {foreach name="hcstatusList" item="vo"}
+                    <option value="{$key}" {in name="key" value="0"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+    
+    <div class="form-group" id="HcHidden">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Hcgoods_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+          <input id="c-Hcgoods_id"  data-source="goods/fnindex" class="form-control selectpage" data-multiple="true" data-params='{"custom[is_manghe]":"0"}' name="row[hcgoods_id]" type="text" value="">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Content')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <textarea id="c-content" data-rule="required"  class="form-control editor" rows="5" name="row[content]" cols="50"></textarea>
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Order')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-order" class="form-control" name="row[order]" type="number">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Start_time')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-start_time" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[start_time]" type="text" value="{:date('Y-m-d H:i:s')}">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('End_time')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-end_time" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[end_time]" type="text" value="{:date('Y-m-d H:i:s')}">
+        </div>
+    </div>
+    <div class="form-group" id="stock">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Stock')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-stock"  class="form-control" name="row[stock]" type="number">
+        </div>
+    </div>
+    <!--<div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Sales')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-sales" class="form-control" name="row[sales]" type="number">
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Surplus')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-surplus"  class="form-control" name="row[surplus]" type="number">
+        </div>
+    </div>-->
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Company_name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-company_name" class="form-control" name="row[company_name]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Company_image')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-company_image" class="form-control" size="50" name="row[company_image]" type="text" value="">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-company_image" class="btn btn-danger faupload" data-input-id="c-company_image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-company_image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-company_image" class="btn btn-primary fachoose" data-input-id="c-company_image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-company_image"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-company_image"></ul>
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Creator')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-creator" class="form-control" name="row[creator]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Owner')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-owner" class="form-control" name="row[owner]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Casting_name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-casting_name" class="form-control" name="row[casting_name]" type="text">
+        </div>
+    </div>
+    <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Casting_time')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-casting_time" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[casting_time]" type="text" value="{:date('Y-m-d H:i:s')}">
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Is_show')}:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <select  id="c-is_show" class="form-control selectpicker" name="row[is_show]">
+                {foreach name="isShowList" item="vo"}
+                    <option value="{$key}" {in name="key" value="1"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+
+        </div>
+    </div>
+     <div class="form-group is_manghe">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Label')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-label" class="form-control" name="row[label]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group limit_number" id="limit_number">
+        <label class="control-label col-xs-12 col-sm-2">{:__('limit_number')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-limit_number" class="form-control" name="row[limit_number]" type="number">
+        </div>
+    </div>
+    <!--<div class="form-group">-->
+    <!--    <label class="control-label col-xs-12 col-sm-2">{:__('Is_appointment')}:</label>-->
+    <!--    <div class="col-xs-12 col-sm-8">-->
+
+    <!--        <select  id="is_appointment" class="form-control selectpicker" name="row[is_appointment]">-->
+
+    <!--            <option value="0">否</option>-->
+    <!--            <option value="1">是</option>-->
+    <!--        </select>-->
+
+    <!--    </div>-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+    <!--    <label class="control-label col-xs-12 col-sm-2">{:__('Appointment_start_time')}:</label>-->
+    <!--    <div class="col-xs-12 col-sm-8">-->
+    <!--        <input id="appointment-start_time" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[appointment_start_time]" type="text" value="{:date('Y-m-d H:i:s')}">-->
+    <!--    </div>-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+    <!--    <label class="control-label col-xs-12 col-sm-2">{:__('Appointment_end_time')}:</label>-->
+    <!--    <div class="col-xs-12 col-sm-8">-->
+    <!--        <input id="appointment-end_time" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[appointment_end_time]" type="text" value="{:date('Y-m-d H:i:s')}">-->
+    <!--    </div>-->
+    <!--</div>-->
+    <!--<div class="form-group">-->
+    <!--    <label class="control-label col-xs-12 col-sm-2">{:__('Draw_time')}:</label>-->
+    <!--    <div class="col-xs-12 col-sm-8">-->
+    <!--        <input id="appointment-end_time" class="form-control datetimepicker" data-date-format="YYYY-MM-DD HH:mm:ss" data-use-current="true" name="row[draw_time]" type="text" value="{:date('Y-m-d H:i:s')}">-->
+    <!--    </div>-->
+    <!--</div>-->
+
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>
+<script type="text/javascript">
+    let ismh = document.getElementById("c-is_manghe");
+    let fncounts = document.getElementById("Fncount");
+    let div = document.getElementById("hiddenDiv");
+    let select = document.getElementById("c-fnstatus");
+    let selectHidden = document.getElementById("selectHidden");
+    let HcHidden = document.getElementById("HcHidden");
+    let Hcstatus =  document.getElementById("Hcstatus");
+    let c_hcstatus = document.getElementById("c-hcstatus");
+    let is_can_buy = document.getElementById("is_can_buy");
+    let hc_limitnum=document.getElementById("limit_number");
+    //总份额
+    let stock = document.getElementById("stock");
+    
+    if(ismh.value==0){
+         div.style.display="none";
+        selectHidden.style.display = "block";
+         Hcstatus.style.display = "none";
+        fncounts.style.display="block";
+        stock.style.display = "block";
+        hc_limitnum.style.display = "none";
+    }else if(ismh.value==1){
+        div.style.display="none";
+        selectHidden.style.display = "none";
+        fncounts.style.display="none";
+        stock.style.display = "block";
+        hc_limitnum.style.display = "none";
+    }else if(ismh.value==2){
+        selectHidden.style.display = "none";
+        stock.style.display = "block";
+         Hcstatus.style.display = "none";
+          is_can_buy.style.display = "none";
+          HcHidden.style.display="block";
+        hc_limitnum.style.display = "block";
+    }
+    
+    if(ismh.value==0){
+       if(select.value==0){
+            div.style.display="none";
+            HcHidden.style.display="block"; 
+            Hcstatus.style.display="none";
+        }else if(select.value==1){
+            div.style.display="block";
+            HcHidden.style.display="none"; 
+            Hcstatus.style.display="none";
+        }
+    }
+    if(select.value==0) {
+        fncounts.style.display="none";
+    } else {
+        fncounts.style.display="block";
+    }
+
+     if(c_hcstatus.value==0){
+        HcHidden.style.display="none";
+    }else{
+        HcHidden.style.display="block";
+      
+    }
+    function selectChange(event){
+        console.dir(event.value);
+        if(event.value==0){
+            div.style.display="none";
+            fncounts.style.display="none";
+        }else if(event.value==1){
+            div.style.display="block";
+            fncounts.style.display="block";
+        }
+    }
+    function mhChange(event){
+        
+        if(event.value==0){
+            div.style.display="none";
+            selectHidden.style.display = "block";
+            Hcstatus.style.display = "none";
+             stock.style.display = "block";
+             is_can_buy.style.display = "block";
+            hc_limitnum.style.display = "none";
+        }else if(event.value==1){
+            div.style.display="none";
+            selectHidden.style.display = "none";
+            fncounts.style.display="none";
+            Hcstatus.style.display = "none";
+             HcHidden.style.display="none"; 
+              stock.style.display = "block";
+              is_can_buy.style.display = "block";
+            hc_limitnum.style.display = "none";
+        }else if(event.value==2){
+            selectHidden.style.display = "none";
+            stock.style.display = "block";
+            Hcstatus.style.display = "none";
+             is_can_buy.style.display = "none";
+             HcHidden.style.display="block";
+            hc_limitnum.style.display = "block";
+        }
+    }
+    function HcstatusSelect(event){
+         if(event.value==0){
+            HcHidden.style.display = "none";
+           
+        }else if(event.value==1){
+            HcHidden.style.display = "block";
+        }
+    }
+</script>
+

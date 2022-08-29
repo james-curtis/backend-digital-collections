@@ -1,0 +1,39 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <!--<div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Goods_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-goods_id" data-rule="required" data-source="goods/index" class="form-control selectpage" name="row[goods_id]" type="text" value="">
+        </div>
+    </div>-->
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Combination_goods_id')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-combination_goods_id" data-rule="required" data-params='{"custom[is_manghe]":"0", "custom[type]":"1","custom[is_chip]":"0"}' data-source="goods/index" class="form-control selectpage" name="row[combination_goods_id]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Win_rate')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-win_rate" data-rule="required" class="form-control" name="row[win_rate]" type="number">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">是否是中奖项:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <select  id="c-is_win" class="form-control selectpicker" name="row[is_win]">
+                {foreach name="isWinList" item="vo"}
+                <option value="{$key}" {in name="key" value="1"}selected{/in}>{$vo}</option>
+                {/foreach}
+            </select>
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>

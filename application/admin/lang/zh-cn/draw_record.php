@@ -1,0 +1,31 @@
+<?php
+
+return [
+    'Uid'             => '会员ID',
+    'Currency_id'     => '提现币种',
+    'Order_num'       => '提现订单号',
+    'Account'         => '提现金额',
+    'Reality_account' => '实际到账金额',
+    'Type'            => '提现类型',
+    'Type 1'          => '银行卡',
+    'Type 2'          => '支付宝',
+    'Type 3'          => '微信',
+    'Status'          => '审核状态',
+    'Status 0'        => '未审核',
+    'Status 1'        => '已通过',
+    'Status 2'        => '已拒绝',
+    'Refuse'          => '审核备注',
+    'Create_time'     => '申请时间',
+    'Bank_name'       => '银行卡名称',
+    'Bank_number'     => '银行卡卡号',
+    'Bank_owner'      => '开户人',
+    'Bank_branch'     => '开户支行',
+    'Ali_name'        => '支付宝收款人姓名',
+    'Ali_number'      => '支付宝收款人账号',
+    'Ali_image'       => '支付宝收款二维码',
+    'Wx_name'         => '微信收款名称',
+    'Wx_number'       => '微信收款账号',
+    'Wx_image'        => '微信收款图片',
+    'Currency.name'   => '名称',
+    'Users.phone'     => '手机号'
+];

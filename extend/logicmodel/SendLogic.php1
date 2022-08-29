@@ -1,0 +1,285 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: Administrator
+ * Date: 2019/8/10 0010
+ * Time: 18:06
+ */
+
+namespace logicmodel;
+
+
+use comservice\GetRedis;
+use comservice\Response;
+use datamodel\Users;
+use think\Db;
+// use TencentCloud\Common\Credential;
+// use TencentCloud\Common\Profile\ClientProfile;
+// use TencentCloud\Common\Profile\HttpProfile;
+// use TencentCloud\Sms\V20210111\Models\SendSmsRequest;
+// use TencentCloud\Sms\V20210111\SmsClient;
+use Aliyun\Core\Config;
+use Aliyun\Core\Profile\DefaultProfile;
+use Aliyun\Core\DefaultAcsClient;
+use Aliyun\Api\Sms\Request\V20170525\SendSmsRequest;
+
+class SendLogic
+{
+    private $redis;
+    private $clientLogic;
+    private $url;
+    public function __construct()
+    {
+        $this->redis = GetRedis::getRedis();
+        $this->clientLogic = new ClientLogic();
+        $this->url = "http://v.juhe.cn/sms/send";
+        $this->clientLogic = new ClientLogic();
+    }
+    /**
+     * 发送短信
+     * @param $phone
+     * @param $type
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function sendPhone($phone,$type,$sign)
+    {
+            if(!$sign){
+                return Response::fail('签名错误');
+            }
+
+            $key = '2f4e05c3a53e37a6890a9fd0c8f3d95a';
+            $sign2 = md5($phone.$type.$key);
+            if($sign2!=$sign){
+                 return Response::fail('签名错误');
+            }
+            
+            // var_dump($sign,$sign2);die;
+            
+            $IP = request()->ip();
+            $whereip = array('ip'=>$IP);
+            $t= time();
+            $starttime=mktime(0,0,0,date("m",$t),date("d",$t),date("Y",$t));
+            $endtime=mktime(23,59,59,date("m",$t),date("d",$t),date("Y",$t));
+            $ifip = Db('iplimit')->where($whereip)->where('addtime','between',[$starttime,$endtime])->select();
+            // var_dump($ifip);die;
+            $i=0;
+            foreach ($ifip as $k=>$v){
+                $i=$i+1;
+            }
+            
+            if($i>=4){
+                 return Response::fail('别刷了，过量了');
+            }else{
+                $iprecord = array(
+                    'ip'=>$IP,
+                    'addtime'=>time(),
+                    'phone'=>$phone
+                    );
+                $inrecord = Db('iplimit')->insert($iprecord);
+            }
+            
+                $this->ip_limit($IP,3,$type);
+
+        if(strlen($phone) != 11) return  Response::fail('手机号格式错误');
+        $info = (new Users())->where(['is_del' => 0, 'phone' => $phone])->find();
+        if($info){
+            return Response::fail('手机号已经注册');
+        }
+        if ($type == 1) {
+            if ($info) return Response::fail('手机号已注册');
+        } elseif ($type == 2) {
+            if (empty($info)) return Response::fail('手机号未注册');
+        } elseif($type == 3){
+                    //快捷登录
+        }else {
+            return Response::fail('短信类型错误');
+        }
+        
+        
+        
+        
+        $phone_code = $this->redis->getItem($phone . '-' . $type);
+        if ($phone_code) {
+            return Response::fail('频繁发送');
+        }
+        $code = rand(1111,9999);
+        
+        // 记录验证码 及时间
+        
+        $coderecord=array(
+            'phone'=>$phone,
+            'code'=>$code,
+            'addtime'=>time()
+            );
+        $in = Db('coderecord')->where('phone',$phone)->find();
+        if(!$in){
+            $insert =Db('coderecord')->insert($coderecord);
+        }else{
+            // return Response::fail('频繁发送');
+            
+            $sum = Db('coderecord')->where('phone',$phone)->count();
+            if($sum>=3){
+                 return Response::fail('频繁发送');
+            }
+            
+        }
+        
+        
+        
+        $result = $this->send_sms($phone,$code);
+        if ($result) {
+            $this->redis->setItem($phone . '-' . $type, $code);
+            $this->redis->settime($phone . '-' . $type, 45);
+            return Response::success('发送成功');
+        }
+        return Response::fail('发送失败');
+    }
+    public function send($phone,$code){
+        try {
+            $cred = new Credential("AKIDwhBPN3SbU6RUIp54nFPJwINBizziAMHv", "OVLuCCwPbVAYfU2KL4WidHemcBTUEhsm");
+            // 实例化一个http选项，可选的，没有特殊需求可以跳过
+            $httpProfile = new HttpProfile();
+            $httpProfile->setReqMethod("GET");  // post请求(默认为post请求)
+            $httpProfile->setReqTimeout(30);    // 请求超时时间，单位为秒(默认60秒)
+            $httpProfile->setEndpoint("sms.tencentcloudapi.com");  // 指定接入地域域名(默认就近接入)
+
+            // 实例化一个client选项，可选的，没有特殊需求可以跳过
+            $clientProfile = new ClientProfile();
+            $clientProfile->setSignMethod("TC3-HMAC-SHA256");  // 指定签名算法(默认为HmacSHA256)
+            $clientProfile->setHttpProfile($httpProfile);
+
+            // 实例化要请求产品(以sms为例)的client对象,clientProfile是可选的
+            // 第二个参数是地域信息，可以直接填写字符串 ap-guangzhou，或者引用预设的常量
+            $client = new SmsClient($cred, "ap-guangzhou", $clientProfile);
+
+            // 实例化一个 sms 发送短信请求对象,每个接口都会对应一个request对象。
+            $req = new SendSmsRequest();
+
+            /* 短信应用ID: 短信SdkAppId在 [短信控制台] 添加应用后生成的实际SdkAppId，示例如1400006666 */
+            $req->SmsSdkAppId = "1400695697";
+            /* 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名，签名信息可登录 [短信控制台] 查看 */
+            $req->SignName = "乾鸟网络";
+            /* 短信码号扩展号: 默认未开通，如需开通请联系 [sms helper] */
+            $req->ExtendCode = "";
+            /* 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
+             * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号*/
+            $req->PhoneNumberSet = ["+86" . $phone];
+            /* 国际/港澳台短信 SenderId: 国内短信填空，默认未开通，如需开通请联系 [sms helper] */
+            $req->SenderId = "";
+            /* 用户的 session 内容: 可以携带用户侧 ID 等上下文信息，server 会原样返回 */
+            $req->SessionContext = "xxx";
+            /* 模板 ID: 必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台] 查看 */
+            $req->TemplateId = "1446096";
+            /* 模板参数: 若无模板参数，则设置为空*/
+            $req->TemplateParamSet = array($code);
+            // 通过client对象调用SendSms方法发起请求。注意请求方法名与请求对象是对应的
+            // 返回的resp是一个SendSmsResponse类的实例，与请求对象对应
+            $resp = $client->SendSms($req);
+            // 输出json格式的字符串回包
+            $result = $resp->toJsonString();
+            json_decode($result, true);
+            return true;
+        }catch (\Exception $e){
+            return false;
+        }
+    }
+function send_sms($to, $code){
+    require_once ROOT_PATH .'/extend/aliyun/vendor/autoload.php';
+
+    $accessKeyId = 'LTAI4Fesw9m7TMdpW6NR8ETY';//创建的accessKey
+    $accessKeySecret = 'IYBIaSUZsyYgexn67o9mnu1kv2vjFZ';//创建的accessKeySecret
+    $sign_name = '乾鸟网';
+    $template_code = 'SMS_204127440';
+
+    Config::load(); //加载区域结点配置
+
+    $templateParam = $code;
+    //短信API产品名（短信产品名固定，无需修改）
+    $product = "Dysmsapi";
+    //短信API产品域名（接口地址固定，无需修改）
+    $domain = "dysmsapi.aliyuncs.com";
+    //暂时不支持多Region（目前仅支持cn-hangzhou请勿修改）
+    $region = "cn-hangzhou";
+    // 初始化用户Profile实例
+    $profile = DefaultProfile::getProfile($region, $accessKeyId, $accessKeySecret);
+    // 增加服务结点
+    DefaultProfile::addEndpoint("cn-hangzhou", "cn-hangzhou", $product, $domain);
+    // 初始化AcsClient用于发起请求
+    $acsClient= new DefaultAcsClient($profile);
+    // 初始化SendSmsRequest实例用于设置发送短信的参数
+    $request = new SendSmsRequest();
+    // 必填，设置雉短信接收号码
+    $request->setPhoneNumbers($to);
+    // 必填，设置签名名称
+    $request->setSignName($sign_name);
+    // 必填，设置模板CODE
+    $request->setTemplateCode($template_code);
+    // 可选，设置模板参数
+    if($templateParam) {
+        $request->setTemplateParam(json_encode(['code'=>$templateParam]));//由于我的模板里需要传递我的短信验证码
+    }
+    //发起访问请求
+    $acsResponse = $acsClient->getAcsResponse($request);
+    //返回请求结果
+    $result = json_decode(json_encode($acsResponse),true);
+    // 具体返回值参考文档：https://help.aliyun.com/document_detail/55451.html?spm=a2c4g.11186623.6.563.YSe8FK
+    return $result;
+}
+    public function transfer($phone){
+        try {
+            $cred = new Credential("AKIDwhBPN3SbU6RUIp54nFPJwINBizziAMHv", "OVLuCCwPbVAYfU2KL4WidHemcBTUEhsm");
+            // 实例化一个http选项，可选的，没有特殊需求可以跳过
+            $httpProfile = new HttpProfile();
+            $httpProfile->setReqMethod("GET");  // post请求(默认为post请求)
+            $httpProfile->setReqTimeout(30);    // 请求超时时间，单位为秒(默认60秒)
+            $httpProfile->setEndpoint("sms.tencentcloudapi.com");  // 指定接入地域域名(默认就近接入)
+
+            // 实例化一个client选项，可选的，没有特殊需求可以跳过
+            $clientProfile = new ClientProfile();
+            $clientProfile->setSignMethod("TC3-HMAC-SHA256");  // 指定签名算法(默认为HmacSHA256)
+            $clientProfile->setHttpProfile($httpProfile);
+
+            // 实例化要请求产品(以sms为例)的client对象,clientProfile是可选的
+            // 第二个参数是地域信息，可以直接填写字符串 ap-guangzhou，或者引用预设的常量
+            $client = new SmsClient($cred, "ap-guangzhou", $clientProfile);
+
+            // 实例化一个 sms 发送短信请求对象,每个接口都会对应一个request对象。
+            $req = new SendSmsRequest();
+
+            /* 短信应用ID: 短信SdkAppId在 [短信控制台] 添加应用后生成的实际SdkAppId，示例如1400006666 */
+            $req->SmsSdkAppId = "1400695697";
+            /* 短信签名内容: 使用 UTF-8 编码，必须填写已审核通过的签名，签名信息可登录 [短信控制台] 查看 */
+            $req->SignName = "乾鸟网络";
+            /* 短信码号扩展号: 默认未开通，如需开通请联系 [sms helper] */
+            $req->ExtendCode = "";
+            /* 下发手机号码，采用 E.164 标准，+[国家或地区码][手机号]
+             * 示例如：+8613711112222， 其中前面有一个+号 ，86为国家码，13711112222为手机号，最多不要超过200个手机号*/
+            $req->PhoneNumberSet = ["+86" . $phone];
+            /* 国际/港澳台短信 SenderId: 国内短信填空，默认未开通，如需开通请联系 [sms helper] */
+            $req->SenderId = "";
+            /* 用户的 session 内容: 可以携带用户侧 ID 等上下文信息，server 会原样返回 */
+            $req->SessionContext = "xxx";
+            /* 模板 ID: 必须填写已审核通过的模板 ID。模板ID可登录 [短信控制台] 查看 */
+            $req->TemplateId = "1446096";
+            /* 模板参数: 若无模板参数，则设置为空*/
+            $req->TemplateParamSet = array();
+            // 通过client对象调用SendSms方法发起请求。注意请求方法名与请求对象是对应的
+            // 返回的resp是一个SendSmsResponse类的实例，与请求对象对应
+            $resp = $client->SendSms($req);
+            // 输出json格式的字符串回包
+            $result = $resp->toJsonString();
+            json_decode($result, true);
+            return true;
+        }catch (\Exception $e){
+            return false;
+        }
+    }
+
+
+    public function ip_limit($ip,$num,$type){
+
+    }
+}

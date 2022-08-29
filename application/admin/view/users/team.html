@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>test</title>
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    <!-- 引入组件库 -->
+    <script src="/assets/js/vue.js"></script>
+      <script src="/assets/js/vue.min.js"></script>
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+    <style>
+        .textRed {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+<div id="app">
+    <el-row type="flex" justify="end">
+        <el-form :inline="true">
+            <el-form-item>
+                <el-input v-model="filterMember" placeholder="请输入会员手机号"></el-input>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" @click="getSingleMemberTreeInfo">查询</el-button>
+            </el-form-item>
+        </el-form>
+    </el-row>
+    <el-tree :data="treeData" :props="propSetting" :load="loadMap" lazy>
+      <span class="custom-tree-node" slot-scope="{ node, data }">
+        <span>
+
+          会员手机号：
+          <span class="textRed">{{ data.phone }}</span>&nbsp;
+          <span class="standup">|</span>
+          直推人数：
+          <span class="textRed">{{ data.total_direct }}</span>&nbsp;
+          <span class="standup">|</span>
+          团队人数：
+          <span class="textRed">{{ data.group_person_count }}</span>&nbsp;
+          <span class="standup">|</span>
+          &nbsp;
+          &nbsp;注册时间:
+          <span class="textRed">{{data.create_time}}</span>
+        </span>
+      </span>
+    </el-tree>
+</div>
+</body>
+<script>
+    var vm = new Vue({
+        el: "#app",
+        data: {
+            listLoading: true,
+            filterMember: "",
+            showAll: false,
+            treeData: [
+            ],
+            propSetting: {
+                children: "children",
+                label: "member"
+            }
+        },
+        created() {
+            this.getSingleMemberTreeInfo();
+        },
+        methods: {
+            getData(phone) {
+                let _this = this;
+                $.ajax({
+                    url: "/admin8.php/users/team",
+                    data: { phone: phone },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (resp) {
+                        _this.treeData = resp;
+                        _this.listLoading = false;
+                    }
+                });
+            },
+            getSingleMemberTreeInfo() {
+                let phone = this.filterMember || '';
+                this.treeData = [];
+                this.listLoading = true;
+                this.search(phone);
+            },
+            search(phone) {
+                let _this = this;
+                $.ajax({
+                    url: "/admin8.php/users/search",
+                    data: { phone: phone },
+                    type: "POST",
+                    dataType: "json",
+                    success: function (resp) {
+                        _this.treeData = resp;
+                        _this.listLoading = false;
+                    }
+                });
+            },
+            loadMap(node, resolve) {
+                if (node.level >= 1) {
+                    $.ajax({
+                        url: "/admin8.php/users/team",
+                        data: { phone: node.data.phone, start_level: 2, end_level: 2 },
+                        type: "POST",
+                        dataType: "json",
+                        success: function (resp) {
+                            resolve(resp);
+                        }
+                    });
+                }
+            }
+        }
+
+    })
+</script>
+
+</html>

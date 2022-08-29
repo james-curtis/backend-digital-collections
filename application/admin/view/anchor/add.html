@@ -1,0 +1,80 @@
+<form id="add-form" class="form-horizontal" role="form" data-toggle="validator" method="POST" action="">
+
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Head_phone')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-head_phone" class="form-control" name="row[head_phone]" type="text" value="">
+        </div>
+    </div>
+<!--    <div class="form-group">-->
+<!--        <label class="control-label col-xs-12 col-sm-2">{:__('Users_id')}:</label>-->
+<!--        <div class="col-xs-12 col-sm-8">-->
+<!--            <input id="c-users_id" data-rule="required" data-source="users/index" class="form-control selectpage" name="row[users_id]" type="text" value="">-->
+<!--        </div>-->
+<!--    </div>-->
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Nick_name')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-nick_name" class="form-control" name="row[nick_name]" type="text">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Dou_number')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-dou_number" class="form-control" name="row[dou_number]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Phone')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <input id="c-phone" class="form-control" name="row[phone]" type="text" value="">
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Homepage_image')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-homepage_image" class="form-control" size="50" name="row[homepage_image]" type="text" value="">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-homepage_image" class="btn btn-danger faupload" data-input-id="c-homepage_image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-homepage_image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-homepage_image" class="btn btn-primary fachoose" data-input-id="c-homepage_image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-homepage_image"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-homepage_image"></ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Chate_image')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            <div class="input-group">
+                <input id="c-chate_image" class="form-control" size="50" name="row[chate_image]" type="text" value="">
+                <div class="input-group-addon no-border no-padding">
+                    <span><button type="button" id="faupload-chate_image" class="btn btn-danger faupload" data-input-id="c-chate_image" data-mimetype="image/gif,image/jpeg,image/png,image/jpg,image/bmp" data-multiple="false" data-preview-id="p-chate_image"><i class="fa fa-upload"></i> {:__('Upload')}</button></span>
+                    <span><button type="button" id="fachoose-chate_image" class="btn btn-primary fachoose" data-input-id="c-chate_image" data-mimetype="image/*" data-multiple="false"><i class="fa fa-list"></i> {:__('Choose')}</button></span>
+                </div>
+                <span class="msg-box n-right" for="c-chate_image"></span>
+            </div>
+            <ul class="row list-inline faupload-preview" id="p-chate_image"></ul>
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('Status')}:</label>
+        <div class="col-xs-12 col-sm-8">
+            
+            <div class="radio">
+            {foreach name="statusList" item="vo"}
+            <label for="row[status]-{$key}"><input id="row[status]-{$key}" name="row[status]" type="radio" value="{$key}" {in name="key" value="1"}checked{/in} /> {$vo}</label> 
+            {/foreach}
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group layer-footer">
+        <label class="control-label col-xs-12 col-sm-2"></label>
+        <div class="col-xs-12 col-sm-8">
+            <button type="submit" class="btn btn-success btn-embossed disabled">{:__('OK')}</button>
+            <button type="reset" class="btn btn-default btn-embossed">{:__('Reset')}</button>
+        </div>
+    </div>
+</form>
