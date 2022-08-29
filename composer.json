@@ -41,7 +41,11 @@
         "tencentcloud/tencentcloud-sdk-php": "dev-master"
     },
     "config": {
-        "preferred-install": "dist"
+        "preferred-install": "dist",
+        "allow-plugins": {
+            "easywechat-composer/easywechat-composer": true,
+            "topthink/think-installer": true
+        }
     },
     "repositories": [
         {
