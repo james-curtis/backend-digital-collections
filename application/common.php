@@ -4,7 +4,7 @@
 
 use Symfony\Component\VarExporter\VarExporter;
 use think\Db;
-require_once('../xasset/index.php');
+//require_once('../xasset/index.php');
 
 
 
