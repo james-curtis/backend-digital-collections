@@ -4,196 +4,186 @@
 
 use Symfony\Component\VarExporter\VarExporter;
 use think\Db;
-//require_once('../xasset/index.php');
+
+require_once('../xasset/index.php');
 
 
+//创建链账户地址
+function CreateChainAccount($config = [], $name)
+{
+    $body = [
+        "name" => $name,
+        "operation_id" => "operationid" . uniqueNum(),
+    ];
 
- //创建链账户地址
-    function CreateChainAccount($config=[],$name)
-    {
-        $body = [
-            "name" => $name,
-            "operation_id" => "operationid" . uniqueNum(),
-        ];
+    $res = requests("/v1beta1/account", [], $body, "POST", $config);
+    //var_dump($res);
+    return $res;
+}
 
-        $res =requests("/v1beta1/account", [], $body, "POST",$config);
-        //var_dump($res);
-        return $res;
+
+//创建 NFT 类别
+function CreateChainClasses($account, $goods_id, $userid)
+{
+    $body = [
+        "name" => "{$userid}",
+        "class_id" => 'nft' . $goods_id,
+        "owner" => $account,
+        "operation_id" => "operationid" . uniqueNum(),
+    ];
+    $res = requests("/v1beta1/nft/classes", [], $body, "POST", []);
+    return $res;
+}
+
+
+//发行 NFT
+function CreateChainNfts($userid, $goods_id, $url)
+{
+
+    $body = [
+        "name" => "{$userid}",
+        "class_id" => 'nft' . $goods_id,
+        "uri" => $url,
+        "operation_id" => "operationid" . uniqueNum(),
+    ];
+
+    $res = requests("/v1beta1/nft/nfts/nft" . $goods_id, [], $body, "POST", []);
+    //operationid1654506994
+    return $res;
+}
+
+//批量发行 NFT
+function PlNfts($userid, $class_id, $url, $recipient)
+{
+
+    $body = [
+        "name" => "{$userid}",
+        "class_id" => 'nft' . $class_id,
+        "uri" => $url,
+        "operation_id" => "operationid" . uniqueNum(),
+        'recipients' => $recipient,
+    ];
+
+
+    // exit();
+    // https://apis.avata.bianjie.ai/v1beta1/nft/batch/nfts/{class_id}
+    $res = requests("/v1beta1/nft/batch/nfts/" . $class_id, [], $body, "POST", []);
+    //operationid1654506994
+    return $res;
+}
+
+//上链查询
+function CreateChainTx($operation_id)
+{
+    $res = requests("/v1beta1/tx/" . $operation_id, [], [], "GET", []);
+    return $res;
+}
+
+//转让
+function Nfttransfers($nft_id, $owner, $class_id, $account)
+{
+
+    $body = [
+        "recipient" => $account,
+        "operation_id" => "operationid" . uniqueNum(),
+    ];
+    $res = requests("/v1beta1/nft/nft-transfers/" . $class_id . "/" . $owner . "/" . $nft_id, [], $body, "POST", []);
+    return $res;
+}
+
+function requests($path, $query = [], $body = [], $method = 'GET', $config = [])
+{
+    if ($config) {
+        $apiKey = $config['apiKey'];
+        $apiSecret = $config['apiSecret'];//
+        $domain = $config['url'];//t
+    } else {
+        $config = Db::name('config')->where('group', 'wenchangchain')->select();
+        $apiKey = $config[0]['value'];
+        $apiSecret = $config[1]['value'];//
+        $domain = $config[2]['value'];//test
     }
- 
 
-     //创建 NFT 类别
-   function CreateChainClasses($account,$goods_id,$userid)
-    {
-        $body = [
-            "name" => "{$userid}",
-            "class_id"=>'nft'.$goods_id,
-            "owner"=>$account,
-            "operation_id" => "operationid" .uniqueNum(),
-        ];
-        $res =requests("/v1beta1/nft/classes", [], $body, "POST",[]);
-        return $res;
-    }
-
-
-     //发行 NFT
-  function CreateChainNfts($userid,$goods_id,$url)
-    {
-        
-        $body = [
-            "name" => "{$userid}",
-            "class_id"=>'nft'.$goods_id,
-            "uri"=>$url,
-            "operation_id" => "operationid" .uniqueNum(),
-        ];
-       
-        $res =requests("/v1beta1/nft/nfts/nft".$goods_id, [], $body, "POST",[]);
-        //operationid1654506994
-        return $res;
-    }
-    
-       //批量发行 NFT
-  function PlNfts($userid,$class_id,$url,$recipient)
-    {
-        
-        $body = [
-            "name" => "{$userid}",
-            "class_id"=>'nft'.$class_id,
-            "uri"=>$url,
-            "operation_id" => "operationid" .uniqueNum(),
-            'recipients'=>$recipient,
-        ];
-        
-
-      // exit();
-      // https://apis.avata.bianjie.ai/v1beta1/nft/batch/nfts/{class_id}
-        $res =requests("/v1beta1/nft/batch/nfts/".$class_id, [], $body, "POST",[]);
-        //operationid1654506994
-        return $res;
-    }
-
-      //上链查询
-    function CreateChainTx($operation_id)
-    {
-        $res =requests("/v1beta1/tx/".$operation_id, [],[], "GET",[]);
-        return $res;
-    }
-    
-        //转让
-    function Nfttransfers($nft_id,$owner,$class_id,$account)
-    {  
-
-         $body = [
-            "recipient"=>$account,
-            "operation_id" => "operationid" .uniqueNum(),
-        ];
-        $res =requests("/v1beta1/nft/nft-transfers/".$class_id."/".$owner."/".$nft_id, [],$body, "POST",[]);
-        return $res;
-    }
-
-  function requests($path, $query = [], $body = [], $method = 'GET',$config=[])
-    {
-        if($config){
-             $apiKey = $config['apiKey'];
-            $apiSecret =$config['apiSecret'];//
-            $domain = $config['url'];//t
-        }else{
-           $config=Db::name('config')->where('group','wenchangchain')->select();
-          $apiKey = $config[0]['value'];
-          $apiSecret =$config[1]['value'];//
-          $domain = $config[2]['value'];//test 
+    $method = strtoupper($method);
+    $apiGateway = rtrim($domain, '/') . '/' . ltrim($path,
+            '/') . ($query ? '?' . http_build_query($query) : '');
+    $timestamp = uniqueNum();
+    $params = ["path_url" => $path];
+    if ($query) {
+        foreach ($query as $k => $v) {
+            $params["query_{$k}"] = $v;
         }
-        
-        $method = strtoupper($method);
-        $apiGateway = rtrim($domain,'/') . '/' . ltrim($path,
-                '/') . ($query ? '?' . http_build_query($query) : '');
-        $timestamp =uniqueNum();
-        $params = ["path_url" => $path];
-        if ($query) {
-            foreach ($query as $k => $v) {
-                $params["query_{$k}"] = $v;
-            }
-        }
-        if ($body) {
-            foreach ($body as $k => $v) {
-                $params["body_{$k}"] = $v;
-            }
-        }
-        ksort($params);
-        $hexHash = hash("sha256", "{$timestamp}" . $apiSecret);
-        if (count($params) > 0) {
-            $s = json_encode($params,JSON_UNESCAPED_UNICODE);
-            $hexHash = hash("sha256", stripcslashes($s . "{$timestamp}" . $apiSecret));
-        }
-        $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, $apiGateway);
-        $header = [
-            "Content-Type:application/json",
-            "X-Api-Key:{$apiKey}",
-            "X-Signature:{$hexHash}",
-            "X-Timestamp:{$timestamp}",
-        ];
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
-        $jsonStr = $body ? json_encode($body) : ''; //转换为json格式
-        if ($method == 'POST') {
-            
-            curl_setopt($ch, CURLOPT_POST, 1);
-            if ($jsonStr) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
-            }
-        } elseif ($method == 'PATCH') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
-            if ($jsonStr) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
-            }
-        } elseif ($method == 'PUT') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
-            if ($jsonStr) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
-            }
-        } elseif ($method == 'DELETE') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
-            if ($jsonStr) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
-            }
-        }elseif ($method == 'GET') {
-            curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
-            if ($jsonStr) {
-                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
-            }
-        }
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-        $response = curl_exec($ch);
-        // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-        $response = json_decode($response, true);
-
-        return $response;
-
     }
-
-    /** get timestamp
-     *
-     * @return float
-     */
-   function getMillisecond()
-    {
-        list($t1, $t2) = explode(' ', microtime());
-        $rand=rand(1111,9999);
-        return (float)sprintf('%.0f', (floatval($t1) + floatval($t2)+floatval($rand)));
+    if ($body) {
+        foreach ($body as $k => $v) {
+            $params["body_{$k}"] = $v;
+        }
     }
+    ksort($params);
+    $hexHash = hash("sha256", "{$timestamp}" . $apiSecret);
+    if (count($params) > 0) {
+        $s = json_encode($params, JSON_UNESCAPED_UNICODE);
+        $hexHash = hash("sha256", stripcslashes($s . "{$timestamp}" . $apiSecret));
+    }
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiGateway);
+    $header = [
+        "Content-Type:application/json",
+        "X-Api-Key:{$apiKey}",
+        "X-Signature:{$hexHash}",
+        "X-Timestamp:{$timestamp}",
+    ];
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+    $jsonStr = $body ? json_encode($body) : ''; //转换为json格式
+    if ($method == 'POST') {
 
+        curl_setopt($ch, CURLOPT_POST, 1);
+        if ($jsonStr) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
+        }
+    } elseif ($method == 'PATCH') {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PATCH');
+        if ($jsonStr) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
+        }
+    } elseif ($method == 'PUT') {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'PUT');
+        if ($jsonStr) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
+        }
+    } elseif ($method == 'DELETE') {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
+        if ($jsonStr) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
+        }
+    } elseif ($method == 'GET') {
+        curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'GET');
+        if ($jsonStr) {
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonStr);
+        }
+    }
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+    $response = curl_exec($ch);
+    // $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    $response = json_decode($response, true);
 
+    return $response;
 
+}
 
-
-
-
-
-
-
+/** get timestamp
+ *
+ * @return float
+ */
+function getMillisecond()
+{
+    list($t1, $t2) = explode(' ', microtime());
+    $rand = rand(1111, 9999);
+    return (float)sprintf('%.0f', (floatval($t1) + floatval($t2) + floatval($rand)));
+}
 
 
 // //获取接口地址
@@ -210,10 +200,10 @@ use think\Db;
 //      }else{
 //          $config->setCredentials($appId,$ak,$sk);
 //      }
-     
+
 //      $config->endPoint = $configs[3]['value'];
 //      $xHandle = new \XassetClient($config);
-    
+
 //     if($configs[5]['value']){
 //         $addr =$configs[5]['value'];
 //         $pubKey = $configs[6]['value'];
@@ -223,8 +213,8 @@ use think\Db;
 //         $pubKey = 0;
 //       $privtKey = 0;
 //     }
-   
-     
+
+
 //       $account = array(
 //                   'address' => $addr,
 //                   'public_key' => $pubKey,
@@ -239,20 +229,21 @@ use think\Db;
 
 //身份证 手机号 姓名验证
 //身份证 手机号 姓名验证
- function   beckoning($idcard,$mobile,$name){
-    $config=Db::name('config')->where('group','beckoning')->field('id,value')->select();
+function beckoning($idcard, $mobile, $name)
+{
+    $config = Db::name('config')->where('group', 'beckoning')->field('id,value')->select();
 
     $host = $config[0]['value'];
     $path = "/mobile/3-validate";
-   
+
     $method = "POST";
     $appcode = $config[1]['value'];
-    
-   
+
+
     $headers = array();
     array_push($headers, "Authorization:APPCODE " . $appcode);
     //根据API的要求，定义相对应的Content-Type
-    array_push($headers, "Content-Type".":"."application/x-www-form-urlencoded; charset=UTF-8");
+    array_push($headers, "Content-Type" . ":" . "application/x-www-form-urlencoded; charset=UTF-8");
     $querys = "";
     $bodys = "idCardNo={$idcard}&mobile={$mobile}&name={$name}";
     $url = $host . $path;
@@ -266,25 +257,25 @@ use think\Db;
     //设定返回信息中是否包含响应信息头，启用时会将响应信息头作为数据流输出，true 表示输出信息头, false表示不输出信息头
     //如果想将响应结果json字符串转为json数组，建议将 CURLOPT_HEADER 设置成 false
     curl_setopt($curl, CURLOPT_HEADER, false);
-    if (1 == strpos("$".$host, "https://"))
-    {
+    if (1 == strpos("$" . $host, "https://")) {
         curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($curl, CURLOPT_SSL_VERIFYHOST, false);
     }
     curl_setopt($curl, CURLOPT_POSTFIELDS, $bodys);
-     $result = curl_exec($curl);//执行请求
+    $result = curl_exec($curl);//执行请求
     curl_close($curl);//关闭curl，释放资源
     // print_r($result);
-    return $result;   
-    
-    
+    return $result;
+
+
 }
+
 if (!function_exists('__')) {
 
     /**
      * 获取语言变量值
      * @param string $name 语言变量名
-     * @param array  $vars 动态变量值
+     * @param array $vars 动态变量值
      * @param string $lang 语言
      * @return mixed
      */
@@ -307,9 +298,9 @@ if (!function_exists('format_bytes')) {
 
     /**
      * 将字节转换为可读文本
-     * @param int    $size      大小
+     * @param int $size 大小
      * @param string $delimiter 分隔符
-     * @param int    $precision 小数位数
+     * @param int $precision 小数位数
      * @return string
      */
     function format_bytes($size, $delimiter = '', $precision = 2)
@@ -326,7 +317,7 @@ if (!function_exists('datetime')) {
 
     /**
      * 将时间戳转换为日期时间
-     * @param int    $time   时间戳
+     * @param int $time 时间戳
      * @param string $format 日期时间格式
      * @return string
      */
@@ -341,7 +332,7 @@ if (!function_exists('human_date')) {
 
     /**
      * 获取语义化时间
-     * @param int $time  时间
+     * @param int $time 时间
      * @param int $local 本地时间
      * @return string
      */
@@ -355,7 +346,7 @@ if (!function_exists('cdnurl')) {
 
     /**
      * 获取上传资源的CDN的地址
-     * @param string  $url    资源相对地址
+     * @param string $url 资源相对地址
      * @param boolean $domain 是否显示域名 或者直接传入域名
      * @return string
      */
@@ -406,8 +397,8 @@ if (!function_exists('rmdirs')) {
 
     /**
      * 删除文件夹
-     * @param string $dirname  目录
-     * @param bool   $withself 是否删除自身
+     * @param string $dirname 目录
+     * @param bool $withself 是否删除自身
      * @return boolean
      */
     function rmdirs($dirname, $withself = true)
@@ -436,7 +427,7 @@ if (!function_exists('copydirs')) {
     /**
      * 复制文件夹
      * @param string $source 源文件夹
-     * @param string $dest   目标文件夹
+     * @param string $dest 目标文件夹
      */
     function copydirs($source, $dest)
     {
@@ -472,7 +463,7 @@ if (!function_exists('addtion')) {
 
     /**
      * 附加关联字段数据
-     * @param array $items  数据列表
+     * @param array $items 数据列表
      * @param mixed $fields 渲染的来源字段
      * @return array
      */
@@ -544,7 +535,7 @@ if (!function_exists('var_export_short')) {
 
     /**
      * 使用短标签打印或返回数组结构
-     * @param mixed   $data
+     * @param mixed $data
      * @param boolean $return 是否返回数据
      * @return string
      */
@@ -754,13 +745,13 @@ if (!function_exists('check_ip_allowed')) {
         }
     }
 }
-if (!function_exists('validateCode')){
+if (!function_exists('validateCode')) {
     //生成唯一字符串
-    function validateCode($member,$code,$type)
+    function validateCode($member, $code, $type)
     {
-        $redis =  \comservice\GetRedis::getRedis();
-        $checkCode = $redis->getItem($member.'-'.$type);
-        if($checkCode == $code){
+        $redis = \comservice\GetRedis::getRedis();
+        $checkCode = $redis->getItem($member . '-' . $type);
+        if ($checkCode == $code) {
             return true;
         }
 //        else{
@@ -771,17 +762,17 @@ if (!function_exists('validateCode')){
     }
 }
 
-if(!function_exists('checkEmail')){
+if (!function_exists('checkEmail')) {
     function checkEmail($email)
     {
         $result = trim($email);
 
-        if (filter_var($result, FILTER_VALIDATE_EMAIL)) return  true;
+        if (filter_var($result, FILTER_VALIDATE_EMAIL)) return true;
         return false;
 
     }
 }
-if(!function_exists('checkPhone')) {
+if (!function_exists('checkPhone')) {
     function checkPhone($phone)
     {
         $reg = "/^1[23456789]\d{9}$/";
@@ -791,7 +782,7 @@ if(!function_exists('checkPhone')) {
         return false;
     }
 }
-if (!function_exists('uniqueNum')){
+if (!function_exists('uniqueNum')) {
     //生成唯一字符串
     function uniqueNum()
     {
@@ -802,29 +793,29 @@ if (!function_exists('uniqueNum')){
         return $order_no;
     }
 }
-if (!function_exists('addWebSiteUrl')){
+if (!function_exists('addWebSiteUrl')) {
     function addWebSiteUrl($array, $fields = [])
     {
-        $url = 'http://'.$_SERVER['HTTP_HOST'];
-        if(count($array) <= 0) return $array;
-        if (count($array) == count($array, 1)){
+        $url = 'http://' . $_SERVER['HTTP_HOST'];
+        if (count($array) <= 0) return $array;
+        if (count($array) == count($array, 1)) {
             //一维数组
-            if(count($fields) > 0){
-                foreach ($fields as $v){
-                    $array[$v] = str_replace('/uploads/', $url.'/uploads/' , $array[$v]);
+            if (count($fields) > 0) {
+                foreach ($fields as $v) {
+                    $array[$v] = str_replace('/uploads/', $url . '/uploads/', $array[$v]);
                 }
-            }else{
-                foreach ($array as $k=>&$v){
-                    $array[$k] = str_replace('/uploads/', $url.'/uploads/' , $v);
+            } else {
+                foreach ($array as $k => &$v) {
+                    $array[$k] = str_replace('/uploads/', $url . '/uploads/', $v);
                 }
             }
             return $array;
-        }else{
-            if(count($array) <= 0) return $array;
+        } else {
+            if (count($array) <= 0) return $array;
             foreach ($array as &$v1) {
                 foreach ($fields as &$v2) {
-                    if(!empty($v1[$v2])){
-                        $v1[$v2] =  str_replace('/uploads/', $url.'/uploads/' , $v1[$v2]);
+                    if (!empty($v1[$v2])) {
+                        $v1[$v2] = str_replace('/uploads/', $url . '/uploads/', $v1[$v2]);
                     }
                 }
             }
@@ -832,22 +823,23 @@ if (!function_exists('addWebSiteUrl')){
         }
     }
 }
-if (!function_exists('trimWebUrl')){
-    function trimWebUrl($array,$fields){
-        $url = 'https://'.$_SERVER['HTTP_HOST'];
-        if(count($array) <= 0) return $array;
-        if (count($array) == count($array, 1)){
+if (!function_exists('trimWebUrl')) {
+    function trimWebUrl($array, $fields)
+    {
+        $url = 'https://' . $_SERVER['HTTP_HOST'];
+        if (count($array) <= 0) return $array;
+        if (count($array) == count($array, 1)) {
             //一维数组
-            foreach ($fields as $v){
-                $array[$v] = str_replace($url.'/uploads/' ,'/uploads/',  $array[$v]);
+            foreach ($fields as $v) {
+                $array[$v] = str_replace($url . '/uploads/', '/uploads/', $array[$v]);
             }
             return $array;
-        }else{
-            if(count($array) <= 0) return $array;
+        } else {
+            if (count($array) <= 0) return $array;
             foreach ($array as &$v1) {
                 foreach ($fields as &$v2) {
-                    if(!empty($v1[$v2])){
-                        $v1[$v2] =  str_replace($url.'/uploads/' ,'/uploads/',  $v1[$v2]);
+                    if (!empty($v1[$v2])) {
+                        $v1[$v2] = str_replace($url . '/uploads/', '/uploads/', $v1[$v2]);
                     }
                 }
             }
@@ -855,21 +847,23 @@ if (!function_exists('trimWebUrl')){
         }
     }
 }
-if (!function_exists('content')){
-    function content($content){
-        $url = 'http://'.$_SERVER['HTTP_HOST'];
-        $content = str_replace('src="', 'src="'.$url , $content);
+if (!function_exists('content')) {
+    function content($content)
+    {
+        $url = 'http://' . $_SERVER['HTTP_HOST'];
+        $content = str_replace('src="', 'src="' . $url, $content);
         return $content;
     }
 }
-if (!function_exists('trimContent')){
-    function trimContent($content){
-        $url = 'http://'.$_SERVER['HTTP_HOST'];
-        $content = str_replace('src="'.$url, 'src="' , $content);
+if (!function_exists('trimContent')) {
+    function trimContent($content)
+    {
+        $url = 'http://' . $_SERVER['HTTP_HOST'];
+        $content = str_replace('src="' . $url, 'src="', $content);
         return $content;
     }
 }
-if (!function_exists('bug')){
+if (!function_exists('bug')) {
     function bug($data)
     {
         echo "<pre/>";
@@ -877,7 +871,7 @@ if (!function_exists('bug')){
         die;
     }
 }
-if (!function_exists('uuid')){
+if (!function_exists('uuid')) {
     function uuid()
     {
         $code = "ABCDEFGHIGKLMNOPQRSTUVWXYZ";
@@ -909,15 +903,16 @@ if (!function_exists('uuid')){
 if (!function_exists('defaultImage')) {
     function defaultImage()
     {
-        $images =  \think\Config::get('site.default_image');
+        $images = \think\Config::get('site.default_image');
         return $images[array_rand($images)];
     }
 }
 
-if (!function_exists('splitTime')){
-    function splitTime($time){
-        $time = explode(' - ',$time);
-        return [$time[0],$time[1]];
+if (!function_exists('splitTime')) {
+    function splitTime($time)
+    {
+        $time = explode(' - ', $time);
+        return [$time[0], $time[1]];
     }
 }
 
