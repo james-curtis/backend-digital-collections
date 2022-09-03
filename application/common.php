@@ -234,7 +234,8 @@ function beckoning($idcard, $mobile, $name)
     $config = Db::name('config')->where('group', 'beckoning')->field('id,value')->select();
 
     $host = $config[0]['value'];
-    $path = "/mobile/3-validate";
+//    $path = "/mobile/3-validate";
+    $path = "";
 
     $method = "POST";
     $appcode = $config[1]['value'];
@@ -245,7 +246,7 @@ function beckoning($idcard, $mobile, $name)
     //根据API的要求，定义相对应的Content-Type
     array_push($headers, "Content-Type" . ":" . "application/x-www-form-urlencoded; charset=UTF-8");
     $querys = "";
-    $bodys = "idCardNo={$idcard}&mobile={$mobile}&name={$name}";
+    $bodys = "idcard={$idcard}&mobile={$mobile}&name={$name}";
     $url = $host . $path;
 
     $curl = curl_init();

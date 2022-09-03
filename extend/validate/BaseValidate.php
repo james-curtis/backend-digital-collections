@@ -177,6 +177,7 @@ class BaseValidate extends Validate
             {
                 return FALSE;
             } else {
+                return TRUE;
                 //检验18位身份证的校验码是否正确。
                 //校验位按照ISO 7064:1983.MOD 11-2的规定生成，X可以认为是数字10。
                 $arr_int = array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2);
