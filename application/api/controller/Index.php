@@ -23,14 +23,28 @@ class Index extends BaseController
         $this->indexLogic = new IndexLogic();
         $this->redis = GetRedis::getRedis();
     }
-    
-    
-    public function md5(){
-        $phone='18287103239';
+
+
+    public function md5()
+    {
+        $phone = '18287103239';
         $type = 3;
         $key = 'Mibai699SETdDEkdhKEHkdhkDhekb12DIdhk';
-        $sign = md5($phone.$type.$key);
+        $sign = md5($phone . $type . $key);
         var_dump($sign);
+    }
+
+    /**
+     * 获取网站配置
+     * @return \think\response\Json
+     */
+    public function siteConfig()
+    {
+        $config = [
+            'name' => config('site.name'),
+            'beian' => config('site.beian'),
+        ];
+        return json($config);
     }
 
     /**
@@ -40,7 +54,8 @@ class Index extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function bannerList($type=1){
+    public function bannerList($type = 1)
+    {
         return json($this->indexLogic->bannerList($type));
     }
 

@@ -1,18 +1,18 @@
 <?php
 
-return array (
-  'name' => '梦凌数藏',
-  'beian' => '',
-  'cdnurl' => '',
-  'version' => '1.0.5',
-  'timezone' => 'Asia/Shanghai',
-  'forbiddenip' => '',
-  'languages' => 
-  array (
-    'backend' => 'zh-cn',
-    'frontend' => 'zh-cn',
-  ),
-  'fixedpage' => 'dashboard',
+return array(
+    'name' => '梦凌数藏',
+    'beian' => '粤ICP备15054802号-4',
+    'cdnurl' => '',
+    'version' => '1.0.5',
+    'timezone' => 'Asia/Shanghai',
+    'forbiddenip' => '',
+    'languages' =>
+        array(
+            'backend' => 'zh-cn',
+            'frontend' => 'zh-cn',
+        ),
+    'fixedpage' => 'dashboard',
   'categorytype' => 
   array (
     'default' => '默认',
@@ -88,16 +88,16 @@ return array (
   'server_url' => 'http://162.14.96.235/h5',
   'ali_notify_url' => 'http://8nft.av6v.com/api/notify/aliNotify',
   'wx_small_app_id' => '',
-  'wx_small_app_secret' => '',
-  'wx_notify_url' => 'http://8nft.av6v.com//api/notify/wxNotify',
-  'conceal_content' => '<p class="MsoNormal" style="text-indent:21.0000pt;mso-char-indent-count:2.0000;"><span style="text-indent: 58.6667px;">没填写</span><br></p>',
-  'wx_small_notify_url' => 'http://8nft.av6v.com//api/notify/wxSmallNotify',
-  'buy_content' => '<p><span style="text-indent: 58.6667px;">没填写</span><br></p>',
-  'wx_image' => '/uploads/20220118/f0340570fa4c0a70cbc9e69ee5a1c6d9.png',
-  'qq_iamge' => '/uploads/20220118/17928c3d43856f4dd216a14b4ef0b32e.png',
-  'contact_phone_1' => '请扫二维码添加客服',
-  'app_download' => '',
-  '技术支持' => '',
+    'wx_small_app_secret' => '',
+    'wx_notify_url' => 'http://8nft.av6v.com//api/notify/wxNotify',
+    'conceal_content' => '<p class="MsoNormal" style="text-indent:21.0000pt;mso-char-indent-count:2.0000;"><span style="text-indent: 58.6667px;">没填写</span><br></p>',
+    'wx_small_notify_url' => 'http://8nft.av6v.com//api/notify/wxSmallNotify',
+    'buy_content' => '<p><span style="text-indent: 58.6667px;">没填写</span><br></p>',
+    'wx_image' => '/uploads/20220118/f0340570fa4c0a70cbc9e69ee5a1c6d9.png',
+    'qq_iamge' => '/uploads/20220118/17928c3d43856f4dd216a14b4ef0b32e.png',
+    'contact_phone_1' => '请扫二维码添加客服',
+    'app_download' => '',
+    '技术支持' => '',
     'zqh' => '/uploads/20220822/3b88d9c2fcdd0c3ed47583a411afadf2.jpg',
     'about_content' => '<p><span style="text-indent: 58.6667px;">没填写</span><br></p>',
     'douyi_image' => '/uploads/20220119/0fdf060dde128f30883787a795ee2b08.jpg',
