@@ -1,27 +1,30 @@
 <?php
 
 namespace app\index\controller;
+
 use think\Db;
 use app\index\controller\JsApiPay;
 use Yansongda\Pay\Pay;
 use Yansongda\Pay\Log;
 use think\Controller;
+
 //引入微信公众号jssdk
-require_once(EXTEND_PATH.'wechat/jssdk.php');
+require_once(EXTEND_PATH . 'wechat/jssdk.php');
+
 class Vip extends Controller
 {
-    
+
     public function _initialize()
     {
         parent::_initialize();
         $this->wechat = [
-            'appid'			=> '', // APP APPID
-            'app_id'			=> config('site.wx_appid'), // 公众号 APPID
-            'app_scerect'			=>  config('site.wx_appsecret'),
-            'miniapp_id'			=> '', // 小程序 APPID
+            'appid' => '', // APP APPID
+            'app_id' => config('site.wx_appid'), // 公众号 APPID
+            'app_scerect' => config('site.wx_appsecret'),
+            'miniapp_id' => '', // 小程序 APPID
             'mch_id' => config('site.wx_mch_id'),
             'key' => config('site.wx_mch_key'),
-            'notify_url'=>config('site.wx_notifyurl'),
+            'notify_url' => config('site.wx_notifyurl'),
             'cert_client' => './cert/apiclient_cert.pem', // optional，退款等情况时用到
             'cert_key' => './cert/apiclient_key.pem',// optional，退款等情况时用到
             'log' => [ // optional
@@ -38,31 +41,30 @@ class Vip extends Controller
             'mode' => 'normal', // optional, dev/hk;当为 `hk` 时，为香港 gateway。
         ];
     }
-    
+
     public function index()
     {
-        
-        $order_num=input('order_num');
-        $body=input('body');
-        $price=input('price');
+        $order_num = input('order_num');
+        $body = input('body');
+        $price = input('price');
         $jssdk = new \JSSDK($this->wechat['app_id'], $this->wechat['app_scerect']);
         $signPackage = $jssdk->GetSignPackage();
-        $this->view->assign('signPackage',$signPackage);
+        $this->view->assign('signPackage', $signPackage);
 //        获取openid
         $tools = new JsApiPay();
         $openId = $tools->GetOpenid();
-       
+
         //发起支付
         $order = [
             'out_trade_no' => $order_num,
-            'total_fee' => $price*100, // **单位：分**
+            'total_fee' => $price * 100, // **单位：分**
             'body' => $body,
             'openid' => $openId,
         ];
 
         $pay = Pay::wechat($this->wechat)->mp($order);
-        $this->view->assign('data',$pay);
+        $this->view->assign('data', $pay);
         return $this->view->fetch();
     }
-    
+
 }
