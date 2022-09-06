@@ -63,7 +63,7 @@ class SendLogic
         $result = $this->send2($phone, $code);
         if ($result) {
             $this->redis->setItem($phone . '-' . $type, $code);
-            $this->redis->settime($phone . '-' . $type, 45);
+            $this->redis->settime($phone . '-' . $type, 120);
             return Response::success('发送成功');
         }
         return Response::fail('发送失败:' . $result);
