@@ -11,6 +11,7 @@ use datamodel\Users;
 use dh2y\qrcode\QRcode;
 use logicmodel\award\Award;
 use logicmodel\award\Recommend;
+use think\Cookie;
 use think\Db;
 use think\Request;
 
@@ -242,6 +243,7 @@ class UserLogic
         if ($result) {
             //   (new Recommend())->awardkt($user_id);
             //(new Recommend())->award($user_id);
+            Cookie::set('app_token', $app_token);
             return Response::success('登录成功', ['app_token' => $app_token]);
         }
         return Response::fail('登录失败');

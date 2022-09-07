@@ -41,7 +41,7 @@
             signType: '<?php echo $data["signType"];?>', // 签名方式，默认为'SHA1'，使用新版支付需传入'MD5'
             paySign: '<?php echo $data["paySign"];?>', // 支付签名
             success: function (res) {
-                window.location.href = '/#/pages/order/orderList';
+                window.location.href = '{$frontend_server}/#/pages/my/topUpRecord';
             }
         });
     });

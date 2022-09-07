@@ -9,18 +9,29 @@ use Yansongda\Pay\Pay;
 class AliLogic
 {
     private $config;
+
     public function __construct()
     {
         $this->config = [
-            'use_sandbox' => true, // 是否使用沙盒模式
-            'app_id'    => config('site.ali_app_id'),
-            'sign_type' => 'RSA2', // RSA  RSA2
+//            'mode' => 'dev', // optional,设置此参数，将进入沙箱模式
+            'app_id' => config('site.ali_app_id'),
             // 支付宝公钥字符串
             'ali_public_key' => config('site.ali_public_key'),
             // 自己生成的密钥字符串
             'private_key' => config('site.ali_private_key'),
-            'notify_url'=>config('site.ali_notify_url')
+            'notify_url' => config('site.ali_notify_url'),
+            'log' => [ // optional
+                'file' => './logs/alipay.log',
+                'level' => 'debug', // 建议生产环境等级调整为 info，开发环境为 debug
+                'type' => 'single', // optional, 可选 daily.
+                'max_file' => 1, // optional, 当 type 为 daily 时有效，默认 30 天
+            ],
         ];
+    }
+
+    public function getConfig()
+    {
+        return $this->config;
     }
 
     /**
@@ -30,7 +41,8 @@ class AliLogic
      * @param $amount
      * @return bool|false|string
      */
-    public function appPay($order_num,$body,$amount){
+    public function appPay($order_num, $body, $amount)
+    {
         try {
             $order = [
                 'out_trade_no' => $order_num,
@@ -40,8 +52,8 @@ class AliLogic
             $config = $this->config;
             $alipay = Pay::alipay($config)->app($order);
             return $alipay->getContent();
-        }catch (\Exception $e){
-          return false;
+        } catch (\Exception $e) {
+            return false;
         }
     }
 
@@ -52,7 +64,8 @@ class AliLogic
      * @param $amount
      * @return bool|false|string
      */
-    public function wapPay($order_num,$body,$amount){
+    public function wapPay($order_num, $body, $amount)
+    {
         try {
             $order = [
                 'out_trade_no' => $order_num,
@@ -62,7 +75,7 @@ class AliLogic
             $config = $this->config;
             $alipay = Pay::alipay($config)->wap($order);
             return $alipay->getContent();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
     }
@@ -74,7 +87,8 @@ class AliLogic
      * @param $amount
      * @return bool|false|string
      */
-    public function webPay($order_num,$body,$amount){
+    public function webPay($order_num, $body, $amount)
+    {
         try {
             $order = [
                 'out_trade_no' => $order_num,
@@ -84,7 +98,7 @@ class AliLogic
             $config = $this->config;
             $alipay = Pay::alipay($config)->web($order);
             return $alipay->getContent();
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
             return false;
         }
     }

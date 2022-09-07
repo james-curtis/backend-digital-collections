@@ -18,6 +18,7 @@ use datamodel\Users;
 use datamodel\Chongzhi;
 use datamodel\UsersCoupon;
 use think\Db;
+use think\Request;
 
 require_once('../xasset/index.php');
 
@@ -688,10 +689,13 @@ class GoodsLogic
                 $pay = (new WxLogic())->appPay($order_num, $body, $money);
                 break;
             case 4:
+                // h5 支付宝
                 $pay = (new AliLogic())->wapPay($order_num, $body, $money);
                 break;
             case 5:
-                $url = 'http://' . $_SERVER['HTTP_HOST'] . '/index/vip?order_num=' . $order_num . '&body=' . $body . '&price=' . $money;
+                // h5 微信
+                $token = Request::instance()->header('token');
+                $url = config('site.server_url') . "/index/vip?order_num=$order_num&body=$body&price=$money&token=$token";
                 return Response::success('下单成功', ['pay' => $url]);
             case 6:
                 if ($userInfo['wx_small_auth'] == 0) return Response::fail('请先进行授权');

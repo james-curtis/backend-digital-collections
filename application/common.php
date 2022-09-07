@@ -797,7 +797,7 @@ if (!function_exists('uniqueNum')) {
 if (!function_exists('addWebSiteUrl')) {
     function addWebSiteUrl($array, $fields = [])
     {
-        $url = 'http://' . $_SERVER['HTTP_HOST'];
+        $url = config('site.server_url');
         if (count($array) <= 0) return $array;
         if (count($array) == count($array, 1)) {
             //一维数组

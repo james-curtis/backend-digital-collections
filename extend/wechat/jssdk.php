@@ -117,6 +117,11 @@ class JSSDK
         //初始化curl，当然，你也可以用fsockopen代替
         $curl_obj = curl_init();
 
+        $ua = "WXPaySDK/3.0.9 (" . PHP_OS . ") PHP/" . PHP_VERSION . " CURL/" . curl_version()['version'] . " ";
+        curl_setopt($curl_obj, CURLOPT_SSL_VERIFYPEER, FALSE);
+        curl_setopt($curl_obj, CURLOPT_SSL_VERIFYHOST, FALSE);
+        curl_setopt($curl_obj, CURLOPT_USERAGENT, $ua);
+
         //设置网址
         curl_setopt($curl_obj, CURLOPT_URL, $url);
 
@@ -124,10 +129,10 @@ class JSSDK
         curl_setopt($curl_obj, CURLOPT_HTTPHEADER, $addHead);
 
         //是否输出返回头信息
-        curl_setopt($curl_obj, CURLOPT_HEADER, 0);
+        curl_setopt($curl_obj, CURLOPT_HEADER, FALSE);
 
         //将curl_exec的结果返回
-        curl_setopt($curl_obj, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($curl_obj, CURLOPT_RETURNTRANSFER, TRUE);
 
         //设置超时时间
         curl_setopt($curl_obj, CURLOPT_TIMEOUT, 15);

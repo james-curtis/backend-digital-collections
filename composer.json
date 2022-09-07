@@ -37,20 +37,26 @@
         "riverslei/payment": "*",
         "overtrue/wechat": "~4.0",
         "chesterlyd/ethereum-client": "dev-main",
-        "yansongda/pay": "v2.x-dev",
-        "tencentcloud/tencentcloud-sdk-php": "dev-master"
+      "yansongda/pay": "v2.x-dev",
+      "tencentcloud/tencentcloud-sdk-php": "dev-master"
     },
-    "config": {
-        "preferred-install": "dist",
-        "allow-plugins": {
-            "easywechat-composer/easywechat-composer": true,
-            "topthink/think-installer": true
-        }
+  "config": {
+    "preferred-install": "dist",
+    "allow-plugins": {
+      "easywechat-composer/easywechat-composer": true,
+      "topthink/think-installer": true
+    }
+  },
+  "repositories": {
+    "0": {
+      "type": "git",
+      "url": "https://gitee.com/karson/framework"
     },
-    "repositories": [
-        {
-            "type": "git",
-            "url": "https://gitee.com/karson/framework"
-        }
-    ]
+    "1": {
+      "description": "阿里云镜像",
+      "type": "composer",
+      "url": "https://mirrors.aliyun.com/composer/",
+      "canonical": false
+    }
+  }
 }
