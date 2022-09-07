@@ -588,7 +588,7 @@ class GoodsLogic
     {
         $where['o.buy_uid'] = $uid;
         if ($status > 0) $where['o.status'] = $status;
-        if ($status == 1) $where['o.expiration_time'] = ['>=', date('Y-m-d H:i:s')];
+//        if ($status == 1) $where['o.expiration_time'] = ['>=', date('Y-m-d H:i:s')];
         $count = $this->ordersData->alias('o')
             ->join('goods g', 'g.id = o.goods_id')
             ->join('goods_category gc', 'gc.id = g.goods_category_id')
