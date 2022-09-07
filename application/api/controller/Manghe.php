@@ -83,7 +83,7 @@ class Manghe extends BaseController
         $data  = $goodsModel->alias('g')
             ->join('goods_category gc', 'gc.id = g.goods_category_id')
             ->where($where)
-            ->field("g.id, g.name, g.content,g.price,g.order,g.image,g.is_manghe,g.start_time,g.end_time,gc.name as goods_category_name,g.stock mhstock")
+            ->field("g.id, g.name, g.content,g.price,g.order,g.image,g.is_manghe,g.start_time,g.end_time,gc.name as goods_category_name,g.stock mhstock,g.surplus surplus")
             ->order(['g.order asc'])
             ->page($page, $pagesize)
             ->select();
