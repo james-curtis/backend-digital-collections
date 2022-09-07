@@ -931,7 +931,7 @@ class GoodsLogic
         }
         $info['owner'] = $info['owner'];
         $info = addWebSiteUrl($info, ['image', 'images']);
-        $info['content'] = content($info['content']);
+//        $info['content'] = content($info['content']);
         return Response::success('success', $info);
     }
 
