@@ -129,7 +129,7 @@ class GoodsLogic
         if ($data) {
             $data = $data->toArray();
             $data = addWebSiteUrl($data, ['image', 'images', 'company_image']);
-            $data['content'] = content($data['content']);
+//            $data['content'] = content($data['content']);
             if ($data['type'] == 2) {
                 //多品组合
                 $goods = $this->goodsConfigData->alias('gc')
