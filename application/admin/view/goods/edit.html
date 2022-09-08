@@ -133,7 +133,9 @@
     <div class="form-group" >
         <label class="control-label col-xs-12 col-sm-2">{:__('Hcgoods_id')}:</label>
         <div class="col-xs-12 col-sm-8">
-          <input id="c-hcgoods_id"  data-source="goods/fnindex" data-field="name"  data-multiple="true" data-params='{"custom[is_manghe]":"0"}' class="form-control selectpage" name="row[hcgoods_id]" type="text" value="{$row.hcgoods_id|htmlentities}" >
+          <input id="c-hcgoods_id" data-duplicate-multi-select="true" data-source="goods/fnindex" data-field="name"
+                 data-multiple="true" data-params='{"custom[is_manghe]":"0"}' class="form-control selectpage"
+                 name="row[hcgoods_id]" type="text" value="{$row.hcgoods_id|htmlentities}">
         </div>
     </div>
     {/if}

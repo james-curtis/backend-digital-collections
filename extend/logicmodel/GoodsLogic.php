@@ -354,16 +354,15 @@ class GoodsLogic
         $time = date('Y-m-d H:i:s');
 
         // 是否还有未支付订单
-        $status = 1;
-        $where['o.buy_uid'] = $uid;
-        $where['o.status'] = $status;
-        $where['o.expiration_time'] = ['>=', date('Y-m-d H:i:s')];
         $count = $this->ordersData->alias('o')
             ->join('goods g', 'g.id = o.goods_id')
             ->join('goods_category gc', 'gc.id = g.goods_category_id')
-            ->where($where)
+            ->where([
+                'o.buy_uid' => $uid,
+                'o.status' => 1
+            ])
             ->count();
-        if ($count >= 0)
+        if ($count > 1)
             return Response::fail('您还有未支付的订单');
 
         if ($pay_type == 1) {

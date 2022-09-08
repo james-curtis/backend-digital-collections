@@ -161,6 +161,10 @@
          */
         inputDelay: 0.5,
         /**
+         * 是否允许重复多选
+         */
+        duplicateMultiSelect: false,
+        /**
          * -----------------------------------------Callback--------------------------------------------
          */
         /**
@@ -1588,7 +1592,8 @@
 
                 //Set selected item highlight
                 if ($.inArray(arr_primary_key[i].toString(), keyArr) !== -1) {
-                    list.addClass(self.css_class.selected);
+                    if (!p.duplicateMultiSelect)
+                        list.addClass(self.css_class.selected);
                 }
                 //cache item data
                 list.data('dataObj', json.originalResult[i]);
@@ -1822,7 +1827,7 @@
                 //build tags in multiple selection mode
                 self.elem.combo_input.val('');
                 var item = {text: text, value: value};
-                if (!self.isAlreadySelected(self, item)) {
+                if (!self.isAlreadySelected(self, item) || p.duplicateMultiSelect) {
                     self.addNewTag(self, data, item);
                     self.tagValuesSet(self);
                 }
@@ -2076,7 +2081,7 @@
             var $this = $(this),
                 data = $this.data(SelectPage.dataKey),
                 params = $.extend({}, defaults, $this.data(), data && data.option, typeof option === 'object' && option);
-            if (!data) $this.data(SelectPage.dataKey, (data = new SelectPage(this, params)));
+            if (!data || params.duplicateMultiSelect) $this.data(SelectPage.dataKey, (data = new SelectPage(this, params)));
         });
     }
 

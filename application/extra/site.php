@@ -49,7 +49,7 @@ return array(
         ),
     'default_image' =>
         array(
-            0 => '/uploads/20220822/cf34089d537a22552f9dfc60b62f4402.png',
+            0 => '/uploads/20220908/e85446c3b4bcf22a27ac579b25991bc7.png',
         ),
     'users_content' => '<p class="MsoNormal" style="text-indent:44.0000pt;mso-char-indent-count:2.0000;">没填写</p>',
     'share_image' => '/uploads/20220703/3227df227282dac5faba23c3239636d4.png',
