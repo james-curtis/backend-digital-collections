@@ -15,7 +15,7 @@ use think\Cookie;
 use think\Db;
 use think\Request;
 
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 
 class UserLogic
 {

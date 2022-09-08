@@ -7,7 +7,7 @@ use logicmodel\AccountLogic;
 use think\Db;
 use comservice\Response;
 use app\admin\model\GoodsMangheUsers;
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 class Award
 {
 

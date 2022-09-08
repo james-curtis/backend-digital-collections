@@ -31,7 +31,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 /**
  *
  *

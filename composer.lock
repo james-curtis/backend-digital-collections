@@ -4,7 +4,7 @@
     "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
     "This file is @generated automatically"
   ],
-  "content-hash": "d88b49936bdee799681583de0bee3790",
+  "content-hash": "4ecad58063cf810059357ecd3141e47c",
   "packages": [
     {
       "name": "chesterlyd/ethereum-client",
@@ -15,16 +15,16 @@
         "reference": "3152bd1899aa186ed0a3d0a2fe0b04fdf88c47fd"
       },
       "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/chesterlyd/ethereum-client/zipball/3152bd1899aa186ed0a3d0a2fe0b04fdf88c47fd",
-                "reference": "3152bd1899aa186ed0a3d0a2fe0b04fdf88c47fd",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
+        "type": "zip",
+        "url": "https://api.github.com/repos/chesterlyd/ethereum-client/zipball/3152bd1899aa186ed0a3d0a2fe0b04fdf88c47fd",
+        "reference": "3152bd1899aa186ed0a3d0a2fe0b04fdf88c47fd",
+        "shasum": "",
+        "mirrors": [
+          {
+            "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+            "preferred": true
+          }
+        ]
             },
             "require": {
                 "guzzlehttp/guzzle": "^7.1",
@@ -153,53 +153,60 @@
             },
             "time": "2021-07-05T04:03:22+00:00"
         },
-        {
-            "name": "guzzlehttp/guzzle",
-            "version": "7.1.0",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/guzzle/guzzle.git",
-                "reference": "7edeaa528fbb57123028bd5a76b9ce9540194e26"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/7edeaa528fbb57123028bd5a76b9ce9540194e26",
-                "reference": "7edeaa528fbb57123028bd5a76b9ce9540194e26",
-                "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
+    {
+      "name": "guzzlehttp/guzzle",
+      "version": "dev-master",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/guzzle/guzzle.git",
+        "reference": "b50a2a1251152e43f6a37f0fa053e730a67d25ba"
+      },
+      "dist": {
+        "type": "zip",
+        "url": "https://api.github.com/repos/guzzle/guzzle/zipball/b50a2a1251152e43f6a37f0fa053e730a67d25ba",
+        "reference": "b50a2a1251152e43f6a37f0fa053e730a67d25ba",
+        "shasum": "",
+        "mirrors": [
+          {
+            "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+            "preferred": true
+          }
+        ]
+      },
             "require": {
-                "ext-json": "*",
-                "guzzlehttp/promises": "^1.0",
-                "guzzlehttp/psr7": "^1.6.1",
-                "php": "^7.2.5",
-                "psr/http-client": "^1.0"
+              "ext-json": "*",
+              "guzzlehttp/promises": "^1.5",
+              "guzzlehttp/psr7": "^1.9 || ^2.4",
+              "php": "^7.2.5 || ^8.0",
+              "psr/http-client": "^1.0",
+              "symfony/deprecation-contracts": "^2.2 || ^3.0"
             },
             "provide": {
                 "psr/http-client-implementation": "1.0"
             },
             "require-dev": {
-                "ext-curl": "*",
-                "php-http/client-integration-tests": "dev-phpunit8",
-                "phpunit/phpunit": "^8.5.5",
-                "psr/log": "^1.1"
+              "bamarni/composer-bin-plugin": "^1.8.1",
+              "ext-curl": "*",
+              "php-http/client-integration-tests": "^3.0",
+              "phpunit/phpunit": "^8.5.29 || ^9.5.23",
+              "psr/log": "^1.1 || ^2.0 || ^3.0"
             },
-            "suggest": {
-                "ext-curl": "Required for CURL handler support",
-                "ext-intl": "Required for Internationalized Domain Name (IDN) support",
-                "psr/log": "Required for using the Log middleware"
-            },
-            "type": "library",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "7.1-dev"
-                }
-            },
+      "suggest": {
+        "ext-curl": "Required for CURL handler support",
+        "ext-intl": "Required for Internationalized Domain Name (IDN) support",
+        "psr/log": "Required for using the Log middleware"
+      },
+      "default-branch": true,
+      "type": "library",
+      "extra": {
+        "bamarni-bin": {
+          "bin-links": true,
+          "forward-command": false
+        },
+        "branch-alias": {
+          "dev-master": "7.5-dev"
+        }
+      },
             "autoload": {
               "files": [
                 "src/functions_include.php"
@@ -213,19 +220,43 @@
                 "MIT"
             ],
             "authors": [
-                {
-                    "name": "Michael Dowling",
-                    "email": "mtdowling@gmail.com",
-                    "homepage": "https://github.com/mtdowling"
-                },
-                {
-                    "name": "Márk Sági-Kazár",
-                    "email": "mark.sagikazar@gmail.com",
-                    "homepage": "https://sagikazarmark.hu"
-                }
+              {
+                "name": "Graham Campbell",
+                "email": "hello@gjcampbell.co.uk",
+                "homepage": "https://github.com/GrahamCampbell"
+              },
+              {
+                "name": "Michael Dowling",
+                "email": "mtdowling@gmail.com",
+                "homepage": "https://github.com/mtdowling"
+              },
+              {
+                "name": "Jeremy Lindblom",
+                "email": "jeremeamia@gmail.com",
+                "homepage": "https://github.com/jeremeamia"
+              },
+              {
+                "name": "George Mponos",
+                "email": "gmponos@gmail.com",
+                "homepage": "https://github.com/gmponos"
+              },
+              {
+                "name": "Tobias Nyholm",
+                "email": "tobias.nyholm@gmail.com",
+                "homepage": "https://github.com/Nyholm"
+              },
+              {
+                "name": "Márk Sági-Kazár",
+                "email": "mark.sagikazar@gmail.com",
+                "homepage": "https://github.com/sagikazarmark"
+              },
+              {
+                "name": "Tobias Schultze",
+                "email": "webmaster@tubo-world.de",
+                "homepage": "https://github.com/Tobion"
+              }
             ],
             "description": "Guzzle is a PHP HTTP client library",
-            "homepage": "http://guzzlephp.org/",
             "keywords": [
                 "client",
                 "curl",
@@ -239,7 +270,7 @@
             ],
             "support": {
                 "issues": "https://github.com/guzzle/guzzle/issues",
-                "source": "https://github.com/guzzle/guzzle/tree/7.1.0"
+              "source": "https://github.com/guzzle/guzzle/tree/7.5.0"
             },
             "funding": [
                 {
@@ -250,16 +281,12 @@
                     "url": "https://github.com/Nyholm",
                     "type": "github"
                 },
-                {
-                    "url": "https://github.com/alexeyshockov",
-                    "type": "github"
-                },
-                {
-                    "url": "https://github.com/gmponos",
-                    "type": "github"
-                }
+              {
+                "url": "https://tidelift.com/funding/github/packagist/guzzlehttp/guzzle",
+                "type": "tidelift"
+              }
             ],
-            "time": "2020-09-22T09:10:04+00:00"
+      "time": "2022-08-28T15:39:27+00:00"
         },
         {
             "name": "guzzlehttp/promises",
@@ -642,16 +669,16 @@
                     "classes/src/functions/csc.php",
                     "classes/src/functions/csch.php",
                     "classes/src/functions/exp.php",
-                    "classes/src/functions/inverse.php",
-                    "classes/src/functions/ln.php",
-                    "classes/src/functions/log2.php",
-                    "classes/src/functions/log10.php",
-                    "classes/src/functions/negative.php",
-                    "classes/src/functions/pow.php",
-                    "classes/src/functions/rho.php",
-                    "classes/src/functions/sec.php",
-                    "classes/src/functions/sech.php",
-                    "classes/src/functions/sin.php",
+                  "classes/src/functions/inverse.php",
+                  "classes/src/functions/ln.php",
+                  "classes/src/functions/log2.php",
+                  "classes/src/functions/log10.php",
+                  "classes/src/functions/negative.php",
+                  "classes/src/functions/pow.php",
+                  "classes/src/functions/rho.php",
+                  "classes/src/functions/sec.php",
+                  "classes/src/functions/sech.php",
+                  "classes/src/functions/sin.php",
                   "classes/src/functions/sinh.php",
                   "classes/src/functions/sqrt.php",
                   "classes/src/functions/tan.php",
@@ -724,12 +751,12 @@
             "type": "library",
             "autoload": {
                 "files": [
-                    "classes/src/Functions/adjoint.php",
-                    "classes/src/Functions/antidiagonal.php",
-                    "classes/src/Functions/cofactors.php",
-                    "classes/src/Functions/determinant.php",
-                    "classes/src/Functions/diagonal.php",
-                    "classes/src/Functions/identity.php",
+                  "classes/src/Functions/adjoint.php",
+                  "classes/src/Functions/antidiagonal.php",
+                  "classes/src/Functions/cofactors.php",
+                  "classes/src/Functions/determinant.php",
+                  "classes/src/Functions/diagonal.php",
+                  "classes/src/Functions/identity.php",
                   "classes/src/Functions/inverse.php",
                   "classes/src/Functions/minors.php",
                   "classes/src/Functions/trace.php",
@@ -758,15 +785,15 @@
             "description": "PHP Class for working with matrices",
             "homepage": "https://github.com/MarkBaker/PHPMatrix",
             "keywords": [
-                "mathematics",
-                "matrix",
-                "vector"
+              "mathematics",
+              "matrix",
+              "vector"
             ],
-            "support": {
-                "issues": "https://github.com/MarkBaker/PHPMatrix/issues",
-                "source": "https://github.com/MarkBaker/PHPMatrix/tree/1.2"
-            },
-            "time": "2021-01-26T14:36:01+00:00"
+          "support": {
+            "issues": "https://github.com/MarkBaker/PHPMatrix/issues",
+            "source": "https://github.com/MarkBaker/PHPMatrix/tree/1.2"
+          },
+          "time": "2021-01-26T14:36:01+00:00"
         },
     {
       "name": "monolog/monolog",
@@ -788,33 +815,33 @@
           }
         ]
       },
-            "require": {
-                "php": ">=7.2",
-                "psr/log": "^1.0.1 || ^2.0 || ^3.0"
-            },
-            "provide": {
-                "psr/log-implementation": "1.0.0 || 2.0.0 || 3.0.0"
-            },
-            "require-dev": {
-              "aws/aws-sdk-php": "^2.4.9 || ^3.0",
-              "doctrine/couchdb": "~1.0@dev",
-              "elasticsearch/elasticsearch": "^7 || ^8",
-              "ext-json": "*",
-              "graylog2/gelf-php": "^1.4.2 || ^2@dev",
-              "guzzlehttp/guzzle": "^7.4",
-              "guzzlehttp/psr7": "^2.2",
-              "mongodb/mongodb": "^1.8",
-              "php-amqplib/php-amqplib": "~2.4 || ^3",
-              "phpspec/prophecy": "^1.15",
-              "phpstan/phpstan": "^0.12.91",
-              "phpunit/phpunit": "^8.5.14",
-              "predis/predis": "^1.1 || ^2.0",
-              "rollbar/rollbar": "^1.3 || ^2 || ^3",
-              "ruflin/elastica": "^7",
-              "swiftmailer/swiftmailer": "^5.3|^6.0",
-              "symfony/mailer": "^5.4 || ^6",
-              "symfony/mime": "^5.4 || ^6"
-            },
+      "require": {
+        "php": ">=7.2",
+        "psr/log": "^1.0.1 || ^2.0 || ^3.0"
+      },
+      "provide": {
+        "psr/log-implementation": "1.0.0 || 2.0.0 || 3.0.0"
+      },
+      "require-dev": {
+        "aws/aws-sdk-php": "^2.4.9 || ^3.0",
+        "doctrine/couchdb": "~1.0@dev",
+        "elasticsearch/elasticsearch": "^7 || ^8",
+        "ext-json": "*",
+        "graylog2/gelf-php": "^1.4.2 || ^2@dev",
+        "guzzlehttp/guzzle": "^7.4",
+        "guzzlehttp/psr7": "^2.2",
+        "mongodb/mongodb": "^1.8",
+        "php-amqplib/php-amqplib": "~2.4 || ^3",
+        "phpspec/prophecy": "^1.15",
+        "phpstan/phpstan": "^0.12.91",
+        "phpunit/phpunit": "^8.5.14",
+        "predis/predis": "^1.1 || ^2.0",
+        "rollbar/rollbar": "^1.3 || ^2 || ^3",
+        "ruflin/elastica": "^7",
+        "swiftmailer/swiftmailer": "^5.3|^6.0",
+        "symfony/mailer": "^5.4 || ^6",
+        "symfony/mime": "^5.4 || ^6"
+      },
             "suggest": {
                 "aws/aws-sdk-php": "Allow sending log messages to AWS services like DynamoDB",
                 "doctrine/couchdb": "Allow sending log messages to a CouchDB server",
@@ -942,15 +969,15 @@
                 "extract",
                 "unzip",
                 "winzip",
-                "zip",
-                "zipalign",
-                "ziparchive"
+              "zip",
+              "zipalign",
+              "ziparchive"
             ],
-            "support": {
-                "issues": "https://github.com/Ne-Lexa/php-zip/issues",
-                "source": "https://github.com/Ne-Lexa/php-zip/tree/3.3.3"
-            },
-            "time": "2020-07-11T21:01:42+00:00"
+          "support": {
+            "issues": "https://github.com/Ne-Lexa/php-zip/issues",
+            "source": "https://github.com/Ne-Lexa/php-zip/tree/3.3.3"
+          },
+          "time": "2020-07-11T21:01:42+00:00"
         },
     {
       "name": "overtrue/pinyin",
@@ -965,16 +992,16 @@
         "url": "https://api.github.com/repos/overtrue/pinyin/zipball/3b781d267197b74752daa32814d3a2cf5d140779",
         "reference": "3b781d267197b74752daa32814d3a2cf5d140779",
         "shasum": "",
-                "mirrors": [
-                    {
-                        "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
-                        "preferred": true
-                    }
-                ]
-            },
-            "require": {
-                "php": ">=5.3"
-            },
+        "mirrors": [
+          {
+            "url": "https://mirrors.aliyun.com/composer/dists/%package%/%reference%.%type%",
+            "preferred": true
+          }
+        ]
+      },
+      "require": {
+        "php": ">=5.3"
+      },
             "require-dev": {
                 "phpunit/phpunit": "~4.8"
             },
@@ -985,16 +1012,16 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Carlos",
-                    "homepage": "http://github.com/overtrue"
-                }
-            ],
-            "description": "Chinese to pinyin translator.",
+      "license": [
+        "MIT"
+      ],
+      "authors": [
+        {
+          "name": "Carlos",
+          "homepage": "http://github.com/overtrue"
+        }
+      ],
+      "description": "Chinese to pinyin translator.",
       "homepage": "https://github.com/overtrue/pinyin",
       "keywords": [
         "Chinese",
@@ -1013,16 +1040,16 @@
       ],
       "time": "2017-07-10T07:20:01+00:00"
     },
-        {
-            "name": "overtrue/socialite",
-            "version": "2.x-dev",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/overtrue/socialite.git",
-                "reference": "ee7e7b000ec7d64f2b8aba1f6a2eec5cdf3f8bec"
-            },
-            "dist": {
-                "type": "zip",
+    {
+      "name": "overtrue/socialite",
+      "version": "2.x-dev",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/overtrue/socialite.git",
+        "reference": "ee7e7b000ec7d64f2b8aba1f6a2eec5cdf3f8bec"
+      },
+      "dist": {
+        "type": "zip",
                 "url": "https://api.github.com/repos/overtrue/socialite/zipball/ee7e7b000ec7d64f2b8aba1f6a2eec5cdf3f8bec",
                 "reference": "ee7e7b000ec7d64f2b8aba1f6a2eec5cdf3f8bec",
                 "shasum": "",
@@ -1143,14 +1170,14 @@
                     "email": "anzhengchao@gmail.com"
                 }
             ],
-            "description": "微信SDK",
-            "keywords": [
-                "easywechat",
-                "sdk",
-                "wechat",
-                "weixin",
-                "weixin-sdk"
-            ],
+          "description": "微信SDK",
+          "keywords": [
+            "easywechat",
+            "sdk",
+            "wechat",
+            "weixin",
+            "weixin-sdk"
+          ],
           "support": {
             "issues": "https://github.com/w7corp/easywechat/issues",
             "source": "https://github.com/w7corp/easywechat/tree/4.x"
@@ -1215,14 +1242,14 @@
             "keywords": [
                 "csprng",
                 "polyfill",
-                "pseudorandom",
-                "random"
+              "pseudorandom",
+              "random"
             ],
-            "support": {
-                "email": "info@paragonie.com",
-                "issues": "https://github.com/paragonie/random_compat/issues",
-                "source": "https://github.com/paragonie/random_compat"
-            },
+          "support": {
+            "email": "info@paragonie.com",
+            "issues": "https://github.com/paragonie/random_compat/issues",
+            "source": "https://github.com/paragonie/random_compat"
+          },
           "time": "2022-06-19T18:08:39+00:00"
         },
     {
@@ -1245,22 +1272,22 @@
           }
         ]
       },
-            "require": {
-                "ext-ctype": "*",
-                "ext-filter": "*",
-                "ext-hash": "*",
-                "php": ">=5.5.0"
-            },
-            "require-dev": {
-              "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
-              "doctrine/annotations": "^1.2",
-              "php-parallel-lint/php-console-highlighter": "^1.0.0",
-              "php-parallel-lint/php-parallel-lint": "^1.3.2",
-              "phpcompatibility/php-compatibility": "^9.3.5",
-              "roave/security-advisories": "dev-latest",
-              "squizlabs/php_codesniffer": "^3.6.2",
-              "yoast/phpunit-polyfills": "^1.0.0"
-            },
+      "require": {
+        "ext-ctype": "*",
+        "ext-filter": "*",
+        "ext-hash": "*",
+        "php": ">=5.5.0"
+      },
+      "require-dev": {
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.7.0",
+        "doctrine/annotations": "^1.2",
+        "php-parallel-lint/php-console-highlighter": "^1.0.0",
+        "php-parallel-lint/php-parallel-lint": "^1.3.2",
+        "phpcompatibility/php-compatibility": "^9.3.5",
+        "roave/security-advisories": "dev-latest",
+        "squizlabs/php_codesniffer": "^3.6.2",
+        "yoast/phpunit-polyfills": "^1.0.0"
+      },
             "suggest": {
                 "ext-mbstring": "Needed to send email in multibyte encoding charset or decode encoded addresses",
                 "hayageek/oauth2-yahoo": "Needed for Yahoo XOAUTH2 authentication",
@@ -2023,15 +2050,15 @@
                 {
                     "name": "Simplito Team",
                     "email": "s.smyczynski@simplito.com",
-                    "homepage": "https://simplito.com"
+                  "homepage": "https://simplito.com"
                 }
             ],
-            "description": "Common interface for php_gmp and php_bcmath modules",
-            "support": {
-                "issues": "https://github.com/simplito/bigint-wrapper-php/issues",
-                "source": "https://github.com/simplito/bigint-wrapper-php/tree/1.0.0"
-            },
-            "time": "2018-02-27T12:38:08+00:00"
+          "description": "Common interface for php_gmp and php_bcmath modules",
+          "support": {
+            "issues": "https://github.com/simplito/bigint-wrapper-php/issues",
+            "source": "https://github.com/simplito/bigint-wrapper-php/tree/1.0.0"
+          },
+          "time": "2018-02-27T12:38:08+00:00"
         },
     {
       "name": "simplito/bn-php",
@@ -2053,16 +2080,16 @@
           }
         ]
       },
-            "require": {
-                "simplito/bigint-wrapper-php": "~1.0.0"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-4": {
-                    "BN\\": "lib/"
+      "require": {
+        "simplito/bigint-wrapper-php": "~1.0.0"
+      },
+      "require-dev": {
+        "phpunit/phpunit": "*"
+      },
+      "type": "library",
+      "autoload": {
+        "psr-4": {
+          "BN\\": "lib/"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -2073,16 +2100,16 @@
                 {
                     "name": "Simplito Team",
                     "email": "s.smyczynski@simplito.com",
-                    "homepage": "https://simplito.com"
+                  "homepage": "https://simplito.com"
                 }
             ],
-            "description": "Big number implementation compatible with bn.js",
-            "support": {
-                "issues": "https://github.com/simplito/bn-php/issues",
-              "source": "https://github.com/simplito/bn-php/tree/1.1.3"
-            },
+      "description": "Big number implementation compatible with bn.js",
+      "support": {
+        "issues": "https://github.com/simplito/bn-php/issues",
+        "source": "https://github.com/simplito/bn-php/tree/1.1.3"
+      },
       "time": "2022-08-12T18:58:14+00:00"
-        },
+    },
     {
       "name": "simplito/elliptic-php",
       "version": "1.0.10",
@@ -2103,16 +2130,16 @@
           }
         ]
       },
-            "require": {
-                "ext-gmp": "*",
-                "simplito/bn-php": "~1.1.0"
-            },
-            "require-dev": {
-                "phpbench/phpbench": "@dev",
-                "phpunit/phpunit": "*"
-            },
-            "type": "library",
-            "autoload": {
+      "require": {
+        "ext-gmp": "*",
+        "simplito/bn-php": "~1.1.0"
+      },
+      "require-dev": {
+        "phpbench/phpbench": "@dev",
+        "phpunit/phpunit": "*"
+      },
+      "type": "library",
+      "autoload": {
                 "psr-4": {
                     "Elliptic\\": "lib/"
                 }
@@ -2212,16 +2239,16 @@
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Symfony\\Component\\Cache\\": ""
+                  "Symfony\\Component\\Cache\\": ""
                 },
-                "exclude-from-classmap": [
-                    "/Tests/"
-                ]
+              "exclude-from-classmap": [
+                "/Tests/"
+              ]
             },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
+          "notification-url": "https://packagist.org/downloads/",
+          "license": [
+            "MIT"
+          ],
           "authors": [
             {
               "name": "Nicolas Grekas",
@@ -2243,16 +2270,16 @@
           },
           "funding": [
             {
-                    "url": "https://symfony.com/sponsor",
-                    "type": "custom"
-                },
-                {
-                    "url": "https://github.com/fabpot",
-                    "type": "github"
-                },
-                {
-                    "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
-                    "type": "tidelift"
+              "url": "https://symfony.com/sponsor",
+              "type": "custom"
+            },
+            {
+              "url": "https://github.com/fabpot",
+              "type": "github"
+            },
+            {
+              "url": "https://tidelift.com/funding/github/packagist/symfony/symfony",
+              "type": "tidelift"
                 }
             ],
           "time": "2022-09-06T13:23:31+00:00"
@@ -2448,16 +2475,16 @@
                 "psr/event-dispatcher-implementation": "1.0",
                 "symfony/event-dispatcher-implementation": "2.0"
             },
-            "require-dev": {
-              "psr/log": "^1|^2|^3",
-              "symfony/config": "^4.4|^5.0|^6.0",
-              "symfony/dependency-injection": "^4.4|^5.0|^6.0",
-              "symfony/error-handler": "^4.4|^5.0|^6.0",
-              "symfony/expression-language": "^4.4|^5.0|^6.0",
-              "symfony/http-foundation": "^4.4|^5.0|^6.0",
-              "symfony/service-contracts": "^1.1|^2|^3",
-              "symfony/stopwatch": "^4.4|^5.0|^6.0"
-            },
+          "require-dev": {
+            "psr/log": "^1|^2|^3",
+            "symfony/config": "^4.4|^5.0|^6.0",
+            "symfony/dependency-injection": "^4.4|^5.0|^6.0",
+            "symfony/error-handler": "^4.4|^5.0|^6.0",
+            "symfony/expression-language": "^4.4|^5.0|^6.0",
+            "symfony/http-foundation": "^4.4|^5.0|^6.0",
+            "symfony/service-contracts": "^1.1|^2|^3",
+            "symfony/stopwatch": "^4.4|^5.0|^6.0"
+          },
           "suggest": {
             "symfony/dependency-injection": "",
             "symfony/http-kernel": ""
@@ -2473,16 +2500,16 @@
             ]
           },
           "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Fabien Potencier",
-                    "email": "fabien@symfony.com"
-                },
-                {
-                    "name": "Symfony Community",
+          "license": [
+            "MIT"
+          ],
+          "authors": [
+            {
+              "name": "Fabien Potencier",
+              "email": "fabien@symfony.com"
+            },
+            {
+              "name": "Symfony Community",
                     "homepage": "https://symfony.com/contributors"
                 }
             ],
@@ -3746,10 +3773,11 @@
     "aliases": [],
     "minimum-stability": "dev",
     "stability-flags": {
-        "topthink/framework": 20,
-        "chesterlyd/ethereum-client": 20,
-        "yansongda/pay": 20,
-        "tencentcloud/tencentcloud-sdk-php": 20
+      "topthink/framework": 20,
+      "guzzlehttp/guzzle": 20,
+      "chesterlyd/ethereum-client": 20,
+      "yansongda/pay": 20,
+      "tencentcloud/tencentcloud-sdk-php": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,

@@ -9,7 +9,7 @@ use think\Cache;
 use think\Db;
 use think\Exception;
 use think\Validate;
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 /**
  * 系统配置
  *

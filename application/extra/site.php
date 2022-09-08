@@ -34,6 +34,7 @@ return array(
             'wenchangchain' => '文昌链配置',
             'timeconfiguration' => '优先购时间配置',
             'geetest' => '极验配置',
+            'tichain' => '天河链',
         ),
     'mail_type' => '1',
     'mail_smtp_host' => 'smtp.qq.com',
@@ -128,4 +129,6 @@ return array(
     'server_url' => 'http://nft1.jzjxxy.top',
     'geetest_id' => '',
     'geetest_key' => '',
+    'tichain_appid' => '',
+    'tichain_appkey' => '',
 );

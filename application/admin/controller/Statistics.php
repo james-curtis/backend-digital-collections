@@ -10,7 +10,7 @@ use logicmodel\MemberLogic;
 use logicmodel\WalletLogic;
 use datamodel\GoodsUsers;
 use think\Db;
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 /**
  *
  *

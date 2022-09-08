@@ -13,7 +13,7 @@ use datamodel\Goods;
 use datamodel\GoodsUsers;
 use think\Db;
 use think\Request;
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 class Compose extends BaseController
 {
     public function __construct(Request $request = null)

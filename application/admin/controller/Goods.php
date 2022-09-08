@@ -10,7 +10,7 @@ use think\exception\ValidateException;
 use think\Model;
 use comservice\GetRedis;
 
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 
 /**
  *

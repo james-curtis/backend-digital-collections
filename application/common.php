@@ -5,7 +5,7 @@
 use Symfony\Component\VarExporter\VarExporter;
 use think\Db;
 
-require_once('../xasset/index.php');
+// require_once('../xasset/index.php');
 
 
 //创建链账户地址
