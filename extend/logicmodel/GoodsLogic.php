@@ -876,7 +876,7 @@ class GoodsLogic
         $data = (new GoodsUsers())->alias('gu')
             ->join('goods g', 'g.id = gu.goods_id')
             ->where($where)
-            ->field(['gu.id', 'g.stock', 'g.name goods_name', 'g.image goods_image', 'gu.status', 'gu.price', 'gu.operation_id', 'gu.jlstatus', "gu.number mycp_number", 'g.stock cpstock'])
+            ->field(['gu.id', 'g.stock', 'g.name goods_name', 'g.image goods_image', 'gu.status', 'gu.price', 'gu.operation_id', 'gu.jlstatus', "gu.number mycp_number", 'g.stock cpstock', 'gu.goods_id'])
             ->order(['gu.id desc'])
             ->select();
 
