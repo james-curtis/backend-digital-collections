@@ -4,9 +4,11 @@
 namespace app\api\controller;
 
 
+use comservice\Response;
 use logicmodel\ConfigLogic;
 use logicmodel\SendLogic;
 use logicmodel\UserLogic;
+use think\captcha\Captcha;
 use think\Controller;
 use think\Request;
 use validate\ForgetPhonePasswordValidate;
@@ -20,6 +22,12 @@ class Login extends Controller
     {
         parent::__construct($request);
         $this->userLogic = new UserLogic();
+    }
+
+    public function getCaptcha()
+    {
+        $captcha = new Captcha();
+        return $captcha->entry();
     }
 
     /**
@@ -119,8 +127,10 @@ class Login extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function sendCode($phone, int $type = 1)
+    public function sendCode($phone, $captcha, int $type = 1)
     {
+        if (!captcha_check($captcha))
+            return json(Response::fail('验证码错误'));
         return json((new SendLogic())->sendPhone($phone, $type));
     }
 

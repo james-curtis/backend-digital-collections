@@ -33,6 +33,7 @@ return array(
             'beckoning' => '阿里云身份证手机号姓名验证',
             'wenchangchain' => '文昌链配置',
             'timeconfiguration' => '优先购时间配置',
+            'geetest' => '极验配置',
         ),
     'mail_type' => '1',
     'mail_smtp_host' => 'smtp.qq.com',
@@ -125,4 +126,6 @@ return array(
     'instructions' => '<p><span style="text-indent: 58.6667px;">没填写</span><br></p>',
     'frontend_server' => 'http://nft.jzjxxy.top',
     'server_url' => 'http://nft1.jzjxxy.top',
+    'geetest_id' => '',
+    'geetest_key' => '',
 );
