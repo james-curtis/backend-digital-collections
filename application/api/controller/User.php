@@ -174,11 +174,22 @@ class User extends BaseController
     }
     //排行榜
     public function Ranking(){
-        $page=$this->request->post('page');
-        $pagesize=$this->request->post('pagesize');
-        $count=Db::name('users')->where('id','not in',1)->where('is_del',0)->count();
-        $users=Db::name('users')->where('id','not in',1)->where('is_del',0)->orderRaw('auth_count desc,all_person_count desc')->page($page,$pagesize)->field('id,nick_name,total_direct_auth auth_count,total_direct all_person_count')->select();
-        $data=['count' => $count, 'data' =>$users, 'page' => $page, 'pagesize' => $pagesize];
+        $page = $this->request->post('page');
+        $pagesize = $this->request->post('pagesize');
+        $count = Db::name('users')
+            ->where('id', 'not in', 1)
+            ->where('is_del', 0)
+            ->where('is_auth', 1)
+            ->count();
+        $users = Db::name('users')
+            ->where('id', 'not in', 1)
+            ->where('is_del', 0)
+            ->where('is_auth', 1)
+            ->orderRaw('auth_count desc,all_person_count desc')
+            ->page($page, $pagesize)
+            ->field('id,nick_name,total_direct_auth auth_count,total_direct all_person_count')
+            ->select();
+        $data = ['count' => $count, 'data' => $users, 'page' => $page, 'pagesize' => $pagesize];
         return json($data);
     }  
 }
