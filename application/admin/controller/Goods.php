@@ -11,21 +11,23 @@ use think\Model;
 use comservice\GetRedis;
 
 require_once('../xasset/index.php');
+
 /**
- * 
+ *
  *
  * @icon fa fa-circle-o
  */
 class Goods extends Backend
 {
-    
+
     /**
      * Goods模型对象
      * @var \app\admin\model\Goods
      */
-     
-    protected $relationSearch=true;
+
+    protected $relationSearch = true;
     protected $model = null;
+
     public function _initialize()
     {
         parent::_initialize();
@@ -76,10 +78,10 @@ class Goods extends Backend
                 }
 
 //                $params['stock'] = $row['stock'] + $params['surplus'] - $row['surplus'];
-                if ($params['stock']<$params['surplus']){
-                    return json(['code'=>0,'msg'=>"剩余份额不能大于总份额"]);
+                if ($params['stock'] < $params['surplus']) {
+                    return json(['code' => 0, 'msg' => "剩余份额不能大于总份额"]);
                 }
-                $params['sales']=$params['stock']-$params['surplus'];
+                $params['sales'] = $params['stock'] - $params['surplus'];
 
                 Db::startTrans();
                 try {
@@ -93,17 +95,17 @@ class Goods extends Backend
                     if (!empty($params['surplus'])) {
 
                         $redis = GetRedis::getRedis();
-                        $redis_str='goods_kc_';
-                        if ($row['is_manghe']==1){
-                            $redis_str='goods_mh_';
+                        $redis_str = 'goods_kc_';
+                        if ($row['is_manghe'] == 1) {
+                            $redis_str = 'goods_mh_';
                         }
-                        $len = $redis->lLen($redis_str. $ids);
+                        $len = $redis->lLen($redis_str . $ids);
 
                         // 清除库存
-                        $redis->lRem($redis_str. $ids, 1, $len);
+                        $redis->lRem($redis_str . $ids, 1, $len);
 
                         for ($i = 0; $i < $params['surplus']; $i++) {
-                            $redis->lpush($redis_str. $ids, 1);
+                            $redis->lpush($redis_str . $ids, 1);
                         }
 
                     }
@@ -147,21 +149,21 @@ class Goods extends Backend
             }
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
             $list = $this->model
-                    ->where(['goods.is_del'=>0])
-                    ->with(['coupon','goodscategory'])
-                    ->where($where)
-                    ->order($sort, $order)
-                    ->paginate($limit);
+                ->where(['goods.is_del' => 0])
+                ->with(['coupon', 'goodscategory'])
+                ->where($where)
+                ->order($sort, $order)
+                ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','name','title','image','images','price','type','content','order','start_time','end_time','stock','sales','surplus','company_name','company_image','creator','owner','casting_name','casting_time','blockchain','contract_address','is_show','coupon_id','label','goods_category_id','is_manghe','is_can_buy','is_chip']);
+                $row->visible(['id', 'name', 'title', 'image', 'images', 'price', 'type', 'content', 'order', 'start_time', 'end_time', 'stock', 'sales', 'surplus', 'company_name', 'company_image', 'creator', 'owner', 'casting_name', 'casting_time', 'blockchain', 'contract_address', 'is_show', 'coupon_id', 'label', 'goods_category_id', 'is_manghe', 'is_can_buy', 'is_chip']);
 
                 $row->visible(['coupon']);
                 $row->getRelation('coupon')->visible(['name']);
-                
+
                 $row->visible(['goodscategory']);
                 $row->getRelation('goodscategory')->visible(['name']);
-                
+
             }
 
             $result = array("total" => $list->total(), "rows" => $list->items());
@@ -170,8 +172,9 @@ class Goods extends Backend
         }
         return $this->view->fetch();
     }
-    
-    public function fnindex(){
+
+    public function fnindex()
+    {
         //当前是否为关联查询
         $this->relationSearch = true;
         //设置过滤方法
@@ -183,11 +186,11 @@ class Goods extends Backend
             }
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
             $list = $this->model
-                    ->where(['goods.is_del'=>0])
-                    ->with(['coupon','goodscategory'])
-                    ->where('is_manghe',0)
-                    ->order($sort, $order)
-                    ->paginate($limit);
+                ->where(['goods.is_del' => 0])
+                ->with(['coupon', 'goodscategory'])
+                ->where('is_manghe', 0)
+                ->order($sort, $order)
+                ->paginate($limit);
 
             $result = array("total" => $list->total(), "rows" => $list->items());
 
@@ -195,28 +198,32 @@ class Goods extends Backend
         }
     }
 
-    public function goodsList(){
+    public function goodsList()
+    {
         return json($this->model->select());
     }
-    
+
     public function del($ids = "")
     {
-        $id_arr = explode(',',$ids);
+        $id_arr = explode(',', $ids);
 
-        foreach ($id_arr as $val){
+        foreach ($id_arr as $val) {
 
             $redis = GetRedis::getRedis();
-            $goods_len = $redis -> lLen('goods_kc_'.$val);
-            $redis -> lRem('goods_kc_'.$val,1,$goods_len);
+            $goods_len = $redis->lLen('goods_kc_' . $val);
+            $redis->lRem('goods_kc_' . $val, 1, $goods_len);
         }
 
-        $result = $this->model->where(['id'=>['in',$ids]])->update(['is_del'=>1]);
-        if($result) return json(['code'=>1,'msg'=>'删除成功']);
-        return json(['code'=>0,'msg'=>'删除失败']);
+        $result = $this->model->where(['id' => ['in', $ids]])->update(['is_del' => 1]);
+        if ($result) return json(['code' => 1, 'msg' => '删除成功']);
+        return json(['code' => 0, 'msg' => '删除失败']);
     }
-    public function list(){
-        return json($this->model->where(['is_del'=>0])->select());
+
+    public function list()
+    {
+        return json($this->model->where(['is_del' => 0])->select());
     }
+
     protected function selectpage()
     {
         //设置过滤方法
@@ -238,6 +245,7 @@ class Goods extends Backend
         $primarykey = $this->request->request("keyField");
         //主键值
         $primaryvalue = $this->request->request("keyValue");
+        $primaryvalue_row = $primaryvalue;
         //搜索字段
         $searchfield = (array)$this->request->request("searchField/a");
         //自定义搜索条件
@@ -315,7 +323,7 @@ class Goods extends Backend
                 $this->model->order($order);
             }
 
-            $datalist = $this->model->where($where)->where(['is_del'=>0])
+            $datalist = $this->model->where($where)->where(['is_del' => 0])
                 ->page($page, $pagesize)
                 ->select();
 
@@ -324,7 +332,7 @@ class Goods extends Backend
                 if ($this->selectpageFields == '*') {
                     $result = [
                         $primarykey => isset($item[$primarykey]) ? $item[$primarykey] : '',
-                        $field      => isset($item[$field]) ? $item[$field] : '',
+                        $field => isset($item[$field]) ? $item[$field] : '',
                     ];
                 } else {
                     $result = array_intersect_key(($item instanceof Model ? $item->toArray() : (array)$item), array_flip($fields));
@@ -345,11 +353,21 @@ class Goods extends Backend
             }
         }
         //这里一定要返回有list这个字段,total是可选的,如果total<=list的数量,则会隐藏分页按钮
-        return json(['list' => $list, 'total' => $total]);
+        $result = $list;
+        if ($primaryvalue_row) {
+            $result = [];
+            foreach (explode(',', $primaryvalue_row) as $cursor_key_value) {
+                $filter_arr = array_filter($list, function ($var) use ($primarykey, $cursor_key_value) {
+                    return strval($var[$primarykey]) == strval($cursor_key_value);
+                });
+                $result[] = $filter_arr[0];
+            }
+        }
+        return json(['list' => $result, 'total' => count($result)]);
     }
-    
 
-     /**
+
+    /**
      * 添加
      */
     public function add()
@@ -365,10 +383,10 @@ class Goods extends Backend
                 if ($this->dataLimit && $this->dataLimitFieldAutoFill) {
                     $params[$this->dataLimitField] = $this->auth->id;
                 }
-                 if($params['is_manghe']==2){
-                       $params['hcstatus']=1;
-                       $params['is_can_buy']=0;
-                     }
+                if ($params['is_manghe'] == 2) {
+                    $params['hcstatus'] = 1;
+                    $params['is_can_buy'] = 0;
+                }
                 $result = false;
                 Db::startTrans();
                 try {
@@ -381,41 +399,40 @@ class Goods extends Backend
 
                     $result = $this->model->allowField(true)->save($params);
 
-                     
-                     if($params['is_manghe']==0 || $params['is_manghe']==2){
-                         if(!empty($params['stock'])){
 
-                        $redis = GetRedis::getRedis();
+                    if ($params['is_manghe'] == 0 || $params['is_manghe'] == 2) {
+                        if (!empty($params['stock'])) {
 
-                        $goods_id = $this->model->max('id');
+                            $redis = GetRedis::getRedis();
 
-                        // 清除库存
-                        // $redis ->lRem('kc',1,$params['stock']);
+                            $goods_id = $this->model->max('id');
 
-                        for($i=0; $i < $params['stock']; $i++){
-                            $redis->lpush('goods_kc_'.$goods_id,1);
+                            // 清除库存
+                            // $redis ->lRem('kc',1,$params['stock']);
+
+                            for ($i = 0; $i < $params['stock']; $i++) {
+                                $redis->lpush('goods_kc_' . $goods_id, 1);
+                            }
                         }
                     }
-                     }
-                     
-                     if($params['is_manghe']==1){
-                         if(!empty($params['stock'])){
 
-                        $redis = GetRedis::getRedis();
+                    if ($params['is_manghe'] == 1) {
+                        if (!empty($params['stock'])) {
 
-                        $goods_id = $this->model->max('id');
+                            $redis = GetRedis::getRedis();
 
-                        // 清除库存
-                        // $redis ->lRem('kc',1,$params['stock']);
+                            $goods_id = $this->model->max('id');
 
-                        for($i=0; $i < $params['stock']; $i++){
-                            $redis->lpush('goods_mh_'.$goods_id,1);
+                            // 清除库存
+                            // $redis ->lRem('kc',1,$params['stock']);
+
+                            for ($i = 0; $i < $params['stock']; $i++) {
+                                $redis->lpush('goods_mh_' . $goods_id, 1);
+                            }
                         }
                     }
-                     }
-                     
-                    
-                    
+
+
                     Db::commit();
                 } catch (ValidateException $e) {
                     Db::rollback();
@@ -437,8 +454,8 @@ class Goods extends Backend
         }
         return $this->view->fetch();
     }
-    
-    
+
+
     public function indexs()
     {
         //当前是否为关联查询
@@ -447,25 +464,25 @@ class Goods extends Backend
         $this->request->filter(['strip_tags', 'trim']);
         if ($this->request->isAjax()) {
             //如果发送的来源是Selectpage，则转发到Selectpage
-           
+
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
             $list = $this->model
-                    ->where(['goods.is_del'=>0])
-                    ->where(['goods.is_manghe'=>0])
-                    ->with(['coupon','goodscategory'])
-                    ->where($where)
-                    ->order($sort, $order)
-                    ->paginate($limit);
+                ->where(['goods.is_del' => 0])
+                ->where(['goods.is_manghe' => 0])
+                ->with(['coupon', 'goodscategory'])
+                ->where($where)
+                ->order($sort, $order)
+                ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','name','title','image','images','price','type','content','order','start_time','end_time','stock','sales','surplus','company_name','company_image','creator','owner','casting_name','casting_time','blockchain','contract_address','is_show','coupon_id','label','goods_category_id','is_manghe','is_can_buy','is_chip']);
+                $row->visible(['id', 'name', 'title', 'image', 'images', 'price', 'type', 'content', 'order', 'start_time', 'end_time', 'stock', 'sales', 'surplus', 'company_name', 'company_image', 'creator', 'owner', 'casting_name', 'casting_time', 'blockchain', 'contract_address', 'is_show', 'coupon_id', 'label', 'goods_category_id', 'is_manghe', 'is_can_buy', 'is_chip']);
 
                 $row->visible(['coupon']);
                 $row->getRelation('coupon')->visible(['name']);
-                
+
                 $row->visible(['goodscategory']);
                 $row->getRelation('goodscategory')->visible(['name']);
-                
+
             }
 
             $result = array("total" => $list->total(), "rows" => $list->items());

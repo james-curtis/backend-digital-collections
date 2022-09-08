@@ -8,13 +8,10 @@ use think\Model;
 class Goods extends Model
 {
 
-    
-
-    
 
     // 表名
     protected $name = 'goods';
-    
+
     // 自动写入时间戳字段
     protected $autoWriteTimestamp = false;
 
@@ -28,9 +25,8 @@ class Goods extends Model
         'type_text',
         'is_show_text',
     ];
-    
 
-    
+
     public function getTypeList()
     {
         return ['1' => __('Type 1')];
@@ -55,12 +51,12 @@ class Goods extends Model
     {
         return ['0' => __('否'), '1' => __('是')];
     }
-    
-     public function getHcstatusList()
+
+    public function getHcstatusList()
     {
         return ['0' => __('否'), '1' => __('是')];
     }
-    
+
     public function getHcstatusTextAttr($value, $data)
     {
         $value = $value ? $value : (isset($data['hcstatus']) ? $data['hcstatus'] : '');
@@ -89,12 +85,11 @@ class Goods extends Model
         $list = $this->getIsMangheList();
         return isset($list[$value]) ? $list[$value] : '';
     }
-    
+
     public function getFnstatusList()
     {
         return ['0' => __('否'), '1' => __('是')];
     }
-
 
 
     public function getFnstatusTextAttr($value, $data)
@@ -108,9 +103,26 @@ class Goods extends Model
     {
         return $this->belongsTo('Coupon', 'coupon_id', 'id', [], 'LEFT')->setEagerlyType(0);
     }
+
     public function goodscategory()
     {
         return $this->belongsTo('GoodsCategory', 'goods_category_id', 'id', [], 'LEFT')->setEagerlyType(0);
+    }
+
+    public function whereInDuplicate($in)
+    {
+        $in_arr = $in;
+        if (!is_array($in))
+            $in_arr = explode(',', $in);
+        $join = [];
+        foreach ($in_arr as $index => $item) {
+            if ($index == count($in_arr))
+                $join[] = "SELECT $item id ";
+            else
+                $join[] = "SELECT $item id UNION ALL ";
+        }
+        $join_text = rtrim(implode($join));
+        return $this->alias('g')->join("($join_text) t", 't.id = g.id');
     }
 
 }
