@@ -1028,7 +1028,9 @@ class GoodsLogic
         if ($goods['operation_id']) {
             //上链查询
             try {
-                $CreateChainTx = CreateChainTx($goods['operation_id']);
+                $users = Users::where('id', $uid)->find();
+
+                $CreateChainTx = CreateChainTx($goods['operation_id'], $users['phone'], 'mint');
 
                 if (array_key_exists('error', $CreateChainTx)) {
                     Db::rollback();
@@ -1036,10 +1038,15 @@ class GoodsLogic
                     return Response::fail('转增失败2');
                 } else {
                     //转让
-                    $users = Users::where('id', $uid)->find();
-                    $nft_id = $CreateChainTx['data']['nft_id'];
-                    $class_id = $CreateChainTx['data']['class_id'];
-                    $transfer = Nfttransfers($nft_id, $users['wallet_address'], $class_id, $info['wallet_address']);
+                    if (!config('?site.tichain_appid')) {
+                        // 百度链
+                        $nft_id = $CreateChainTx['data']['nft_id'];
+                        $class_id = $CreateChainTx['data']['class_id'];
+                        $transfer = Nfttransfers($nft_id, $users['wallet_address'], $class_id, $info['wallet_address']);
+                    } else {
+                        $class_id = $CreateChainTx['data']['tokenId'];
+                        $transfer = Nfttransfers($goods['contract_address'], $users['wallet_address'], $class_id, $info['wallet_address'], $users);
+                    }
                 }
 
                 if (array_key_exists('error', $transfer)) {

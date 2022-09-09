@@ -95,9 +95,9 @@ class GoodsUsers extends Backend
             $goodsusers = Db::name('goods_users')->where('id', $value)->find();
             $goods = Db::name('goods')->where('id', $goodsusers['goods_id'])->find();
             $users = Db::name('users')->where('id', $goodsusers['uid'])->find();
-            $url = 'http://' . $_SERVER['HTTP_HOST'] . $goods['image'];
+            $url = config('site.server_url') . $goods['image'];
 
-            if ($goodsusers['state'] == 0) {
+            if ($goodsusers['state'] == 0 || true) {
                 $nfsfx = CreateChainNfts($users, $goodsusers['goods_id'], $url);
                 //  print_r($nfsfx);
                 //  exit();
@@ -124,7 +124,13 @@ class GoodsUsers extends Backend
                     }
                 }
                 if (isset($nfsfx['data'])) {
-                    $result = $this->model->where('id', 'in', $value)->update(['state' => 1, 'operation_id' => $nfsfx['data']['operation_id']]);
+                    $result = $this->model
+                        ->where('id', 'in', $value)
+                        ->update([
+                            'state' => 1,
+                            'operation_id' => $nfsfx['data']['operation_id'],
+                            'contract_address' => $nfsfx['data']['contractAddress'],
+                        ]);
                 }
             } else {
                 return json(['code' => 0, 'msg' => '请选择未上链的数据！']);

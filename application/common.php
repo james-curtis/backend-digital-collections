@@ -82,7 +82,11 @@ function CreateChainNfts($user, $goods_id, $url)
     return [
         'data' => [
             // 交易哈希
-            'operation_id' => $res['data']['products']['transactionHash'],
+            'operation_id' => $res['data']['products'][0]['transactionHash'],
+            // 产品地址
+            'address' => $res['data']['products'][0]['address'],
+            // 合约地址
+            'contractAddress' => $res['data']['contractAddress'],
         ]
     ];
 }
@@ -108,22 +112,62 @@ function PlNfts($userid, $class_id, $url, $recipient)
 }
 
 //上链查询
-function CreateChainTx($operation_id)
+/**
+ * @param $operation_id string 交易哈希
+ * @param $phone
+ * @param $transactionHash
+ * @param $methodName
+ * @return array|bool|float|int|mixed|stdClass|string|要转换的数据|null
+ */
+function CreateChainTx($operation_id, $phone = '', $methodName = 'transferFrom')
 {
-    $res = requests("/v1beta1/tx/" . $operation_id, [], [], "GET", []);
-    return $res;
+    if (!config('?site.tichain_appid')) {
+        $res = requests("/v1beta1/tx/" . $operation_id, [], [], "GET", []);
+        return $res;
+    }
+    $chain = new \CommonChain\CommonChain();
+    $config = [
+        'transactionHash' => $operation_id,
+        'methodName' => $methodName,
+    ];
+    $res = $chain->detail($phone, md5($phone), $config);
+    if (intval($res['code']) != 0) {
+        return [
+            'error' => $res['message'],
+        ];
+    }
+    return [
+        'data' => $res['data']
+    ];
 }
 
 //转让
-function Nfttransfers($nft_id, $owner, $class_id, $account)
+function Nfttransfers($nft_id, $owner, $class_id, $account, $ownerInfo = null)
 {
-
-    $body = [
-        "recipient" => $account,
-        "operation_id" => "operationid" . uniqueNum(),
+    if (!config('?site.tichain_appid')) {
+        $body = [
+            "recipient" => $account,
+            "operation_id" => "operationid" . uniqueNum(),
+        ];
+        $res = requests("/v1beta1/nft/nft-transfers/" . $class_id . "/" . $owner . "/" . $nft_id, [], $body, "POST", []);
+        return $res;
+    }
+    $chain = new \CommonChain\CommonChain();
+    $config = [
+        'contractAddress' => $nft_id,
+        'tokenId' => $class_id,
+        'from' => $owner,
+        'to' => $account,
     ];
-    $res = requests("/v1beta1/nft/nft-transfers/" . $class_id . "/" . $owner . "/" . $nft_id, [], $body, "POST", []);
-    return $res;
+    $res = $chain->transfer($ownerInfo['phone'], md5($ownerInfo['phone']), $config);
+    if (intval($res['code']) != 0) {
+        return [
+            'error' => $res['message'],
+        ];
+    }
+    return [
+        'data' => $res['data']
+    ];
 }
 
 function requests($path, $query = [], $body = [], $method = 'GET', $config = [])
