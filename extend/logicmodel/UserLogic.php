@@ -572,7 +572,7 @@ class UserLogic
         // $data['card_back_image'] = $card_back_image;
         $data['is_auth'] = 1;
         $class_id = session_create_id();
-        $classes = CreateChainClasses($userInfo['wallet_address'], $class_id, $userInfo['id']);
+//        $classes = CreateChainClasses($userInfo['wallet_address'], $class_id, $userInfo['id']);
 // print_r($classes);
 
         $data['class_id'] = $class_id;
