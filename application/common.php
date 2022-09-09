@@ -51,19 +51,40 @@ function CreateChainClasses($account, $goods_id, $userid)
 
 
 //发行 NFT
-function CreateChainNfts($userid, $goods_id, $url)
+function CreateChainNfts($user, $goods_id, $url)
 {
+    if (!config('?site.tichain_appid')) {
+        $body = [
+            "name" => "{$user['class_id']}",
+            "class_id" => 'nft' . $goods_id,
+            "uri" => $url,
+            "operation_id" => "operationid" . uniqueNum(),
+        ];
 
-    $body = [
-        "name" => "{$userid}",
-        "class_id" => 'nft' . $goods_id,
-        "uri" => $url,
-        "operation_id" => "operationid" . uniqueNum(),
+        $res = requests("/v1beta1/nft/nfts/nft" . $goods_id, [], $body, "POST", []);
+        //operationid1654506994
+        return $res;
+    }
+    $name = $user['phone'];
+    $chain = new \CommonChain\CommonChain();
+    $config = [
+        'name' => 'nft' . $goods_id,
+        'pieceCount' => 1,
+        'feature' => $url,
+        'productIds' => [$goods_id],
     ];
-
-    $res = requests("/v1beta1/nft/nfts/nft" . $goods_id, [], $body, "POST", []);
-    //operationid1654506994
-    return $res;
+    $res = $chain->publish($name, md5($name), $config);
+    if (intval($res['code']) != 0) {
+        return [
+            'error' => $res['message'],
+        ];
+    }
+    return [
+        'data' => [
+            // 合约地址
+            'operation_id' => $res['data']['contractAddress'],
+        ]
+    ];
 }
 
 //批量发行 NFT

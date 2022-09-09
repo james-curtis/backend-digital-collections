@@ -96,11 +96,10 @@ class TiChain
         $param = array_merge($this->config, [
             'userId' => $userId,
             'userKey' => $userKey,
-            'name' => $config['name'],
-            'pieceCount' => $config['pieceCount'],
-        ]);
+        ], $config);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            'json' => $param,
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }
@@ -124,7 +123,8 @@ class TiChain
             'to' => $config['to'], // 接收方公钥地址
         ]);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            'json' => $param,
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }
@@ -146,7 +146,8 @@ class TiChain
             'tokenId' => $config['tokenId'], // token编号
         ]);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            'json' => $param,
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }
@@ -169,7 +170,8 @@ class TiChain
             'methodName' => $config['methodName'],
         ]);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            'json' => $param,
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }
@@ -190,7 +192,8 @@ class TiChain
             'transactionHash' => $config['newUserKey'], // 用户新密钥
         ]);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            'json' => $param,
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }
@@ -210,7 +213,8 @@ class TiChain
             'userKey' => $userKey,
         ]);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            'json' => $param,
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }
@@ -232,7 +236,8 @@ class TiChain
             'transactionHash' => $config['transactionHash'], // 交易哈希
         ]);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            'json' => $param,
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }

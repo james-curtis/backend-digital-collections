@@ -131,5 +131,6 @@ return array(
     'geetest_key' => '',
     'tichain_appid' => 'tichain184452',
     'tichain_appkey' => 'a09cfc3bf81f1db704966d19ae5a97259a87a0c8',
-    'tichain_getaway' => 'dev',
+    'tichain_getaway' => 'prod',
+    'site.tichain_wallet' => '0x8ac4f6589b56335a4d0014e82e6f451f0ee0879e',
 );

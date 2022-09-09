@@ -21,4 +21,9 @@ class Debug extends Controller
         $instance = new CommonChain();
         $instance->$name($arguments);
     }
+
+    public function debug()
+    {
+        var_dump(md5('15977774444'));
+    }
 }

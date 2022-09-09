@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use comservice\Response;
 use think\Db;
 
 /**
@@ -97,10 +98,11 @@ class GoodsUsers extends Backend
             $url = 'http://' . $_SERVER['HTTP_HOST'] . $goods['image'];
 
             if ($goodsusers['state'] == 0) {
-                $nfsfx = CreateChainNfts($goodsusers['uid'], $users['class_id'], $url);
+                $nfsfx = CreateChainNfts($users, $goodsusers['goods_id'], $url);
                 //  print_r($nfsfx);
                 //  exit();
                 if (array_key_exists('error', $nfsfx)) {
+                    return Response::fail($nfsfx['error']);
                     if ($nfsfx['error']['code'] == 'INTERNAL_ERROR') {
                         return json(['code' => 0, 'msg' => $users['nick_name'] . '会员账号上链失败：内部服务错误']);
                     }
