@@ -2,14 +2,23 @@
 
 namespace app\api\controller;
 
+use CommonChain\CommonChain;
 use think\Controller;
-use TiChain\TiChain;
 
 class Debug extends Controller
 {
+    public function reg()
+    {
+        $name = '15922221111';
+        $chain = new \CommonChain\CommonChain();
+        $res = $chain->register($name, md5($name));
+        var_dump($res);
+        die;
+    }
+
     public function __call($name, $arguments)
     {
-        $instance = new TiChain();
-        $instance->$name();
+        $instance = new CommonChain();
+        $instance->$name($arguments);
     }
 }

@@ -129,6 +129,7 @@ return array(
     'server_url' => 'http://nft1.jzjxxy.top',
     'geetest_id' => '',
     'geetest_key' => '',
-    'tichain_appid' => '',
-    'tichain_appkey' => '',
+    'tichain_appid' => 'tichain184452',
+    'tichain_appkey' => 'a09cfc3bf81f1db704966d19ae5a97259a87a0c8',
+    'tichain_getaway' => 'dev',
 );

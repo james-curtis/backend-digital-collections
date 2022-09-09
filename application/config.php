@@ -178,27 +178,34 @@ return [
     // +----------------------------------------------------------------------
     'cache'                  => [
         // 驱动方式
-        'type'   => 'File',
-        // 缓存保存目录
-        'path'   => CACHE_PATH,
-        // 缓存前缀
-        'prefix' => '',
-        // 缓存有效期 0表示永久缓存
+        'type' => 'redis',
+        // 全局缓存有效期（0为永久有效）
         'expire' => 0,
+        // 缓存前缀
+        'prefix' => 'think_cache',
+        // redis主机
+        'host' => '127.0.0.1',
+        // redis端口
+        'port' => 6379,
+        // 密码
+        'password' => '',
     ],
     // +----------------------------------------------------------------------
     // | 会话设置
     // +----------------------------------------------------------------------
     'session'                => [
-        'id'             => '',
-        // SESSION_ID的提交变量,解决flash上传跨域
-        'var_session_id' => '',
         // SESSION 前缀
-        'prefix'         => 'think',
+        'prefix' => 'think_session',
         // 驱动方式 支持redis memcache memcached
-        'type'           => '',
+        'type' => 'redis',
         // 是否自动开启 SESSION
-        'auto_start'     => true,
+        'auto_start' => true,
+        // redis主机
+        'host' => '127.0.0.1',
+        // redis端口
+        'port' => 6379,
+        // 密码
+        'password' => '',
     ],
     // +----------------------------------------------------------------------
     // | Cookie设置
@@ -210,8 +217,6 @@ return [
         'expire'    => 0,
         // cookie 保存路径
         'path'      => '/',
-        // cookie 有效域名
-        'domain'    => '',
         //  cookie 启用安全传输
         'secure'    => false,
         // httponly设置

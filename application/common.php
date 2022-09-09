@@ -11,14 +11,20 @@ use think\Db;
 //创建链账户地址
 function CreateChainAccount($config = [], $name)
 {
-    $body = [
-        "name" => $name,
-        "operation_id" => "operationid" . uniqueNum(),
-    ];
+    if (!config('?site.tichain_appid')) {
 
-    $res = requests("/v1beta1/account", [], $body, "POST", $config);
-    //var_dump($res);
-    return $res;
+        $body = [
+            "name" => $name,
+            "operation_id" => "operationid" . uniqueNum(),
+        ];
+
+        $res = requests("/v1beta1/account", [], $body, "POST", $config);
+        return $res;
+    }
+    $chain = new \CommonChain\CommonChain();
+    $res = $chain->register($name, md5($name));
+    var_dump($res);
+    die;
 }
 
 

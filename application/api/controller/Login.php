@@ -26,8 +26,7 @@ class Login extends Controller
 
     public function getCaptcha()
     {
-        $captcha = new Captcha();
-        return $captcha->entry();
+        return \captcha('reg');
     }
 
     /**
@@ -129,7 +128,7 @@ class Login extends Controller
      */
     public function sendCode($phone, $captcha, int $type = 1)
     {
-        if (!captcha_check($captcha))
+        if (!captcha_check($captcha, 'reg'))
             return json(Response::fail('验证码错误'));
         return json((new SendLogic())->sendPhone($phone, $type));
     }

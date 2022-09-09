@@ -29,31 +29,18 @@ class TiChain
         'status' => '/api/v2/nfr/transaction/status',
     ];
 
+    private $getawayList = [
+        'dev' => 'https://test.api.tichain.tianhecloud.com',
+        'prod' => 'https://api.tichain.tianhecloud.com',
+    ];
+
     private $client;
-
-    public static function devGetaway()
-    {
-        return 'https://test.api.tichain.tianhecloud.com';
-    }
-
-    public static function prodGetaway()
-    {
-        return 'https://api.tichain.tianhecloud.com';
-    }
 
     public function __construct($config)
     {
         $this->config['appId'] = $config['appId'];
         $this->config['appKey'] = $config['appKey'];
-        $this->getaway = self::prodGetaway();
-    }
-
-    public function setGetaway($getaway)
-    {
-        if ($getaway == self::prodGetaway())
-            $this->getaway = self::prodGetaway();
-        if ($getaway == self::devGetaway())
-            $this->getaway = self::devGetaway();
+        $this->getaway = $config['getaway'] ? $this->getawayList[$config['getaway']] : $this->getawayList['prod'];
     }
 
     public function parseApi($action, $withGetaway = false)
@@ -89,8 +76,8 @@ class TiChain
             'userId' => $userId,
             'userKey' => $userKey,
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
-            'json' => $param
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
+            \GuzzleHttp\RequestOptions::JSON => $param
         ]);
         return self::response2json($res);
     }
@@ -111,7 +98,7 @@ class TiChain
             'name' => $config['name'],
             'pieceCount' => $config['pieceCount'],
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             'json' => $param,
         ]);
         return self::response2json($res);
@@ -135,7 +122,7 @@ class TiChain
             'from' => $config['from'], // 发起方公钥地址
             'to' => $config['to'], // 接收方公钥地址
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             'json' => $param,
         ]);
         return self::response2json($res);
@@ -157,7 +144,7 @@ class TiChain
             'contractAddress' => $config['contractAddress'], // 合约地址
             'tokenId' => $config['tokenId'], // token编号
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             'json' => $param,
         ]);
         return self::response2json($res);
@@ -180,7 +167,7 @@ class TiChain
             // 查询的方法名(查询数字商品交易的情况，输入"transferFrom"；查询销毁数字商品的情况，输入："burn"；查询数字商品发行输入"mint"。)
             'methodName' => $config['methodName'],
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             'json' => $param,
         ]);
         return self::response2json($res);
@@ -201,7 +188,7 @@ class TiChain
             'userKey' => $userKey,
             'transactionHash' => $config['newUserKey'], // 用户新密钥
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             'json' => $param,
         ]);
         return self::response2json($res);
@@ -221,7 +208,7 @@ class TiChain
             'userId' => $userId,
             'userKey' => $userKey,
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             'json' => $param,
         ]);
         return self::response2json($res);
@@ -243,7 +230,7 @@ class TiChain
             'userKey' => $userKey,
             'transactionHash' => $config['transactionHash'], // 交易哈希
         ]);
-        $res = $this->getClientInstance()->post($this->parseApi(__METHOD__), [
+        $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             'json' => $param,
         ]);
         return self::response2json($res);
