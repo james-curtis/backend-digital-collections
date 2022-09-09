@@ -915,20 +915,23 @@ class GoodsLogic
         $info['number'] = intval(preg_replace("/^0+/", "", $info['number']));
         $users = Db::name('users')->where('id', $uid)->find();
         if ($info['operation_id'] != null) {
-            //交易查询
-            $nfsfx = CreateChainTx($info['operation_id']);
-            if (array_key_exists('error', $nfsfx)) {
+            $info['blockchain'] = $info['operation_id'];
 
-                $info['blockchain'] = '';
-            }
-
-            $info['blockchain'] = $nfsfx['data']['tx_hash'];
+//            下面是百度链的代码
+//            //交易查询
+//            $nfsfx = CreateChainTx($info['operation_id']);
+//            if (array_key_exists('error', $nfsfx)) {
+//
+//                $info['blockchain'] = '';
+//            }
+//
+//            $info['blockchain'] = $nfsfx['data']['tx_hash'];
         }
         $info = $info->toArray();
         if ($info['uid'] != $uid) {
             $info['member'] = '';
         }
-        $info['owner'] = $info['owner'];
+//        $info['owner'] = $info['owner'];
         $info = addWebSiteUrl($info, ['image', 'images']);
 //        $info['content'] = content($info['content']);
         return Response::success('success', $info);

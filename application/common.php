@@ -81,8 +81,8 @@ function CreateChainNfts($user, $goods_id, $url)
     }
     return [
         'data' => [
-            // 合约地址
-            'operation_id' => $res['data']['contractAddress'],
+            // 交易哈希
+            'operation_id' => $res['data']['products']['transactionHash'],
         ]
     ];
 }
