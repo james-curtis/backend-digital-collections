@@ -980,6 +980,8 @@ class GoodsLogic
      */
     public function transfer($uid, $id, $target_phone)
     {
+        if (!config('site.app_transfer'))
+            return Response::fail('暂时无法赠送');
         //响应时间较长时限制重复提交
         $redis_str = 'transfer_' . $uid . "_" . $id . "_" . $target_phone;
 
