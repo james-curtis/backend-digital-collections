@@ -23,7 +23,7 @@ ini_set('session.cookie_domain', ".jzjxxy.top");
 header('Access-Control-Allow-Credentials: true');
 header('Access-Control-Allow-Headers: *');
 header("Access-Control-Allow-Headers: DNT,X-Mx-ReqToken,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type, Accept-Language, Origin, Accept-Encoding,token,language_id,Cookies,Cookie");
-if (in_array($origin, $allow_origin))
+if (in_array($origin, $allow_origin) || strstr($origin, '127.0.0.1') || strstr($origin, 'localhost'))
     header('Access-Control-Allow-Origin: ' . $origin);
 
 

@@ -360,7 +360,7 @@ class Goods extends Backend
                 $filter_arr = array_filter($list, function ($var) use ($primarykey, $cursor_key_value) {
                     return strval($var[$primarykey]) == strval($cursor_key_value);
                 });
-                $result[] = $filter_arr[0];
+                $result[] = array_values($filter_arr)[0];
             }
         }
         return json(['list' => $result, 'total' => count($result)]);
