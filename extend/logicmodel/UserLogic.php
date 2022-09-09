@@ -56,11 +56,11 @@ class UserLogic
         if ($info) return Response::fail('手机号已注册');
         //调用地址方法
         $account = CreateChainAccount([], $phone);
-//             print_r($account);
         if (array_key_exists('error', $account)) {
+            if ($account['error'])
+                return Response::fail($account['error']);
             return Response::fail('钱包地址生成失败');
         } else {
-//                    print_r($account);
             $data['wallet_address'] = $account['data']['account'];
         }
         if (!empty($uuid)) {

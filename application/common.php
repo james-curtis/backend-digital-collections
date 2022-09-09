@@ -23,8 +23,16 @@ function CreateChainAccount($config = [], $name)
     }
     $chain = new \CommonChain\CommonChain();
     $res = $chain->register($name, md5($name));
-    var_dump($res);
-    die;
+    if (intval($res['code']) != 0) {
+        return [
+            'error' => $res['message'],
+        ];
+    }
+    return [
+        'data' => [
+            'account' => $res['data']['pubKey']['address']
+        ]
+    ];
 }
 
 

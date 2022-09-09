@@ -77,7 +77,8 @@ class TiChain
             'userKey' => $userKey,
         ]);
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
-            \GuzzleHttp\RequestOptions::JSON => $param
+            \GuzzleHttp\RequestOptions::JSON => $param,
+            \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
         ]);
         return self::response2json($res);
     }
