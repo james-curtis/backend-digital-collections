@@ -165,7 +165,9 @@ class GoodsLogic
             $fn = Db::name('goods')->where($cond2)->where(array('fnstatus' => 1))->find();
             if ($fn) {
                 #判断用户是否持续这个赋能藏品
-                $pd = Db::name('goods_users')->where(array('uid' => $uid, 'goods_id' => $fn['id'], 'status' => 1))->find();
+                $pd = Db::name('goods_users')
+                    ->where(array('uid' => $uid, 'goods_id' => $fn['id'], 'status' => 1, 'is_del' => 0))
+                    ->find();
                 if ($pd) {
                     $data['xgstatus'] = $fn['fncount'] ?? $data['xgstatus'];
                     $start_time = strtotime($data['start_time']) - config('site.yxgtime') * 60;
@@ -1452,7 +1454,7 @@ class GoodsLogic
             $fn = Db::name('goods')->where($cond2)->find();
             if ($fn) {
                 #判断用户是否持续这个赋能藏品
-                $pd = Db::name('goods_users')->where(array('uid' => $user_id, 'goods_id' => $fn['id'], 'status' => 1));
+                $pd = Db::name('goods_users')->where(array('uid' => $user_id, 'goods_id' => $fn['id'], 'status' => 1, 'is_del' => 0));
                 if ($pd) {
                     $data['xgstatus'] = $fn['fncount'];
                 }

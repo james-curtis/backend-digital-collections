@@ -8,14 +8,17 @@ use logicmodel\GoodsLogic;
 use think\Controller;
 use think\Request;
 use datamodel\Users;
+
 class Goods extends BaseController
 {
     private $goodsLogic;
+
     public function __construct(Request $request = null)
     {
         parent::__construct($request);
         $this->goodsLogic = new GoodsLogic();
     }
+
     /**
      * 商品列表
      * @param $search
@@ -28,8 +31,9 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function goodsList($search='',$goods_category_id='',$page=1,$pagesize=10){
-        return json($this->goodsLogic->goodsList($search,$goods_category_id,$page,$pagesize));
+    public function goodsList($search = '', $goods_category_id = '', $page = 1, $pagesize = 10)
+    {
+        return json($this->goodsLogic->goodsList($search, $goods_category_id, $page, $pagesize));
     }
 
     /**
@@ -41,9 +45,10 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function goodsDetail($id){
+    public function goodsDetail($id)
+    {
         //print_r($this->userInfo);
-        return json($this->goodsLogic->goodsDetail($id,$this->uid));
+        return json($this->goodsLogic->goodsDetail($id, $this->uid));
     }
 
     /**
@@ -53,7 +58,8 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function goodsCategoryList(){
+    public function goodsCategoryList()
+    {
         return json($this->goodsLogic->goodsCategoryList());
     }
 
@@ -69,8 +75,9 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function memberGoodsList($search='',$goods_category_id='',$page=1,$pagesize=10){
-        return json($this->goodsLogic->memberGoodsList('',$search,$goods_category_id,$page,$pagesize));
+    public function memberGoodsList($search = '', $goods_category_id = '', $page = 1, $pagesize = 10)
+    {
+        return json($this->goodsLogic->memberGoodsList('', $search, $goods_category_id, $page, $pagesize));
     }
 
     /**
@@ -81,7 +88,8 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function indexGoods(){
+    public function indexGoods()
+    {
         return json($this->goodsLogic->indexGoods());
     }
 
@@ -93,7 +101,8 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function indexMemberGoods(){
+    public function indexMemberGoods()
+    {
         return json($this->goodsLogic->indexMemberGoods());
     }
 
@@ -105,7 +114,8 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function goodsRecord($id){
+    public function goodsRecord($id)
+    {
         return json($this->goodsLogic->goodsRecord($id));
     }
 
@@ -117,18 +127,21 @@ class Goods extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function memberGoodsRecord($goods_number){
+    public function memberGoodsRecord($goods_number)
+    {
         return json($this->goodsLogic->memberGoodsRecord($goods_number));
     }
 
     /**
      * 预约
      */
-    public function setAppointment($id){
-        return json($this->goodsLogic->Appointment($id,$this->uid));
+    public function setAppointment($id)
+    {
+        return json($this->goodsLogic->Appointment($id, $this->uid));
     }
 
-    public function buy_rl_handle($phone,$code){
+    public function buy_rl_handle($phone, $code)
+    {
         return json(config('site.buy_ri_handle'));
     }
 
