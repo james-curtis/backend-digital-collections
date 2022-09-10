@@ -26,7 +26,7 @@ class Login extends Controller
 
     public function getCaptcha()
     {
-        return \captcha('reg');
+        return \captcha();
     }
 
     /**
@@ -131,9 +131,9 @@ class Login extends Controller
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function sendCode($phone, $captcha, int $type = 1)
+    public function sendCode($phone, $captcha = '', int $type = 1)
     {
-        if (!captcha_check($captcha, 'reg'))
+        if (!captcha_check($captcha))
             return json(Response::fail('验证码错误'));
         return json((new SendLogic())->sendPhone($phone, $type));
     }

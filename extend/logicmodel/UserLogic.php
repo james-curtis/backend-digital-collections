@@ -445,6 +445,7 @@ class UserLogic
         $data['bank_number'] = $userInfo['bank_number'];
         $data['bank_owner'] = $userInfo['bank_owner'];
         $data['bank_branch'] = $userInfo['bank_branch'];
+        $data['bank_comment'] = $userInfo['bank_comment'];
         $data['ali_name'] = $userInfo['ali_name'];
         $data['ali_image'] = $userInfo['ali_image'];
         $data['wx_name'] = $userInfo['wx_name'];
@@ -469,14 +470,17 @@ class UserLogic
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public function collectMoney($userInfo, $bank_name, $bank_number, $bank_owner, $bank_branch, $ali_name, $ali_image, $wx_name, $wx_image, $code)
+    public function collectMoney($userInfo, $bank_name, $bank_number, $bank_owner, $bank_branch, $ali_name, $ali_image, $wx_name, $wx_image, $code, $bank_comment)
     {
-        $result = validateCode($userInfo['phone'], $code, 2);
-        if (!$result) return Response::fail('验证码错误');
+        if ($code !== '') {
+            $result = validateCode($userInfo['phone'], $code, 2);
+            if (!$result) return Response::fail('验证码错误');
+        }
         $data['bank_name'] = $bank_name;
         $data['bank_number'] = $bank_number;
         $data['bank_owner'] = $bank_owner;
         $data['bank_branch'] = $bank_branch;
+        $data['bank_comment'] = $bank_comment;
         if (!empty($bank_name) && !empty($bank_number) && !empty($bank_owner)) {
             $data['is_bank'] = 1;
         }
