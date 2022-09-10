@@ -29,6 +29,11 @@ class Login extends Controller
         return \captcha();
     }
 
+    public function getGoodDesc()
+    {
+        return json(Response::success('', config('site.good_desc')));
+    }
+
     /**
      * 登录
      * @param $phone

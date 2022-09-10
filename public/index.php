@@ -17,6 +17,7 @@ define('APP_PATH', __DIR__ . '/../application/');
 $origin = isset($_SERVER['HTTP_ORIGIN']) ? $_SERVER['HTTP_ORIGIN'] : '';
 $allow_origin = [
     'http://nft.jzjxxy.top',
+    'http://nft.liulifrpnode1.ml',
 ];
 
 ini_set('session.cookie_domain', ".jzjxxy.top");

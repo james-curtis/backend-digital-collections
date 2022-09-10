@@ -127,8 +127,8 @@ return array(
 ',
     'buy_ri_handle' => '1',
     'instructions' => '<p style="text-indent: 58.6667px; ">郑重提醒各位平台用户：不使用第三方工具锁单、抢单！不影响其他用户之间的正常寄售；避免此类操作引起您自身深海艺术账号被封禁、绑定支付账号被冻结等不必要的损失。平台发售的数字商品仅具备收藏欣赏价值，官方对商品价格不构成任何指导意义，严防炒作。<br></p>',
-    'frontend_server' => 'http://nft.jzjxxy.top',
-    'server_url' => 'http://nft1.jzjxxy.top',
+    'frontend_server' => 'http://nft.liulifrpnode1.ml',
+    'server_url' => 'http://nft1.liulifrpnode1.ml',
     'geetest_id' => '',
     'geetest_key' => '',
     'tichain_appid' => 'tichain184452',
@@ -138,4 +138,15 @@ return array(
     'app_transfer' => '1',
     'app_logo' => '/uploads/20220910/aa1b5c735a09e3347d8f456031effc3f.png',
     'purchase_notify' => '温馨提示：滋石萨新冯芥中达杨抚南王官天潼曲礼新苌长',
+    'good_desc' =>
+        array(
+            'name' => '作品名称',
+            'id' => '商品编号',
+            'creator' => '作品指纹',
+            'owner' => '合约地址',
+            'casting_name' => '合约平台',
+            'casting_time' => '铸造时间',
+            'content' => '藏品介绍',
+            'gmsm' => '购买说明',
+        ),
 );

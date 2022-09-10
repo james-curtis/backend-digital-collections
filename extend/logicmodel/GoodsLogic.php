@@ -772,9 +772,9 @@ class GoodsLogic
             ->field(['g.*', 'gu.price', 'gu.id goods_users_id', 'u.wallet_address owner', 'gc.name goods_category_name', 'gu.goods_number', 'gu.uid', 'gu.number'])
             ->find();
 
-        if ($uid == $info['uid']) {
-            return Response::fail('自己不可以买自己藏品');
-        }
+//        if ($uid == $info['uid']) {
+//            return Response::fail('自己不可以买自己藏品');
+//        }
 
         if (empty($info)) return Response::fail('藏品信息错误');
         $info = $info->toArray();
@@ -897,9 +897,24 @@ class GoodsLogic
         $info = $goodsUsersData->alias('gu')
             ->join('goods g', 'g.id = gu.goods_id')
             ->join('users u', 'u.id = gu.uid')
+            ->join('goods_category gc', 'gc.id = g.goods_category_id', 'left')
             ->where(['gu.id' => $id])
             ->order(['gu.order asc'])
-            ->field(['g.*', 'gu.price', 'gu.id goods_users_id', 'u.wallet_address owner', 'gu.status', 'gu.is_show', 'gu.goods_number', 'gu.uid', 'gu.goods_id', 'gu.number', 'gu.operation_id', 'gu.jlstatus'])
+            ->field([
+                'g.*',
+                'gu.price',
+                'gu.id goods_users_id',
+                'u.wallet_address owner',
+                'gu.status',
+                'gu.is_show',
+                'gu.goods_number',
+                'gu.uid',
+                'gu.goods_id',
+                'gu.number',
+                'gu.operation_id',
+                'gu.jlstatus',
+                'gc.name goods_category_name',
+            ])
             ->find();
         if (empty($info)) return Response::fail('藏品信息错误');
         $info['number'] = intval(preg_replace("/^0+/", "", $info['number']));
