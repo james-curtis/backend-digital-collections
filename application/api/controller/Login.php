@@ -45,6 +45,11 @@ class Login extends Controller
         return json($this->userLogic->login($phone, $password));
     }
 
+    public function getSysLogo()
+    {
+        return json(Response::success('', ['logo' => config('site.server_url') . config('site.app_logo')]));
+    }
+
     public function ej()
     {
         $is_trade = config('site.is_trade');

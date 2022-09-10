@@ -135,4 +135,5 @@ return array(
     'tichain_getaway' => 'prod',
     'site.tichain_wallet' => '0x8ac4f6589b56335a4d0014e82e6f451f0ee0879e',
     'app_transfer' => '1',
+    'app_logo' => '/uploads/20220910/aa1b5c735a09e3347d8f456031effc3f.png',
 );
