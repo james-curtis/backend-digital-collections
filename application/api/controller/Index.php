@@ -44,8 +44,10 @@ class Index extends BaseController
         $config = [
             'name' => config('site.name'),
             'beian' => config('site.beian'),
+            'isMarketOpen' => intval(config('site.is_trade')) === 1,
+            'appMarketCloseImg' => config('site.app_market_close_img'),
         ];
-        return json($config);
+        return json(addWebSiteUrl($config));
     }
 
     /**

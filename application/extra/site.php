@@ -103,7 +103,7 @@ return array(
     'zqh' => '/uploads/20220822/3b88d9c2fcdd0c3ed47583a411afadf2.jpg',
     'about_content' => '<p style="text-indent: 58.6667px; ">123这是关于我们的介绍，可在后台配置123<br></p>',
     'douyi_image' => '/uploads/20220119/0fdf060dde128f30883787a795ee2b08.jpg',
-    'is_trade' => '1',
+    'is_trade' => '0',
     'trade_day' => '0',
     'rule' => '<p><br></p>',
     'sub_commission' => '0',
@@ -149,4 +149,5 @@ return array(
             'content' => '藏品介绍',
             'gmsm' => '购买说明',
         ),
+    'app_market_close_img' => '/uploads/20220910/a8a38df8f9b0f312b0961bc12bf60fdd.jpg',
 );
