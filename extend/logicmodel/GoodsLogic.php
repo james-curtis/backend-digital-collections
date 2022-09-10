@@ -208,7 +208,7 @@ class GoodsLogic
      */
     public function apply($uid, $id)
     {
-        $count = $this->ordersData->where(['buy_uid' => $uid, 'status' => 1, 'expiration_time' => ['>=', date('Y-m-d H:i:s')]])->count();
+        $count = $this->ordersData->where(['buy_uid' => $uid, 'status' => 1])->count();
         $users = Db::name('users')->where('id', $uid)->find();
         if ($count >= 1) return Response::fail('您的待付款订单已达上限');
         $goodsInfo = $this->goodsData->where(['is_del' => 0, 'is_show' => 1, 'id' => $id])->find();
@@ -354,18 +354,6 @@ class GoodsLogic
         $price = $info['price'];
 
         $time = date('Y-m-d H:i:s');
-
-        // 是否还有未支付订单
-        $count = $this->ordersData->alias('o')
-            ->join('goods g', 'g.id = o.goods_id')
-            ->join('goods_category gc', 'gc.id = g.goods_category_id')
-            ->where([
-                'o.buy_uid' => $uid,
-                'o.status' => 1
-            ])
-            ->count();
-        if ($count > 1)
-            return Response::fail('您还有未支付的订单');
 
         if ($pay_type == 1) {
 

@@ -309,7 +309,6 @@ class UserLogic
      */
     public function userInfo($userInfo)
     {
-        $data['head_image'] = config('site.default_image');
         $data['nick_name'] = $userInfo['nick_name'];
         $data['role_id'] = $userInfo['role_id'];
         $data['phone'] = $userInfo['phone'];
@@ -324,8 +323,11 @@ class UserLogic
         $data['card_back_image'] = $userInfo['card_back_image'];
         $data['is_auth'] = $userInfo['is_auth'];
         $data['wx_small_auth'] = $userInfo['wx_small_auth'];
-        $data['head_image'] = 'http://' . $_SERVER['HTTP_HOST'] . '/' . $userInfo['head_image'];
-        //$data = addWebSiteUrl($data,['head_image','card_front_image','card_back_image']);
+        $data['head_image'] = $userInfo['head_image'];
+        if (!$userInfo['head_image'])
+            $data['head_image'] = config('site.default_image');
+        $data = addWebSiteUrl($data);
+//        $data = addWebSiteUrl($data,['head_image','card_front_image','card_back_image']);
         return Response::success('success', $data);
     }
 

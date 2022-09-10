@@ -882,11 +882,13 @@ if (!function_exists('addWebSiteUrl')) {
             //一维数组
             if (count($fields) > 0) {
                 foreach ($fields as $v) {
-                    $array[$v] = str_replace('/uploads/', $url . '/uploads/', $array[$v]);
+                    if (strpos($array[$v], 'http') !== 0)
+                        $array[$v] = str_replace('/uploads/', $url . '/uploads/', $array[$v]);
                 }
             } else {
                 foreach ($array as $k => &$v) {
-                    $array[$k] = str_replace('/uploads/', $url . '/uploads/', $v);
+                    if (strpos($v, 'http') !== 0)
+                        $array[$k] = str_replace('/uploads/', $url . '/uploads/', $v);
                 }
             }
             return $array;
@@ -895,7 +897,8 @@ if (!function_exists('addWebSiteUrl')) {
             foreach ($array as &$v1) {
                 foreach ($fields as &$v2) {
                     if (!empty($v1[$v2])) {
-                        $v1[$v2] = str_replace('/uploads/', $url . '/uploads/', $v1[$v2]);
+                        if (strpos($v1[$v2], 'http') !== 0)
+                            $v1[$v2] = str_replace('/uploads/', $url . '/uploads/', $v1[$v2]);
                     }
                 }
             }
