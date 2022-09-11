@@ -26,6 +26,9 @@ class BaseController extends Controller
 
     public function checkLogin()
     {
+        if (strtolower(\request()->controller()) == 'index' and
+            strtolower(\request()->action()) == strtolower('siteConfig'))
+            return true;
         $token = Request::instance()->header('token');
         if (Cookie::has('app_token'))
             $token = cookie('app_token');

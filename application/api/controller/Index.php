@@ -46,6 +46,7 @@ class Index extends BaseController
             'beian' => config('site.beian'),
             'isMarketOpen' => intval(config('site.is_trade')) === 1,
             'appMarketCloseImg' => config('site.app_market_close_img'),
+            'appRegisterBackgroundImage' => config('site.app_register_background_image'),
         ];
         return json(addWebSiteUrl($config));
     }

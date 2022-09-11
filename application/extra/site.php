@@ -150,4 +150,5 @@ return array(
             'gmsm' => '购买说明',
         ),
     'app_market_close_img' => '/uploads/20220910/a8a38df8f9b0f312b0961bc12bf60fdd.jpg',
+    'app_register_background_image' => '/uploads/20220911/6ccf3cc442a5404078d4c940a1ea0354.jpeg',
 );
