@@ -48,6 +48,8 @@ class Index extends BaseController
             'isMarketOpen' => intval(config('site.is_trade')) === 1,
             'appMarketCloseImg' => config('site.app_market_close_img'),
             'appRegisterBackgroundImage' => config('site.app_register_background_image'),
+            'contactPhone' => config('site.contact_phone_1'),
+            'contactQR' => config('site.zqh'),
         ];
         return json(addWebSiteUrl($config));
     }

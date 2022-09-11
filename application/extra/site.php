@@ -119,7 +119,6 @@ return array(
     'account' => 'iaa1dgvdxjdvu7tk6lmdncq26ycl3kfad8g02cy4qj',
     'names' => 'testname',
     'yxgtime' => '60',
-    '$site.contact_phone_2' => '',
     'amount_proportion' => '10',
     'xgstatus' => '20',
     'mhxgstatus' => '100',
