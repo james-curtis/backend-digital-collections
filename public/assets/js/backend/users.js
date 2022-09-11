@@ -23,7 +23,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             });
 
             var table = $("#table");
-              $(document).on("click", ".btn-plrecharge", function () {
+            $(document).on("click", ".btn-plrecharge", function () {
                 var data = table.bootstrapTable('getSelections');
                 var ids = [];
                 if (data.length === 0) {
@@ -34,27 +34,27 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     ids[i] = data[i]['id']
                 }
 
-               Layer.prompt({
-                                            title: "充值金额",
-                                            success: function (layero) {
-                                                $("input", layero).prop("placeholder", "填写充值金额");
-                                            }
-                                        }, function (value) {
-                                            Fast.api.ajax({
-                                                url: "users/plrecharge",
-                                                data: {
-                                                  ids: ids,
-                                                  account: value
-                                                      },
-                                            }, function (data, ret) {
-                                                Layer.closeAll();
-                                                $(".btn-refresh").trigger("click");
-                                                //return false;
-                                            });
-                                        });
+                Layer.prompt({
+                    title: "充值金额",
+                    success: function (layero) {
+                        $("input", layero).prop("placeholder", "填写充值金额");
+                    }
+                }, function (value) {
+                    Fast.api.ajax({
+                        url: "users/plrecharge",
+                        data: {
+                            ids: ids,
+                            account: value
+                        },
+                    }, function (data, ret) {
+                        Layer.closeAll();
+                        $(".btn-refresh").trigger("click");
+                        //return false;
+                    });
+                });
 
             });
-            
+
             $(document).on("click", ".btn-nftupdate", function () {
                 var data = table.bootstrapTable('getSelections');
                 var ids = [];
@@ -67,7 +67,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 }
 
                 Layer.confirm(
-                    '确认选中的' + ids.length + '条生成nft类别吗?', {
+                    '确认选中的' + ids.length + '条修改成上链吗?', {
                         icon: 3,
                         title: __('Warning'),
                         offset: '40%',
@@ -102,7 +102,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     }
                 );
             });
-            
+
             $(document).on("click", ".btn-plgive", function () {
                 var data = table.bootstrapTable('getSelections');
                 var ids = [];
@@ -114,28 +114,28 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     ids[i] = data[i]['id']
                 }
                 console.log(ids);
-                sessionStorage.setItem('arr',JSON.stringify(ids));
-            //   Layer.prompt({
-            //                                 title: "充值金额",
-            //                                 success: function (layero) {
-            //                                     $("input", layero).prop("placeholder", "填写充值金额");
-            //                                 }
-            //                             }, function (value) {
-            //                                 Fast.api.ajax({
-            //                                     url: "users/plrecharge",
-            //                                     data: {
-            //                                       ids: ids,
-            //                                       account: value
-            //                                           },
-            //                                 }, function (data, ret) {
-            //                                     Layer.closeAll();
-            //                                     $(".btn-refresh").trigger("click");
-            //                                     //return false;
-            //                                 });
-            //                             });
+                sessionStorage.setItem('arr', JSON.stringify(ids));
+                //   Layer.prompt({
+                //                                 title: "充值金额",
+                //                                 success: function (layero) {
+                //                                     $("input", layero).prop("placeholder", "填写充值金额");
+                //                                 }
+                //                             }, function (value) {
+                //                                 Fast.api.ajax({
+                //                                     url: "users/plrecharge",
+                //                                     data: {
+                //                                       ids: ids,
+                //                                       account: value
+                //                                           },
+                //                                 }, function (data, ret) {
+                //                                     Layer.closeAll();
+                //                                     $(".btn-refresh").trigger("click");
+                //                                     //return false;
+                //                                 });
+                //                             });
 
             });
-                      //改为类型一
+            //改为类型一
             $(document).on("click", ".btn-plstatus", function () {
                 var data = table.bootstrapTable('getSelections');
                 var ids = [];
@@ -209,8 +209,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             //     };
             //     table.bootstrapTable('refresh', {});
             //     return false;
-         
-               
+
+
             //   // $(".btn-refresh").trigger("click");
             // });
             // 初始化表格
@@ -219,42 +219,107 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
                 pk: 'id',
                 sortName: 'id',
-                
+
                 columns: [
                     [
                         {checkbox: true},
                         {field: 'id', title: __('Id'), operate: false},
                         {field: 'nick_name', title: __('Nick_name'), operate: 'LIKE'},
-                        {field: 'head_image', title: __('Head_image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
-                        {field: 'goods_id', title: __("藏品"),visible:false, searchList: $.getJSON("goods/goodsList")},
+                        {
+                            field: 'head_image',
+                            title: __('Head_image'),
+                            operate: false,
+                            events: Table.api.events.image,
+                            formatter: Table.api.formatter.image
+                        },
+                        {
+                            field: 'goods_id',
+                            title: __("藏品"),
+                            visible: false,
+                            searchList: $.getJSON("goods/goodsList")
+                        },
                         {field: 'phone', title: __('Phone'), operate: 'LIKE'},
-                        {field: 'Nftstatus', title: __('Nftstatus'), searchList: {"0":__('Nftstatus 0'),"1":__('Nftstatus 1')}, formatter: Table.api.formatter.status},
+                        {
+                            field: 'Nftstatus',
+                            title: __('Nftstatus'),
+                            searchList: {"0": __('Nftstatus 0'), "1": __('Nftstatus 1')},
+                            formatter: Table.api.formatter.status
+                        },
                         {field: 'role.name', title: __('Role.name'), operate: false},
-                        {field: 'role_id', title: __('Role.name'), visible:false,searchList:$.getJSON('role/roleList')},
-                        {field: 'status', title: __('Status'), searchList: {"0":__('Status 0'),"1":__('Status 1')}, formatter: Table.api.formatter.status},
-                        {field: 'total_direct', title: __('Total_direct'), operate: false,sortable:true},
-                        {field: 'group_person_count', title: __('Group_person_count'), operate: false,sortable:true},
-                        {field: 'group_valid_person_count', title: __('Group_valid_person_count'), operate: false,sortable:true},
+                        {
+                            field: 'role_id',
+                            title: __('Role.name'),
+                            visible: false,
+                            searchList: $.getJSON('role/roleList')
+                        },
+                        {
+                            field: 'status',
+                            title: __('Status'),
+                            searchList: {"0": __('Status 0'), "1": __('Status 1')},
+                            formatter: Table.api.formatter.status
+                        },
+                        {field: 'total_direct', title: __('Total_direct'), operate: false, sortable: true},
+                        {field: 'group_person_count', title: __('Group_person_count'), operate: false, sortable: true},
+                        {
+                            field: 'group_valid_person_count',
+                            title: __('Group_valid_person_count'),
+                            operate: false,
+                            sortable: true
+                        },
 
-                        {field: 'cpzs', title: __('藏品数量'), operate: false,sortable:true},
+                        {field: 'cpzs', title: __('藏品数量'), operate: false, sortable: true},
                         {field: 'parent_member', title: __('Parent_member'), operate: 'LIKE'},
-                        {field: 'is_auth', title: __('Is_auth'), searchList: {"0":__('Is_auth 0'),"1":__('Is_auth 1')}, formatter: Table.api.formatter.normal},
+                        {
+                            field: 'is_auth',
+                            title: __('Is_auth'),
+                            searchList: {"0": __('Is_auth 0'), "1": __('Is_auth 1')},
+                            formatter: Table.api.formatter.normal
+                        },
                         {field: 'name', title: __('Name'), operate: false},
                         {field: 'card', title: __('Card'), operate: false},
                         // {field: 'account', title: __('Account'), operate:false},
-                        {field: 'wallet_address', title: __('Wallet_address'), operate:false},
+                        {field: 'wallet_address', title: __('Wallet_address'), operate: false},
                         // {field: 'wallet_private_key', title: __('Wallet_private_key'), operate: 'LIKE'},
                         // {field: 'wx_opend_id', title: __('Wx_opend_id'), operate: 'LIKE'},
                         // {field: 'wx_samll_id', title: __('Wx_samll_id'), operate: 'LIKE'},
                         // {field: 'wx_union_id', title: __('Wx_union_id'), operate: 'LIKE'},
                         // {field: 'card_front_image', title: __('Card_front_image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
                         // {field: 'card_back_image', title: __('Card_back_image'), operate: false, events: Table.api.events.image, formatter: Table.api.formatter.image},
-                        {field: 'is_bank', title: __('Is_bank'), searchList: {"0":__('Is_bank 0'),"1":__('Is_bank 1')}, formatter: Table.api.formatter.normal, operate:false},
-                        {field: 'is_ali', title: __('Is_ali'), searchList: {"0":__('Is_ali 0'),"1":__('Is_ali 1')}, formatter: Table.api.formatter.normal, operate:false},
-                        {field: 'is_wx', title: __('Is_wx'), searchList: {"0":__('Is_wx 0'),"1":__('Is_wx 1')}, formatter: Table.api.formatter.normal, operate:false},
+                        {
+                            field: 'is_bank',
+                            title: __('Is_bank'),
+                            searchList: {"0": __('Is_bank 0'), "1": __('Is_bank 1')},
+                            formatter: Table.api.formatter.normal,
+                            operate: false
+                        },
+                        {
+                            field: 'is_ali',
+                            title: __('Is_ali'),
+                            searchList: {"0": __('Is_ali 0'), "1": __('Is_ali 1')},
+                            formatter: Table.api.formatter.normal,
+                            operate: false
+                        },
+                        {
+                            field: 'is_wx',
+                            title: __('Is_wx'),
+                            searchList: {"0": __('Is_wx 0'), "1": __('Is_wx 1')},
+                            formatter: Table.api.formatter.normal,
+                            operate: false
+                        },
 
-                        {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false},
-                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate,
+                        {
+                            field: 'create_time',
+                            title: __('Create_time'),
+                            operate: 'RANGE',
+                            addclass: 'datetimerange',
+                            autocomplete: false
+                        },
+                        {
+                            field: 'operate',
+                            title: __('Operate'),
+                            table: table,
+                            events: Table.api.events.operate,
+                            formatter: Table.api.formatter.operate,
                             buttons: [
                                 {
                                     name: 'funds',
@@ -262,7 +327,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     title: '充值/扣费',
                                     classname: 'btn  btn-success btn-dialog',
                                     url: 'users/funds',
-                                    visible:function(row){
+                                    visible: function (row) {
                                         return true; //或者return false
 
                                     },
@@ -276,7 +341,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                                     title: '赠送藏品',
                                     classname: 'btn  btn-success btn-dialog',
                                     url: 'users/send',
-                                    visible:function(row){
+                                    visible: function (row) {
                                         return true; //或者return false
 
                                     },
@@ -288,13 +353,13 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         }
                     ]
                 ],
-                onLoadSuccess:function(data){
+                onLoadSuccess: function (data) {
                     //我要在这里获取所有的数据的总行数
-                    var tab1=$("#table");
-                    var nft0=tab1.find("td a[data-field='Nftstatus'][data-value=0]").find(".text-primary");
-                    var nft1=tab1.find("td a[data-field='Nftstatus'][data-value=1]").length
-                    nft0.css("color","#e74c3c")
-                  // console.log(nft0,nft1)
+                    var tab1 = $("#table");
+                    var nft0 = tab1.find("td a[data-field='Nftstatus'][data-value=0]").find(".text-primary");
+                    var nft1 = tab1.find("td a[data-field='Nftstatus'][data-value=1]").length
+                    nft0.css("color", "#e74c3c")
+                    // console.log(nft0,nft1)
 
 
                 },
@@ -364,20 +429,17 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
         // plrecharge: function () {
         //     Controller.api.bindevent();
         // },
-         plgive: function () {
-             
+        plgive: function () {
+
             Controller.api.bindevent();
         },
-        
+
         api: {
             bindevent: function () {
                 Form.api.bindevent($("form[role=form]"));
             }
         }
     };
-
-
-
 
 
     return Controller;

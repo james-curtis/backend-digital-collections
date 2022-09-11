@@ -37,16 +37,20 @@ function CreateChainAccount($config = [], $name)
 
 
 //创建 NFT 类别
-function CreateChainClasses($account, $goods_id, $userid)
+// 用户账号上链
+function CreateChainClasses($account, $goods_id, $userid, $users)
 {
-    $body = [
-        "name" => "{$userid}",
-        "class_id" => 'nft' . $goods_id,
-        "owner" => $account,
-        "operation_id" => "operationid" . uniqueNum(),
-    ];
-    $res = requests("/v1beta1/nft/classes", [], $body, "POST", []);
-    return $res;
+    if (!config('?site.tichain_appid')) {
+        $body = [
+            "name" => "{$userid}",
+            "class_id" => 'nft' . $goods_id,
+            "owner" => $account,
+            "operation_id" => "operationid" . uniqueNum(),
+        ];
+        $res = requests("/v1beta1/nft/classes", [], $body, "POST", []);
+        return $res;
+    }
+    return CreateChainAccount([], $users['phone']);
 }
 
 

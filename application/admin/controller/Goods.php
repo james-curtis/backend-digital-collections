@@ -3,6 +3,7 @@
 namespace app\admin\controller;
 
 use app\common\controller\Backend;
+use comservice\Response;
 use fast\Tree;
 use think\Db;
 use think\exception\PDOException;
@@ -156,7 +157,7 @@ class Goods extends Backend
                 ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id', 'name', 'title', 'image', 'images', 'price', 'type', 'content', 'order', 'start_time', 'end_time', 'stock', 'sales', 'surplus', 'company_name', 'company_image', 'creator', 'owner', 'casting_name', 'casting_time', 'blockchain', 'contract_address', 'is_show', 'coupon_id', 'label', 'goods_category_id', 'is_manghe', 'is_can_buy', 'is_chip']);
+                $row->visible(['id', 'name', 'title', 'image', 'images', 'price', 'type', 'content', 'order', 'start_time', 'end_time', 'stock', 'sales', 'surplus', 'company_name', 'company_image', 'creator', 'owner', 'casting_name', 'casting_time', 'blockchain', 'contract_address', 'is_show', 'coupon_id', 'label', 'goods_category_id', 'is_manghe', 'is_can_buy', 'is_chip', 'chain_state']);
 
                 $row->visible(['coupon']);
                 $row->getRelation('coupon')->visible(['name']);
@@ -171,6 +172,59 @@ class Goods extends Backend
             return json($result);
         }
         return $this->view->fetch();
+    }
+
+
+    //上链
+    public function slupdate($ids = "")
+    {
+        $sys_uid = 0;
+        foreach ($ids as $key => $value) {
+            $goods = Db::name('goods')->where('id', $value)->find();
+            $users = Db::name('users')->where('id', $sys_uid)->find();
+            $url = config('site.server_url') . $goods['image'];
+
+            if ($goods['chain_state'] == 0) {
+                $nfsfx = CreateChainNfts($users, $goods['goods_id'], $url);
+                if (array_key_exists('error', $nfsfx)) {
+                    return Response::fail($nfsfx['error']);
+                    if ($nfsfx['error']['code'] == 'INTERNAL_ERROR') {
+                        return json(['code' => 0, 'msg' => $users['nick_name'] . '会员账号上链失败：内部服务错误']);
+                    }
+
+                    if ($nfsfx['error']['code'] == 'NOT_FOUND') {
+                        return json(['code' => 0, 'msg' => $users['nick_name'] . '会员账号上链失败：访问信息不存在或暂时查询不到']);
+                    }
+                    if ($nfsfx['error']['code'] == 'FORBIDDEN') {
+                        return json(['code' => 0, 'msg' => $users['nick_name'] . '会员账号上链失败：无访问权限']);
+                    }
+                    if ($nfsfx['error']['code'] == 'BAD_REQUEST') {
+                        return json(['code' => 0, 'msg' => $users['nick_name'] . '会员账号上链失败：参数错误']);
+                    }
+                    if ($nfsfx['error']['code'] == 'REQUEST_ERROR') {
+                        return json(['code' => 0, 'msg' => $users['nick_name'] . '会员账号上链失败：重复请求']);
+                    }
+                    if ($nfsfx['error']['code'] == 'STATUS_ERROR') {
+                        return json(['code' => 0, 'msg' => $users['nick_name'] . '会员账号上链失败：状态异常']);
+                    }
+                }
+                if (isset($nfsfx['data'])) {
+                    $result = $this->model
+                        ->where('id', 'in', $value)
+                        ->update([
+                            'chain_state' => 1,
+                            'creator' => $nfsfx['data']['operation_id'],
+                            'owner' => $nfsfx['data']['contractAddress'],
+                        ]);
+                }
+            } else {
+                return json(['code' => 0, 'msg' => '请选择未上链的数据！']);
+            }
+
+        }
+
+        if (isset($result)) return json(['code' => 1, 'msg' => '上链成功']);
+        return json(['code' => 0, 'msg' => '上链失败']);
     }
 
     public function fnindex()

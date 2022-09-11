@@ -24,6 +24,6 @@ class Debug extends Controller
 
     public function debug()
     {
-        var_dump(md5('15977774444'));
+        var_dump(intval(preg_replace("/^0+/", "", '9063950072802925')));
     }
 }

@@ -20,8 +20,8 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
             });
 
             var table = $("#table");
-             
-              //上链
+
+            //上链
             $(document).on("click", ".btn-type1", function () {
                 var data = table.bootstrapTable('getSelections');
                 var ids = [];
@@ -77,19 +77,50 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 columns: [
                     [
                         {checkbox: true},
-                        {field: 'id', title: __('Id'), operate:false},
+                        {field: 'id', title: __('Id'), operate: false},
                         {field: 'users.phone', title: __('Users.phone'), operate: 'LIKE'},
                         {field: 'goods.name', title: __('Goods.name'), operate: 'LIKE'},
                         {field: 'goods_number', title: __('Goods_number'), operate: 'LIKE'},
-                        {field: 'price', title: __('Price'), operate:false},
-                        {field: 'status', title: __('Status'), searchList: {"1":__('Status 1'),"2":__('Status 2'),"3":__('Status 3'),"4":__('Status 4')}, formatter: Table.api.formatter.status},
-                        {field: 'state', title: __('State'), searchList: {"0":__('State 0'),"1":__('State 1')}, formatter: Table.api.formatter.status},
-                        {field: 'is_show', title: __('Is_show'), searchList: {"0":__('Is_show 0'),"1":__('Is_show 1')}, formatter: Table.api.formatter.normal},
-                        {field: 'order', title: __('Order'), operate:false},
-                        {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false},
-
-
-                        {field: 'operate', title: __('Operate'), table: table, events: Table.api.events.operate, formatter: Table.api.formatter.operate}
+                        {field: 'number', title: '流水编号', operate: 'LIKE'},
+                        {field: 'price', title: __('Price'), operate: false},
+                        {
+                            field: 'status',
+                            title: __('Status'),
+                            searchList: {
+                                "1": __('Status 1'),
+                                "2": __('Status 2'),
+                                "3": __('Status 3'),
+                                "4": __('Status 4')
+                            },
+                            formatter: Table.api.formatter.status
+                        },
+                        {
+                            field: 'state',
+                            title: __('State'),
+                            searchList: {"0": __('State 0'), "1": __('State 1')},
+                            formatter: Table.api.formatter.status
+                        },
+                        {
+                            field: 'is_show',
+                            title: __('Is_show'),
+                            searchList: {"0": __('Is_show 0'), "1": __('Is_show 1')},
+                            formatter: Table.api.formatter.normal
+                        },
+                        {field: 'order', title: __('Order'), operate: false},
+                        {
+                            field: 'create_time',
+                            title: __('Create_time'),
+                            operate: 'RANGE',
+                            addclass: 'datetimerange',
+                            autocomplete: false
+                        },
+                        {
+                            field: 'operate',
+                            title: __('Operate'),
+                            table: table,
+                            events: Table.api.events.operate,
+                            formatter: Table.api.formatter.operate
+                        }
                     ]
                 ]
             });

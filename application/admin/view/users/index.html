@@ -24,7 +24,8 @@
                         <a href="javascript:;" class="btn btn-success btn-plrecharge btn-disabled disabled {:$auth->check('users/plrecharge')?'':'hide'}" title="{:__('批量充值')}" >批量充值</a>
                           <a href="javascript:;" class="btn btn-success btn-plgive btn-disabled disabled  {:$auth->check('users/plgive')?'':'hide'}" title="{:__('批量赠送')}" >批量赠送</a>
                           <a class="btn btn-success btn-plstatus btn-disabled disabled" href="javascript:;"><i class="fa fa-user"></i>批量优先购</a>
-                          <a class="btn btn-success btn-nftupdate btn-disabled disabled" href="javascript:;"><i class="fa fa-user"></i>生成nft类别</a>
+                          <a class="btn btn-success btn-nftupdate btn-disabled disabled" href="javascript:;"><i
+                                  class="fa fa-user"></i>批量上链</a>
                           <!--<a class="btn btn-success btn-snapshot" href="javascript:;"><i class="fa fa-user"></i> 快照</a>-->
                         <a href="javascript:;" class="btn btn-success btn-export {:$auth->check('test/export')?'':'hide'}" title="{:__('Export')}" id="btn-export-file"><i class="fa fa-download"></i> {:__('Export')}</a>
 <!--                        <a href="javascript:;" class="btn btn-danger btn-import {:$auth->check('users/import')?'':'hide'}" title="{:__('Import')}" id="btn-import-file" data-url="ajax/upload" data-mimetype="csv,xls,xlsx" data-multiple="false"><i class="fa fa-upload"></i> {:__('Import')}</a>-->
@@ -54,14 +55,3 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" charset="utf-8"  src="/assets/libs/jquery/dist/jquery.min.js?v=1657003996"></script>
-
-<script type="text/javascript">
-    var tab1=$("#table");
-    var len=tab1.find("td a[data-field='Nftstatus']").length;
-    console.log(len);
-    console.log(tab1.length)
-    console.log("----")
-</script>
-
-

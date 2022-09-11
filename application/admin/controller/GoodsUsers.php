@@ -67,7 +67,7 @@ class GoodsUsers extends Backend
                 ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id', 'goods_number', 'price', 'status', 'state', 'is_show', 'create_time', 'order']);
+                $row->visible(['id', 'goods_number', 'price', 'status', 'state', 'is_show', 'create_time', 'order', 'number']);
                 $row->visible(['users']);
                 $row->getRelation('users')->visible(['phone']);
                 $row->visible(['goods']);

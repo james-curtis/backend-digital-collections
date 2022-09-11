@@ -128,6 +128,10 @@ class GoodsLogic
             ->find();
         if ($data) {
             $data = $data->toArray();
+
+            $redis = GetRedis::getRedis();
+            $redis->setItem('goods_kc_' . $data['id'], intval($data['surplus']));
+
             $data = addWebSiteUrl($data, ['image', 'images', 'company_image']);
 //            $data['content'] = content($data['content']);
             if ($data['type'] == 2) {
@@ -731,13 +735,13 @@ class GoodsLogic
         $goodsUsersData = new GoodsUsers();
         $count = $goodsUsersData->alias('gu')
             ->join('goods g', 'g.id = gu.goods_id')
-            ->join('goods_category gc', 'gc.id = g.goods_category_id')
+            ->join('goods_category gc', 'gc.id = g.goods_category_id', 'left')
             ->join('users u', 'u.id = gu.uid')
             ->where($where)
             ->count();
         $data = $goodsUsersData->alias('gu')
             ->join('goods g', 'g.id = gu.goods_id')
-            ->join('goods_category gc', 'gc.id = g.goods_category_id')
+            ->join('goods_category gc', 'gc.id = g.goods_category_id', 'left')
             ->join('users u', 'u.id = gu.uid')
             ->where($where)
             ->order(['gu.order asc'])

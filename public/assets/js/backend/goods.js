@@ -16,10 +16,59 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     config_url: 'goods_config/index',
                     import_url: 'goods/import',
                     table: 'goods',
+                    slupdate_url: 'goods_users/slupdate',
                 }
             });
 
             var table = $("#table");
+
+            $(document).on("click", ".btn-type1", function () {
+                var data = table.bootstrapTable('getSelections');
+                var ids = [];
+                if (data.length === 0) {
+                    Toastr.error("请选择操作信息");
+                    return;
+                }
+                for (var i = 0; i < data.length; i++) {
+                    ids[i] = data[i]['id']
+                }
+
+                Layer.confirm(
+                    '确认选中的' + ids.length + '条修改成上链吗?', {
+                        icon: 3,
+                        title: __('Warning'),
+                        offset: '40%',
+                        shadeClose: true
+                    },
+                    function (index) {
+                        Layer.close(index);
+                        Backend.api.ajax({
+                            //url: "lgwy/attrchg/approve?ids=" + JSON.stringify(ids),
+                            //方法一：传参方式，后台需要转换变成数组
+                            /*url: "lgwy/attrchg/approve?ids=" + (ids),
+                            data: {}*/
+                            //方法二：传参方式，直接是数组传递给后台
+                            url: "goods/slupdate",
+                            data: {
+                                ids: ids,
+                            }
+                        }, function (data, ret) { //成功的回调
+                            if (ret.code === 1) {
+
+                                table.bootstrapTable('refresh');
+                                Layer.close(index);
+                            } else {
+                                Layer.close(index);
+                                Toastr.error(ret.msg);
+                            }
+                        }, function (data, ret) { //失败的回调
+                            console.log(ret);
+                            // Toastr.error(ret.msg);
+                            Layer.close(index);
+                        });
+                    }
+                );
+            });
 
             // 初始化表格
             table.bootstrapTable({
@@ -77,10 +126,16 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'surplus', title: __('Surplus'), operate: false},
                         {field: 'label', title: __('Label'), operate: 'LIKE'},
                         {
+                            field: 'chain_state',
+                            title: '上链状态',
+                            searchList: {"0": '未上链', "1": '已上链'},
+                            formatter: Table.api.formatter.status
+                        },
+                        {
                             field: 'is_show',
                             title: __('Is_show'),
                             searchList: {"0": __('Is_show 0'), "1": __('Is_show 1')},
-                            formatter: Table.api.formatter.normal
+                            formatter: Table.api.formatter.status
                         },
                         {
                             field: 'operate',

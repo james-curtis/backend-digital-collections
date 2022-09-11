@@ -198,8 +198,9 @@ class Users extends Backend
         }
         return $json;
     }
-    //创建nft类别
-    //上链
+
+    // 创建nft类别
+    // 用户账号上链
     public function nftupdate($ids = "")
     {
         foreach ($ids as $key => $value) {
@@ -207,18 +208,22 @@ class Users extends Backend
             $users = Db::name('users')->where('id', $value)->find();
             if ($users['class_id'] == null) {
                 $class_id = uniqueNum();
-                $classes = CreateChainClasses($users['wallet_address'], $class_id, $users['id']);
+                $classes = CreateChainClasses($users['wallet_address'], $class_id, $users['id'], $users);
                 if (array_key_exists('error', $classes)) {
                     return Response::fail('链上正在更新，请稍后再试');
                 }
-                $result = $this->model->where('id', $value)->update(['class_id' => $class_id, 'Nftstatus' => 1]);
+                $result = $this->model->where('id', $value)->update([
+                    'class_id' => $class_id,
+                    'wallet_address' => $classes['data']['account'],
+                    'Nftstatus' => 1
+                ]);
             } else {
-                return json(['code' => 0, 'msg' => '请选择未生成nft类别的数据！']);
+                return json(['code' => 0, 'msg' => '请选择未上链的数据！']);
             }
         }
 
-        if ($result) return json(['code' => 1, 'msg' => 'nft类别成功']);
-        return json(['code' => 0, 'msg' => 'nft类别失败']);
+        if ($result) return json(['code' => 1, 'msg' => '上链成功']);
+        return json(['code' => 0, 'msg' => '上链失败']);
     }
 
     public function plstatus($ids = "")
@@ -490,6 +495,9 @@ class Users extends Backend
 
     public function del($ids = "")
     {
+        if (in_array('0', explode(',', $ids))) {
+            return json(['code' => 0, 'msg' => '无法删除id为0的系统用户']);
+        }
         // 启动事务
         Db::startTrans();
         try {
