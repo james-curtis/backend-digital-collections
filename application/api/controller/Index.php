@@ -42,6 +42,7 @@ class Index extends BaseController
     public function siteConfig()
     {
         $config = [
+            'appLogo' => config('site.app_logo'),
             'name' => config('site.name'),
             'beian' => config('site.beian'),
             'isMarketOpen' => intval(config('site.is_trade')) === 1,
