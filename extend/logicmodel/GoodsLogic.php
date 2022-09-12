@@ -1562,12 +1562,10 @@ class GoodsLogic
      * 获取转增记录
      * @param $transfer_type
      * @param $user_id
-     * @return void
      */
-    public function getGoodsTransfer($transfer_type, $user_id)
+    public function getGoodsTransfer($transfer_type, $user_id): array
     {
-
-
+        $where = [];
         if ($transfer_type == 1) {
             $where = ['gt.uid' => $user_id];
         }
@@ -1580,9 +1578,10 @@ class GoodsLogic
             ->join('goods g', 'g.id = gt.goods_id')
             ->join('goods_users gu', 'gu.goods_id = gt.goods_id')
             ->join('users u', 'u.id=gt.uid')
+            ->join('users tu', 'tu.id=gt.target_uid')
             ->where($where)
             ->group('gt.id')
-            ->field(['g.*', 'gt.create_time as transfer_create_time', 'gu.number', 'gu.goods_number as order_num', 'u.phone zzr_phone'])
+            ->field(['g.*', 'gt.create_time as transfer_create_time', 'gu.number', 'gu.goods_number as order_num', 'u.phone zzr_phone', 'tu.phone target_phone'])
             ->select();
         foreach ($transfer as $key => $value) {
             $transfer[$key]['image'] = 'http://' . $_SERVER['HTTP_HOST'] . $value['image'];

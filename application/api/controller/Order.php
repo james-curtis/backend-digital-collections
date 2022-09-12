@@ -103,7 +103,7 @@ class Order extends BaseController
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      */
-    public function orderDetail($id)
+    public function orderDetail($id): \think\response\Json
     {
         return json($this->goodsLogic->orderDetail($this->uid, $id));
     }
@@ -111,7 +111,7 @@ class Order extends BaseController
     /**
      * 获取转增记录
      */
-    public function getGoodsTransfer()
+    public function getGoodsTransfer(): \think\response\Json
     {
 
         $transfer_type = input('transfer_type', 0);
