@@ -14,8 +14,11 @@ use think\Request;
 use validate\ForgetPhonePasswordValidate;
 use validate\RegisterValidate;
 
-class Login extends Controller
+class Login extends BaseController
 {
+
+    protected $noNeedLogin = ['*'];
+
     private $userLogic;
 
     public function __construct(Request $request = null)
@@ -48,11 +51,6 @@ class Login extends Controller
     public function login($phone, $password)
     {
         return json($this->userLogic->login($phone, $password));
-    }
-
-    public function getSysLogo()
-    {
-        return json(Response::success('', ['logo' => config('site.server_url') . config('site.app_logo')]));
     }
 
     public function ej()

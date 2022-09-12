@@ -16,6 +16,7 @@ use think\Request;
 // require_once('../xasset/index.php');
 class Compose extends BaseController
 {
+    protected $noNeedRight = ['*'];
     public function __construct(Request $request = null)
     {
         parent::__construct($request);

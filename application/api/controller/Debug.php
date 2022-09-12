@@ -5,8 +5,10 @@ namespace app\api\controller;
 use CommonChain\CommonChain;
 use think\Controller;
 
-class Debug extends Controller
+class Debug extends BaseController
 {
+    protected $noNeedLogin = '*';
+
     public function reg()
     {
         $name = '15922221111';

@@ -9,7 +9,10 @@ use think\Request;
 
 class Account extends BaseController
 {
+    protected $noNeedRight = ['*'];
+
     private $accountLogic;
+
     public function __construct(Request $request = null)
     {
         parent::__construct($request);

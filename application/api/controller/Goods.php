@@ -11,6 +11,8 @@ use datamodel\Users;
 
 class Goods extends BaseController
 {
+    protected $noNeedRight = ['*'];
+
     private $goodsLogic;
 
     public function __construct(Request $request = null)

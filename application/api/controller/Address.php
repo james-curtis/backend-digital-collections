@@ -9,7 +9,10 @@ use think\Request;
 
 class Address extends BaseController
 {
+    protected $noNeedRight = ['*'];
+
     private $addressLogic;
+
     public function __construct(Request $request = null)
     {
         parent::__construct($request);

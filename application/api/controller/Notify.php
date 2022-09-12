@@ -5,12 +5,17 @@ namespace app\api\controller;
 
 
 use logicmodel\NotifyLogic;
+use think\Request;
 
-class Notify
+class Notify extends BaseController
 {
     private $notifyLogic;
-    public function __construct()
+
+    protected $noNeedLogin = '*';
+
+    public function __construct(Request $request = null)
     {
+        parent::__construct($request);
         $this->notifyLogic = new NotifyLogic();
     }
 
@@ -18,7 +23,8 @@ class Notify
      * 支付宝回调
      * @return string
      */
-    public function aliNotify(){
+    public function aliNotify()
+    {
         return $this->notifyLogic->aliNotify();
     }
 

@@ -9,6 +9,7 @@ use think\Request;
 
 class Coupon extends BaseController
 {
+    protected $noNeedRight = ['*'];
     private $couponLogic;
     public function __construct(Request $request = null)
     {

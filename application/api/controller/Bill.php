@@ -9,6 +9,7 @@ use think\Request;
 
 class Bill extends BaseController
 {
+    protected $noNeedRight = ['*'];
     private $billLogic;
     public function __construct(Request $request = null)
     {

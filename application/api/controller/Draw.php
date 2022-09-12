@@ -9,6 +9,7 @@ use think\Request;
 
 class Draw extends BaseController
 {
+    protected $noNeedRight = ['*'];
     private $drawLogic;
     public function __construct(Request $request = null)
     {

@@ -9,6 +9,7 @@ use think\Request;
 
 class Remittance extends BaseController
 {
+    protected $noNeedRight = ['*'];
     private $remittanceLogic;
     public function __construct(Request $request = null)
     {

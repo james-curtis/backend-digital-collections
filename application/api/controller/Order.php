@@ -9,6 +9,7 @@ use think\Request;
 
 class Order extends BaseController
 {
+    protected $noNeedRight = ['*'];
     private $goodsLogic;
 
     public function __construct(Request $request = null)

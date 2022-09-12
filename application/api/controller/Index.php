@@ -18,6 +18,11 @@ class Index extends BaseController
 {
     private $indexLogic;
 
+    protected $noNeedRight = ['*'];
+
+    protected $noNeedLogin = ['siteConfig'];
+
+
     public function __construct(Request $request = null)
     {
         parent::__construct($request);
@@ -50,6 +55,10 @@ class Index extends BaseController
             'appRegisterBackgroundImage' => config('site.app_register_background_image'),
             'contactPhone' => config('site.contact_phone_1'),
             'contactQR' => config('site.zqh'),
+
+            // 云盾验证码
+            'yundunAppKey' => config('site.yundun_app_key'),
+            'yundunScene' => config('site.yundun_scene'),
         ];
         return json(addWebSiteUrl($config));
     }

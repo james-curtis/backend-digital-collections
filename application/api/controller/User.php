@@ -13,6 +13,7 @@ use think\Db;
 
 class User extends BaseController
 {
+    protected $noNeedRight = ['*'];
     private $userLogic;
 
     public function __construct(Request $request = null)

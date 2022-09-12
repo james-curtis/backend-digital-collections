@@ -9,6 +9,7 @@ use think\Request;
 
 class Transfer extends BaseController
 {
+    protected $noNeedRight = ['*'];
     private $transferLogic;
     public function __construct(Request $request = null)
     {
