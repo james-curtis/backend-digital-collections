@@ -56,6 +56,7 @@ class Index extends BaseController
             'contactPhone' => config('site.contact_phone_1'),
             'contactQR' => config('site.zqh'),
             'isOpenIndexPageCalendar' => config('site.buy_ri_handle') === '1',
+            'goodEnd' => config('site.good_end'),
 
             // 云盾验证码
             'yundunAppKey' => config('site.yundun_app_key'),

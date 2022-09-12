@@ -152,4 +152,5 @@ return array (
   'aliyun_access_secret' => 'EtbmjMfXX9UodCsopEomjm9R6xCJGH',
   'yundun_app_key' => 'FFFF0N0000000000AF4B',
   'yundun_scene' => 'ic_bbs_h5',
+  'good_end' => '/uploads/20220912/38db4bce6ea410cc5d7a0aba50d59c5a.png',
 );
