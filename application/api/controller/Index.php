@@ -55,6 +55,7 @@ class Index extends BaseController
             'appRegisterBackgroundImage' => config('site.app_register_background_image'),
             'contactPhone' => config('site.contact_phone_1'),
             'contactQR' => config('site.zqh'),
+            'isOpenIndexPageCalendar' => config('site.buy_ri_handle') === '1',
 
             // 云盾验证码
             'yundunAppKey' => config('site.yundun_app_key'),

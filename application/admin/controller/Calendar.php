@@ -5,13 +5,13 @@ namespace app\admin\controller;
 use app\common\controller\Backend;
 
 /**
- * 
+ *
  *
  * @icon fa fa-calendar
  */
 class Calendar extends Backend
 {
-    
+
     /**
      * Calendar模型对象
      * @var \app\admin\model\Calendar
@@ -35,7 +35,7 @@ class Calendar extends Backend
      * 因此在当前控制器中可不用编写增删改查的代码,除非需要自己控制这部分逻辑
      * 需要将application/admin/library/traits/Backend.php中对应的方法复制到当前控制器,然后进行修改
      */
-    
+
 
     /**
      * 查看
@@ -54,14 +54,14 @@ class Calendar extends Backend
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 
             $list = $this->model
-                    ->where(['is_del'=>0])
-                    ->where($where)
-                    ->order($sort, $order)
-                    ->paginate($limit);
+                ->where(['is_del' => 0])
+                ->where($where)
+                ->order($sort, $order)
+                ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','start_time','order','is_show']);
-                
+                $row->visible(['id', 'start_time', 'order', 'is_show']);
+
             }
 
             $result = array("total" => $list->total(), "rows" => $list->items());
@@ -70,11 +70,12 @@ class Calendar extends Backend
         }
         return $this->view->fetch();
     }
+
     public function del($ids = "")
     {
-        $result = $this->model->where(['id'=>['in',$ids]])->update(['is_del'=>1]);
-        if($result) return json(['code'=>1,'msg'=>'删除成功']);
-        return json(['code'=>0,'msg'=>'删除失败']);
+        $result = $this->model->where(['id' => ['in', $ids]])->update(['is_del' => 1]);
+        if ($result) return json(['code' => 1, 'msg' => '删除成功']);
+        return json(['code' => 0, 'msg' => '删除失败']);
     }
 
 }
