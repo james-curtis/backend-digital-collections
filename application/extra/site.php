@@ -1,7 +1,7 @@
 <?php
 
 return array(
-    'name' => '梦凌数藏',
+    'name' => 'SPACE-9数藏',
     'beian' => '粤ICP备15054802号-4',
     'cdnurl' => '',
     'version' => '1.0.5',

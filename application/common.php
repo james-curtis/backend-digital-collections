@@ -937,15 +937,15 @@ if (!function_exists('trimWebUrl')) {
 if (!function_exists('content')) {
     function content($content)
     {
-        $url = 'http://' . $_SERVER['HTTP_HOST'];
-        $content = str_replace('src="', 'src="' . $url, $content);
+        $url = config('site.server_url');
+        $content = preg_replace('/src="(?!http)/i', 'src="' . $url, $content);
         return $content;
     }
 }
 if (!function_exists('trimContent')) {
     function trimContent($content)
     {
-        $url = 'http://' . $_SERVER['HTTP_HOST'];
+        $url = config('site.server_url');
         $content = str_replace('src="' . $url, 'src="', $content);
         return $content;
     }
