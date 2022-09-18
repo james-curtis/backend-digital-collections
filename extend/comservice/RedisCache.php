@@ -6,27 +6,31 @@
  * Date: 2017/4/27
  * Time: 17:18
  */
+
 namespace comservice;
+
 use think\Log;
 
 class RedisCache
 {
     //声明私有静态变量
-    private static $_instance=null;
+    private static $_instance = null;
     //生命私有redis对象
     private $_redis;
+
     //私有构造函数，防止重复创建实例
-    private function __construct($sever , $auth)
+    private function __construct($sever, $auth)
     {
         //初始化redis对象实例
-        $this->_redis=new \Redis();
+        $this->_redis = new \Redis();
         //连接redis服务器
-        $redis_server = $sever ;
+        $redis_server = $sever;
         $redis_auth = $auth;
         $this->_redis->connect($redis_server);
         $this->_redis->auth($redis_auth);
-        Log::record("redis创建连接成功:{".date('Y-m-d H:i:s')."}","info");
+        Log::record("redis创建连接成功:{" . date('Y-m-d H:i:s') . "}", "info");
     }
+
     private function __clone()
     {
 
@@ -38,14 +42,13 @@ class RedisCache
      * @param string $auth ：密码
      * @return RedisCache|null
      */
-    public static function getInstance($sever , $auth)
+    public static function getInstance($sever, $auth)
     {
-        if(!self::$_instance instanceof self)
-        {
+        if (!self::$_instance instanceof self) {
 
-            self::$_instance=new self($sever,$auth);
+            self::$_instance = new self($sever, $auth);
 
-            Log::record("单列模式实例创建成功:{".date('Y-m-d H:i:s')."}","info");
+            Log::record("单列模式实例创建成功:{" . date('Y-m-d H:i:s') . "}", "info");
         }
         return self::$_instance;
     }
@@ -53,13 +56,13 @@ class RedisCache
     /**
      * 增加单个元素到key_value缓存
      * @param string $k ：缓存的key值
-     * @param string  $v ：缓存的value值，此处必须是string类型，如果要缓存数组，请调用方中把数组json_encode
+     * @param string $v ：缓存的value值，此处必须是string类型，如果要缓存数组，请调用方中把数组json_encode
      * @return bool
      */
-    public function setItem($k,$v)
+    public function setItem($k, $v)
     {
 
-        return $this->_redis->set($k,$v); //成功返回ture,失败返回false
+        return $this->_redis->set($k, $v); //成功返回ture,失败返回false
 
     }
 
@@ -108,29 +111,35 @@ class RedisCache
      * @param string $k ：数据库索引
      * @return int:返回删除的数量，0为没有删除成功
      */
-    public function selectDb($k){
+    public function selectDb($k)
+    {
         return $this->_redis->select($k);
     }
+
     //单个存储哈希类型
-    public function setHItem($n,$k,$v)
+    public function setHItem($n, $k, $v)
     {
-        return $this->_redis->hset($n,$k,$v);
+        return $this->_redis->hset($n, $k, $v);
     }
+
     //批量存储哈希类型
-    public function setHMTtem($k,array $arrData)
+    public function setHMTtem($k, array $arrData)
     {
-        return $this->_redis->hmset($k,$arrData);
+        return $this->_redis->hmset($k, $arrData);
     }
+
     //单个获取哈希类型
-    public function getHItem($k,$v)
+    public function getHItem($k, $v)
     {
-        return $this->_redis->hget($k,$v);
+        return $this->_redis->hget($k, $v);
     }
+
     //获取哈希类型的所有值
-    public function getHMItem($k,$v)
+    public function getHMItem($k, $v)
     {
-        return $this->_redis->hmget($k,$v);
+        return $this->_redis->hmget($k, $v);
     }
+
     //获取一个哈希数据的所有键和值
     public function getHAllItem($keyData)
     {
@@ -143,14 +152,15 @@ class RedisCache
      * @param $v
      * @return bool|int
      */
-    public function hdel($k,$v)
+    public function hdel($k, $v)
     {
-        return $this->_redis->hDel($k,$v);
+        return $this->_redis->hDel($k, $v);
     }
+
     //设置过期时间
-    public function settime($k,$v)
+    public function settime($k, $v)
     {
-        return $this->_redis->EXPIRE($k,$v);
+        return $this->_redis->EXPIRE($k, $v);
     }
 
     /**
@@ -169,9 +179,9 @@ class RedisCache
      * @param $v
      * @return bool|int
      */
-    public function lpush($k,$v)
+    public function lpush($k, $v)
     {
-        return $this->_redis->lPush($k,$v);
+        return $this->_redis->lPush($k, $v);
     }
 
     /**
@@ -180,9 +190,9 @@ class RedisCache
      * @param $v
      * @return bool|int
      */
-    public function rpush($k,$v)
+    public function rpush($k, $v)
     {
-        return $this->_redis->rPush($k,$v);
+        return $this->_redis->rPush($k, $v);
     }
 
     /**
@@ -217,9 +227,9 @@ class RedisCache
      * @param $count
      * @return int
      */
-    public function lRem($k,$v,$count)
+    public function lRem($k, $v, $count)
     {
-        return $this->_redis->lRem($k,$v,$count);
+        return $this->_redis->lRem($k, $v, $count);
     }
 
     /**
@@ -228,9 +238,9 @@ class RedisCache
      * @param $v
      * @return int
      */
-    public function sAdd($k,$v)
+    public function sAdd($k, $v)
     {
-        return $this->_redis->SADD($k,$v);
+        return $this->_redis->SADD($k, $v);
     }
 
     /**
@@ -249,11 +259,23 @@ class RedisCache
      * @param $value
      * @return bool
      */
-    public function  sisMember($k,$value){
-        return $this->_redis->sIsMember($k,$value);
+    public function sisMember($k, $value)
+    {
+        return $this->_redis->sIsMember($k, $value);
     }
 
-    public function sRem($key,$value){
-        return $this->_redis->sRem($key,$value);
+    public function sRem($key, $value)
+    {
+        return $this->_redis->sRem($key, $value);
+    }
+
+    public function increase($key, $val = 1)
+    {
+        return $this->_redis->incrBy($key, $val);
+    }
+
+    public function decrease($key, $val = 1)
+    {
+        return $this->_redis->decrBy($key, $val);
     }
 }

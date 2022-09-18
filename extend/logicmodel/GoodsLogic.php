@@ -214,7 +214,19 @@ class GoodsLogic
     {
         $count = $this->ordersData->where(['buy_uid' => $uid, 'status' => 1])->count();
         $users = Db::name('users')->where('id', $uid)->find();
-        if ($count >= 1) return Response::fail('您的待付款订单已达上限');
+        if ($count >= 5) return Response::fail('您的待付款订单已达上限');
+
+        // 订单限制检测，24小时锁单5次，接下来24小时无法购买
+        // 只要检测从现在开始的24小时之内有没有限制记录就ok
+        $cancelOrderCount = $this->ordersData
+            ->where(['buy_uid' => $uid, 'status' => 3])
+            ->whereTime('create_time', '-24 hours')
+            ->order(['id desc'])
+            ->limit(5)
+            ->count();
+        if ($cancelOrderCount >= 5 && $users['ignore_lock_order'] === 0)
+            return Response::fail("24小时锁单5次,您被禁止24小时");
+
         $goodsInfo = $this->goodsData->where(['is_del' => 0, 'is_show' => 1, 'id' => $id])->find();
         if (empty($goodsInfo)) return Response::fail('商品信息错误');
         if ($goodsInfo['end_time'] < date('Y-m-d H:i:s')) return Response::fail('商品售卖已结束');
@@ -331,6 +343,17 @@ class GoodsLogic
         return Response::success('success', ['count' => $count, 'data' => $data, 'page' => $page, 'pagesize' => $pagesize]);
     }
 
+    public function resetExpiredShoppingCart($uid)
+    {
+        $data = $this->ordersData
+            ->where([
+                'buy_uid' => $uid,
+                'status' => 1,
+            ])
+            ->whereTime('create_time', '<', date('Y-m-d H:i:s', strtotime("-3 minutes")))
+            ->update(['status' => 3]);
+    }
+
     /**
      * 付款
      * @param $userInfo
@@ -385,7 +408,8 @@ class GoodsLogic
                     ->find();
 
                 // redis 减少库存
-                $goods_kc_count = $this->redis->rpop('goods_mh_' . $og_data['id']);
+//                $goods_kc_count = $this->redis->rpop('goods_mh_' . $og_data['id']);
+                $goods_kc_count = $this->redis->decrease('goods_mh_' . $og_data['id']);
 
                 if (!$goods_kc_count) {
                     Db::rollback();
@@ -479,7 +503,8 @@ class GoodsLogic
                         ->find();
 
                     // redis 减少库存
-                    $goods_kc_count = $this->redis->rpop('goods_kc_' . $og_data['id']);
+//                    $goods_kc_count = $this->redis->rpop('goods_kc_' . $og_data['id']);
+                    $goods_kc_count = $this->redis->increase('goods_kc_' . $og_data['id']);
 
                     if (!$goods_kc_count) {
                         Db::rollback();
@@ -493,7 +518,8 @@ class GoodsLogic
 
                     if (!$is_market) {
                         // redis 回滚库存
-                        $this->redis->rpush('goods_kc_' . $og_data['id'], 1);
+//                        $this->redis->rpush('goods_kc_' . $og_data['id'], 1);
+                        $goods_kc_count = $this->redis->increase('goods_kc_' . $og_data['id']);
                     }
 
                     Db::rollback();

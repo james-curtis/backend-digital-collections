@@ -30,6 +30,7 @@ class Order extends BaseController
      */
     public function apply($id)
     {
+        $this->goodsLogic->resetExpiredShoppingCart($this->userInfo['id']);
         return json($this->goodsLogic->apply($this->uid, $id));
     }
 
@@ -47,9 +48,9 @@ class Order extends BaseController
      * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
      */
-    public function pay($order_id, $pay_type = 1)
+    public function pay($order_id, int $pay_type = 1)
     {
-
+        $this->goodsLogic->resetExpiredShoppingCart($this->userInfo->id);
         $is_market = input('is_market', 0);
         return json($this->goodsLogic->pay($this->userInfo, $order_id, $pay_type, $is_market));
     }
@@ -91,6 +92,7 @@ class Order extends BaseController
      */
     public function orderList($status = 0, $page = 1, $pagesize = 10)
     {
+        $this->goodsLogic->resetExpiredShoppingCart($this->uid);
         return json($this->goodsLogic->orderList($this->uid, $status, $page, $pagesize));
     }
 

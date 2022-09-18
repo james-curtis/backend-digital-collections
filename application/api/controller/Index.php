@@ -57,6 +57,7 @@ class Index extends BaseController
             'contactQR' => config('site.zqh'),
             'isOpenIndexPageCalendar' => config('site.buy_ri_handle') === '1',
             'goodEnd' => config('site.good_end'),
+            'checkoutTips' => config('site.checkout_tips'),
 
             // 云盾验证码
             'yundunAppKey' => config('site.yundun_app_key'),
