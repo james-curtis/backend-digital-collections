@@ -60,7 +60,7 @@ class SendLogic
             return Response::fail('频繁发送');
         }
         $code = rand(1111, 9999);
-        $result = $this->send2($phone, $code);
+        $result = $this->send3($phone, $code);
         if ($result) {
             $this->redis->setItem($phone . '-' . $type, $code);
             $this->redis->settime($phone . '-' . $type, 120);
@@ -73,6 +73,24 @@ class SendLogic
     {
         $res = file_get_contents("http://utf8.api.smschinese.cn/?Uid=比太牛牛&Key=d8sa9dua9sd8ajd9ajda&smsMob={$phone}&smsText=您的验证码是:{$code}");
         return $res;
+    }
+
+    /**
+     * 短信宝
+     * @param $phone
+     * @param $code
+     * @return bool
+     */
+    public function send3($phone, $code)
+    {
+        $username = config('site.smsbao_username');
+        $passwd = md5(config('site.smsbao_password'));
+        $content = urlencode("您的验证码是:$code");
+        $res = file_get_contents("http://api.smsbao.com/sms?u=$username&p=$passwd&m=$phone&c=$content");
+        if ($res === '0') {
+            return true;
+        }
+        return false;
     }
 
     public function send($phone, $code)

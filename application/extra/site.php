@@ -154,4 +154,6 @@ return array (
   'yundun_scene' => 'ic_bbs_h5',
   'good_end' => '/uploads/20220912/38db4bce6ea410cc5d7a0aba50d59c5a.png',
   'checkout_tips' => '<p>数字商品为虚拟商品，仅限实名认证为21-65岁的中国大陆用户购买。本商品一经售出，不支持退换，请谨慎购买。平台发售的数字商品仅具备收藏欣赏价值，官方对商品价格不构成任何指导意义，严防炒作。<br></p>',
+  'smsbao_username' => '13065133350',
+  'smsbao_password' => 'qweasdqwe123',
 );
