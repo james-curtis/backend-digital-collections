@@ -180,6 +180,7 @@ class UserLogic
         $userInfo = $this->usersData->where(['phone' => $member, 'is_del' => 0])->find();
         if (empty($userInfo)) return Response::fail('手机号未注册');
         if ($userInfo['status'] == 0) return Response::fail('账号已冻结');
+        if ($userInfo['id'] == 0) return Response::fail('系统账户禁止登陆');
         if (md5(md5($password) . $userInfo['salt']) != $userInfo['password']) return Response::fail('密码错误');
         $app_token = uniqueNum();
         $redis = GetRedis::getRedis();
