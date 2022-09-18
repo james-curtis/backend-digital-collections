@@ -172,7 +172,12 @@ class Users extends Backend
 
 
             foreach ($list as $row) {
-                $goodsusers = Db::name('goods_users')->where('uid', $row['id'])->count();
+                $goodsusers = Db::name('goods_users')
+                    ->where([
+                        'uid' => $row['id'],
+                        'is_del' => 0,
+                    ])
+                    ->count();
                 $this->model->where('id', $row['id'])->update(['cpzs' => $goodsusers]);
                 $row->visible(['id', 'member', 'nick_name', 'head_image', 'phone', 'status', 'uuid', 'total_direct', 'group_person_count', 'achievement_money', 'group_achievement_money', 'parent_member', 'nftstatus', 'create_time', 'name', 'card', 'is_bank', 'is_wx', 'is_ali', 'wholesale_account', 'award_recommend', 'wallet_address', 'cpzs', "Nftstatus", "group_valid_person_count"]);
                 $row->visible(['role']);
