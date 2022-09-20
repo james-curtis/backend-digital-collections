@@ -50,7 +50,7 @@ class Order extends BaseController
      */
     public function pay($order_id, int $pay_type = 1)
     {
-        $this->goodsLogic->resetExpiredShoppingCart($this->userInfo->id);
+        $this->goodsLogic->resetExpiredShoppingCart($this->userInfo['id']);
         $is_market = input('is_market', 0);
         return json($this->goodsLogic->pay($this->userInfo, $order_id, $pay_type, $is_market));
     }
