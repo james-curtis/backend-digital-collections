@@ -996,6 +996,8 @@ class GoodsLogic
             return Response::fail('未上链不能出售');
         }
         if ($price < 0.01) return Response::fail('价格输入错误');
+        $saleMaxMoney = config('site.sale_max_money');
+        if ($saleMaxMoney != 0 and $saleMaxMoney < $price) return Response::fail('价格不能超过' . $saleMaxMoney);
         $result = $goodsUsersData->where(['id' => $id])->update(['price' => $price, 'status' => 2]);
         if ($result) return Response::success('出售成功');
         return Response::fail('出售失败');
