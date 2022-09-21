@@ -25,7 +25,8 @@ class Recommend extends Award
     public function award($uid)
     {
         //看已经邀请了几个了
-        $total = $this->usersData->where(['pid' => $uid, 'is_del' => 0, 'is_auth' => 1])->count();
+        $where = ['pid' => $uid, 'is_del' => 0, 'is_auth' => 1];
+        $total = $this->usersData->where($where)->count();
         //再看设置的邀请人数 哪个符合
         $award_now = Db::name("award")->where(['type' => 1, 'status' => 1, "total_number" => ['<=', $total]])->order("total_number desc")->find();
         //匹配奖励的id
