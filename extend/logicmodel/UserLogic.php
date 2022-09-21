@@ -91,7 +91,7 @@ class UserLogic
             if ($result) {
                 Db::commit();
 //            (new Recommend())->awardkt($user_id);
-                //(new Recommend())->award($pid);
+                (new Recommend())->award($pid);
                 return Response::success('注册成功');
             }
             Db::rollback();
