@@ -22,6 +22,7 @@
                                 <li><a class="btn btn-link btn-multi btn-disabled disabled" href="javascript:;" data-params="status=hidden"><i class="fa fa-eye-slash"></i> {:__('Set to hidden')}</a></li>
                             </ul>
                         </div>-->
+                        <a href="javascript:;" data-export-url="chip_compose_record/export" class="btn btn-success btn-export {:$auth->check('chip_compose_record/export')?'':'hide'}" title="{:__('Export')}" id="btn-export-file"><i class="fa fa-download"></i> {:__('Export')}</a>
 
                         
                     </div>
