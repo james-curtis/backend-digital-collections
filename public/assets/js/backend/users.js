@@ -385,7 +385,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                 var page = table.bootstrapTable('getData');
                 var all = table.bootstrapTable('getOptions').totalRows;
                 console.log(ids, page, all);
-                Layer.confirm("请选择导出的选项<form action='" + Fast.api.fixurl("users/export") + "' method='post' target='_blank'><input type='hidden' name='ids' value='' /><input type='hidden' name='filter' ><input type='hidden' name='op'><input type='hidden' name='search'><input type='hidden' name='columns'></form>", {
+                Layer.confirm("请选择导出的选项<form action='" + Fast.api.fixurl($(this).data().exportUrl) + "' method='post' target='_blank'><input type='hidden' name='ids' value='' /><input type='hidden' name='filter' ><input type='hidden' name='op'><input type='hidden' name='search'><input type='hidden' name='columns'></form>", {
                     title: '导出数据',
                     btn: ["选中项(" + ids.length + "条)", "本页(" + page.length + "条)", "全部(" + all + "条)"],
                     success: function (layero, index) {
