@@ -11,6 +11,7 @@ namespace app\lib\exception;
 use Exception;
 use think\Config;
 use think\exception\Handle;
+use think\Log;
 use think\Request;
 
 class HttpException extends Handle
@@ -60,7 +61,7 @@ class HttpException extends Handle
         $t = microtime(true);
         $micro = sprintf("%06d", ($t - floor($t)) * 1000000);
         $d = new \DateTime (date('Y-m-d H:i:s.' . $micro, $t));
-        file_put_contents($log_filename, '   ' . $d->format('Y-m-d H:i:s ') . 'url:' . Request::instance()->url() . '     错误信息： ' . $e->getMessage() . "\r\n------------------------ \r\n", FILE_APPEND);
+        Log::error('   ' . $d->format('Y-m-d H:i:s ') . 'url:' . Request::instance()->url() . '     错误信息： ' . $e->getMessage() . "\r\n------------------------ \r\n");
     }
 
 }

@@ -64,7 +64,7 @@ class UserLogic
             } else {
                 $data['wallet_address'] = $account['data']['account'];
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return Response::fail('钱包地址生成失败');
         }
 
