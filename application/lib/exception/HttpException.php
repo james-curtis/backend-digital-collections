@@ -26,14 +26,13 @@ class HttpException extends Handle
      */
     public function render(Exception $e)
     {
-        $debug =  Config::get('app_debug');
-        if ($e instanceof BaseException)
-        {
+        $debug = Config::get('app_debug');
+        if ($e instanceof BaseException) {
             $this->code = $e->code;
             $this->msg = $e->msg;
         } else {
             $this->code = 200;
-            if (!$debug){
+            if (!$debug) {
                 //上线环境
                 $this->msg = '系统错误';
                 $this->errorLog($e);
@@ -47,7 +46,7 @@ class HttpException extends Handle
             'msg' => $msg,
             'code' => $e->code,
         ];
-        return json($result,200);
+        return json($result, 200);
     }
 
     /**
@@ -57,11 +56,11 @@ class HttpException extends Handle
      */
     private function errorLog(Exception $e)
     {
-        $log_filename =  '../runtime/service/' . date('Y-m-d') . ".log";
+        $log_filename = LOG_PATH . './runtime/service/' . date('Y-m-d') . ".log";
         $t = microtime(true);
         $micro = sprintf("%06d", ($t - floor($t)) * 1000000);
         $d = new \DateTime (date('Y-m-d H:i:s.' . $micro, $t));
-        file_put_contents($log_filename, '   ' . $d->format('Y-m-d H:i:s ') .'url:'.Request::instance()->url().'     错误信息： '. $e->getMessage() . "\r\n------------------------ \r\n", FILE_APPEND);
+        file_put_contents($log_filename, '   ' . $d->format('Y-m-d H:i:s ') . 'url:' . Request::instance()->url() . '     错误信息： ' . $e->getMessage() . "\r\n------------------------ \r\n", FILE_APPEND);
     }
 
 }
