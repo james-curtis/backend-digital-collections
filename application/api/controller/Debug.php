@@ -2,7 +2,7 @@
 
 namespace app\api\controller;
 
-use CommonChain\CommonChain;
+use commonChain\CommonChain;
 use think\Controller;
 
 class Debug extends BaseController
@@ -12,7 +12,7 @@ class Debug extends BaseController
     public function reg()
     {
         $name = '15922221111';
-        $chain = new \CommonChain\CommonChain();
+        $chain = new \commonChain\CommonChain();
         $res = $chain->register($name, md5($name));
         var_dump($res);
         die;

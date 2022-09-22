@@ -21,7 +21,7 @@ function CreateChainAccount($config = [], $name)
         $res = requests("/v1beta1/account", [], $body, "POST", $config);
         return $res;
     }
-    $chain = new \CommonChain\CommonChain();
+    $chain = new \commonChain\CommonChain();
     $res = $chain->register($name, md5($name));
     if (intval($res['code']) != 0) {
         return [
@@ -70,7 +70,7 @@ function CreateChainNfts($user, $goods_id, $url)
         return $res;
     }
     $name = $user['phone'];
-    $chain = new \CommonChain\CommonChain();
+    $chain = new \commonChain\CommonChain();
     $config = [
         'name' => 'nft' . $goods_id,
         'pieceCount' => 1,
@@ -129,7 +129,7 @@ function CreateChainTx($operation_id, $phone = '', $methodName = 'transferFrom')
         $res = requests("/v1beta1/tx/" . $operation_id, [], [], "GET", []);
         return $res;
     }
-    $chain = new \CommonChain\CommonChain();
+    $chain = new \commonChain\CommonChain();
     $config = [
         'transactionHash' => $operation_id,
         'methodName' => $methodName,
@@ -156,7 +156,7 @@ function Nfttransfers($nft_id, $owner, $class_id, $account, $ownerInfo = null)
         $res = requests("/v1beta1/nft/nft-transfers/" . $class_id . "/" . $owner . "/" . $nft_id, [], $body, "POST", []);
         return $res;
     }
-    $chain = new \CommonChain\CommonChain();
+    $chain = new \commonChain\CommonChain();
     $config = [
         'contractAddress' => $nft_id,
         'tokenId' => $class_id,

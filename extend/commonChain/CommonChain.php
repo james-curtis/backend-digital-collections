@@ -1,6 +1,6 @@
 <?php
 
-namespace CommonChain;
+namespace commonChain;
 
 use TiChain\TiChain;
 
