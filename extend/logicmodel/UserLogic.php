@@ -13,6 +13,7 @@ use logicmodel\award\Award;
 use logicmodel\award\Recommend;
 use think\Cookie;
 use think\Db;
+use think\Exception;
 use think\Request;
 
 // require_once('../xasset/index.php');
@@ -55,14 +56,18 @@ class UserLogic
         $info = $this->usersData->where(['phone' => $phone, 'is_del' => 0])->find();
         if ($info) return Response::fail('手机号已注册');
         //调用地址方法
-        $account = CreateChainAccount([], $phone);
-        if (array_key_exists('error', $account)) {
-            if ($account['error'])
-                return Response::fail($account['error']);
+        try {
+            $account = CreateChainAccount([], $phone);
+            if (array_key_exists('error', $account)) {
+                if ($account['error'])
+                    return Response::fail($account['error']);
+            } else {
+                $data['wallet_address'] = $account['data']['account'];
+            }
+        } catch (Exception $exception) {
             return Response::fail('钱包地址生成失败');
-        } else {
-            $data['wallet_address'] = $account['data']['account'];
         }
+
         if (!empty($uuid)) {
             $parentInfo = $this->usersData->where(['uuid' => $uuid, 'is_del' => 0])->find();
             if (empty($parentInfo)) return Response::fail('邀请码错误');
