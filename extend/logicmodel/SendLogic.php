@@ -71,7 +71,8 @@ class SendLogic
 
     public function send2($phone, $code)
     {
-        $res = file_get_contents("http://utf8.api.smschinese.cn/?Uid=比太牛牛&Key=d8sa9dua9sd8ajd9ajda&smsMob={$phone}&smsText=您的验证码是:{$code}");
+        $content = str_replace('{code}', $code, config('site.sms_template'));
+        $res = file_get_contents("http://utf8.api.smschinese.cn/?Uid=比太牛牛&Key=d8sa9dua9sd8ajd9ajda&smsMob={$phone}&smsText={$content}");
         return $res;
     }
 
@@ -85,7 +86,7 @@ class SendLogic
     {
         $username = config('site.smsbao_username');
         $passwd = md5(config('site.smsbao_password'));
-        $content = urlencode("您的验证码是:$code");
+        $content = str_replace('{code}', $code, config('site.sms_template'));
         $res = file_get_contents("http://api.smsbao.com/sms?u=$username&p=$passwd&m=$phone&c=$content");
         if ($res === '0') {
             return true;

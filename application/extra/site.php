@@ -157,4 +157,5 @@ return array (
   'smsbao_username' => '13065133350',
   'smsbao_password' => 'qweasdqwe123',
   'sale_max_money' => '50000',
+  'sms_template' => '【Space9 】您的验证码是{code}。3分钟内有效，请勿泄露他人！',
 );
