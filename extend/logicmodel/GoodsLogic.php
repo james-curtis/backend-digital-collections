@@ -1069,7 +1069,7 @@ class GoodsLogic
             try {
                 $users = Users::where('id', $uid)->find();
 
-                $CreateChainTx = CreateChainTx($goods['operation_id'], $users['phone'], 'mint');
+                $CreateChainTx = CreateChainTx($goods['operation_id'], $users['wallet_private_key'], 'mint');
 
                 if (array_key_exists('error', $CreateChainTx)) {
                     Db::rollback();

@@ -50,7 +50,7 @@ function CreateChainClasses($account, $goods_id, $userid, $users)
         $res = requests("/v1beta1/nft/classes", [], $body, "POST", []);
         return $res;
     }
-    return CreateChainAccount([], $users['phone']);
+    return CreateChainAccount([], $users['wallet_address']);
 }
 
 
@@ -69,7 +69,7 @@ function CreateChainNfts($user, $goods_id, $url)
         //operationid1654506994
         return $res;
     }
-    $name = $user['phone'];
+    $name = $user['wallet_private_key'];
     $chain = new \commonChain\CommonChain();
     $config = [
         'name' => 'nft' . $goods_id,
@@ -163,7 +163,7 @@ function Nfttransfers($nft_id, $owner, $class_id, $account, $ownerInfo = null)
         'from' => $owner,
         'to' => $account,
     ];
-    $res = $chain->transfer($ownerInfo['phone'], md5($ownerInfo['phone']), $config);
+    $res = $chain->transfer($ownerInfo['wallet_private_key'], md5($ownerInfo['wallet_private_key']), $config);
     if (intval($res['code']) != 0) {
         return [
             'error' => $res['message'],

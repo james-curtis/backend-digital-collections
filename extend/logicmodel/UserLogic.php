@@ -55,18 +55,6 @@ class UserLogic
         // $this->redis->settime($phone . '-' . 'fs', 10); 
         $info = $this->usersData->where(['phone' => $phone, 'is_del' => 0])->find();
         if ($info) return Response::fail('手机号已注册');
-        //调用地址方法
-        try {
-            $account = CreateChainAccount([], $phone);
-            if (array_key_exists('error', $account)) {
-                if ($account['error'])
-                    return Response::fail($account['error']);
-            } else {
-                $data['wallet_address'] = $account['data']['account'];
-            }
-        } catch (\Exception $exception) {
-            return Response::fail('钱包地址生成失败');
-        }
 
         if (!empty($uuid)) {
             $parentInfo = $this->usersData->where(['uuid' => $uuid, 'is_del' => 0])->find();
@@ -88,6 +76,20 @@ class UserLogic
         $data['uuid'] = $uuid;
         $data['create_time'] = date('Y-m-d H:i:s');
         $data['parent_member'] = $parentInfo['phone'];
+        $data['wallet_private_key'] = uuid() . uuid();
+
+        try {
+            $account = CreateChainAccount([], $data['wallet_private_key']);
+            if (array_key_exists('error', $account)) {
+                if ($account['error'])
+                    return Response::fail($account['error']);
+            } else {
+                $data['wallet_address'] = $account['data']['account'];
+            }
+        } catch (\Exception $exception) {
+            return Response::fail('钱包地址生成失败');
+        }
+
         Db::startTrans();
         $user_id = $this->usersData->saveEntityAndGetId($data);
 
@@ -578,7 +580,7 @@ class UserLogic
             $arrs = json_decode($arrs, true);
             if ($arrs['code'] != '0')
                 return Response::fail($arrs['message']);
-            if($arrs['result']['res'] != '1')
+            if ($arrs['result']['res'] != '1')
                 return Response::fail('信息不一致');
         } catch (\Exception $exception) {
             return Response::fail('实名失败');

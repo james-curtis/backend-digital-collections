@@ -209,9 +209,13 @@ class Users extends Backend
     public function nftupdate($ids = "")
     {
         foreach ($ids as $key => $value) {
-
             $users = Db::name('users')->where('id', $value)->find();
-            if ($users['class_id'] == null) {
+            if ($users['class_id'] == null or true) {
+                if (empty($users['wallet_private_key'])) {
+                    $this->model->where('id', $value)->update([
+                        'wallet_private_key' => uuid() . uuid(),
+                    ]);
+                }
                 $class_id = uniqueNum();
                 $classes = CreateChainClasses($users['wallet_address'], $class_id, $users['id'], $users);
                 if (array_key_exists('error', $classes)) {
