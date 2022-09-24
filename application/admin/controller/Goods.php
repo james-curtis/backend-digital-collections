@@ -354,7 +354,7 @@ class Goods extends Backend
             $this->model->where($this->dataLimitField, 'in', $adminIds);
         }
         $list = [];
-        $total = $this->model->where($where)->count();
+        $total = $this->model->where($where)->where(['is_del' => 0])->count();
         if ($total > 0) {
             if (is_array($adminIds)) {
                 $this->model->where($this->dataLimitField, 'in', $adminIds);
@@ -417,7 +417,7 @@ class Goods extends Backend
                 $result[] = array_values($filter_arr)[0];
             }
         }
-        return json(['list' => $result, 'total' => count($result)]);
+        return json(['list' => $result, 'total' => $total]);
     }
 
 
