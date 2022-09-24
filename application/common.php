@@ -314,14 +314,14 @@ function getMillisecond()
 //身份证 手机号 姓名验证
 function beckoning($idcard, $mobile, $name)
 {
-    $config = Db::name('config')->where('group', 'beckoning')->field('id,value')->select();
+//    $config = Db::name('config')->where('group', 'beckoning')->field('id,value')->select();
 
-    $host = $config[0]['value'];
+    $host = config('site.host');
 //    $path = "/mobile/3-validate";
     $path = "";
 
     $method = "POST";
-    $appcode = $config[1]['value'];
+    $appcode = config('site.appcode');
 
 
     $headers = array();

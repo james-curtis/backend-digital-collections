@@ -573,10 +573,16 @@ class UserLogic
     public function auth($userInfo, $name, $card)
     {
         if ($userInfo['is_auth'] == 1) return Response::fail('你已实名认证,请勿重复提交');
-        $arrs = beckoning($card, $userInfo['phone'], $name);
-        $arrs = json_decode($arrs, true);
-        if ($arrs['code'] != '0')
-            return Response::fail($arrs['message']);
+        try {
+            $arrs = beckoning($card, $userInfo['phone'], $name);
+            $arrs = json_decode($arrs, true);
+            if ($arrs['code'] != '0')
+                return Response::fail($arrs['message']);
+            if($arrs['result']['res'] != '1')
+                return Response::fail('信息不一致');
+        } catch (\Exception $exception) {
+            return Response::fail('实名失败');
+        }
 
         $data['name'] = $name;
         $data['card'] = $card;
