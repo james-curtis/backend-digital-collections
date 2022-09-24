@@ -8,13 +8,10 @@ use think\Model;
 class Users extends Model
 {
 
-    
-
-    
 
     // 表名
     protected $name = 'users';
-    
+
     // 自动写入时间戳字段
     protected $autoWriteTimestamp = false;
 
@@ -32,14 +29,13 @@ class Users extends Model
         'is_ali_text',
         'is_wx_text'
     ];
-    
 
-    
+
     public function getStatusList()
     {
         return ['0' => __('Status 0'), '1' => __('Status 1')];
     }
-    
+
     public function getNftstatusList()
     {
         return ['0' => __('Nftstatus 0'), '1' => __('Nftstatus 1')];
@@ -78,13 +74,13 @@ class Users extends Model
         return isset($list[$value]) ? $list[$value] : '';
     }
 
- public function getNftstatusTextAttr($value, $data)
+    public function getNftstatusTextAttr($value, $data)
     {
         $value = $value ? $value : (isset($data['nftstatus']) ? $data['nftstatus'] : '');
         $list = $this->getNftstatusList();
         return isset($list[$value]) ? $list[$value] : '';
     }
-    
+
     public function getIsDelTextAttr($value, $data)
     {
         $value = $value ? $value : (isset($data['is_del']) ? $data['is_del'] : '');
@@ -136,7 +132,6 @@ class Users extends Model
         $list = $this->getYxgList();
         return isset($list[$value]) ? $list[$value] : '';
     }
-
 
 
     public function role()

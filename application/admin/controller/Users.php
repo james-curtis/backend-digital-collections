@@ -179,7 +179,7 @@ class Users extends Backend
                     ])
                     ->count();
                 $this->model->where('id', $row['id'])->update(['cpzs' => $goodsusers]);
-                $row->visible(['id', 'member', 'nick_name', 'head_image', 'phone', 'status', 'uuid', 'total_direct', 'group_person_count', 'achievement_money', 'group_achievement_money', 'parent_member', 'nftstatus', 'create_time', 'name', 'card', 'is_bank', 'is_wx', 'is_ali', 'wholesale_account', 'award_recommend', 'wallet_address', 'cpzs', "Nftstatus", "group_valid_person_count"]);
+                $row->visible(['id', 'member', 'nick_name', 'head_image', 'phone', 'status', 'uuid', 'total_direct', 'group_person_count', 'achievement_money', 'group_achievement_money', 'parent_member', 'nftstatus', 'create_time', 'name', 'card', 'is_bank', 'is_auth', 'is_wx', 'is_ali', 'wholesale_account', 'award_recommend', 'wallet_address', 'cpzs', "Nftstatus", "group_valid_person_count"]);
                 $row->visible(['role']);
                 $row->getRelation('role')->visible(['name']);
                 $row['cpzs'] = $goodsusers;

@@ -158,8 +158,7 @@ class User extends BaseController
      * @param $remark
      * @return \think\response\Json
      */
-    public
-    function feedback($images, $remark)
+    public function feedback($images, $remark)
     {
         return json($this->userLogic->feedback($this->uid, $images, $remark));
     }
@@ -174,8 +173,7 @@ class User extends BaseController
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public
-    function auth($name, $card)
+    public function auth($name, $card)
     {
         (new AuthValidate())->goCheck();
         return json($this->userLogic->auth($this->userInfo, $name, $card));
@@ -189,15 +187,13 @@ class User extends BaseController
      * @throws \think\Exception
      * @throws \think\exception\PDOException
      */
-    public
-    function wxSmallAuth($code)
+    public function wxSmallAuth($code)
     {
         return json((new WxLogic())->auth($this->userInfo, $code));
     }
 
 //团队人数
-    public
-    function tdusers()
+    public function tdusers()
     {
         $uid = $this->uid;
         $user = Db::name('users')->where('pid', $uid)->where('is_del', 0)->count();
@@ -210,8 +206,7 @@ class User extends BaseController
     }
 
 //排行榜
-    public
-    function Ranking()
+    public function Ranking()
     {
         $page = $this->request->post('page');
         $pagesize = $this->request->post('pagesize');

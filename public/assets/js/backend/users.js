@@ -273,7 +273,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             field: 'is_auth',
                             title: __('Is_auth'),
                             searchList: {"0": __('Is_auth 0'), "1": __('Is_auth 1')},
-                            formatter: Table.api.formatter.normal
+                            formatter: Table.api.formatter.status
                         },
                         {field: 'name', title: __('Name'), operate: false},
                         {field: 'card', title: __('Card'), operate: false},
