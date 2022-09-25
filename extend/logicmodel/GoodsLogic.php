@@ -1140,7 +1140,7 @@ class GoodsLogic
                     if ($result) {
                         Db::commit();
                         $this->redis->delItem($redis_str);
-                        return Response::success('转增成功4');
+                        return Response::success('转增成功');
                     }
                     Db::rollback();
                     $this->redis->delItem($redis_str);
@@ -1154,7 +1154,7 @@ class GoodsLogic
         } else {
             Db::rollback();
             $this->redis->delItem($redis_str);
-            return Response::fail('转增失败6');
+            return Response::fail('商品未上链无法转赠');
         }
 
     }

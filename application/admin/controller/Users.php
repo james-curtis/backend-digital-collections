@@ -219,7 +219,7 @@ class Users extends Backend
                 $class_id = uniqueNum();
                 $classes = CreateChainClasses($users['wallet_address'], $class_id, $users['id'], $users);
                 if (array_key_exists('error', $classes)) {
-                    return Response::fail('链上正在更新，请稍后再试');
+                    return Response::fail($classes['error']);
                 }
                 $result = $this->model->where('id', $value)->update([
                     'class_id' => $class_id,
