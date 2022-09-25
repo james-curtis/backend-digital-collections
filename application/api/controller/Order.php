@@ -215,6 +215,19 @@ class Order extends BaseController
     }
 
     /**
+     * 赎回藏品
+     * @param $id
+     * @return \think\response\Json
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function redeem($id)
+    {
+        return json($this->goodsLogic->redeem($this->uid, $id));
+    }
+
+    /**
      * 切换藏品状态
      * @param $id
      * @param $is_show

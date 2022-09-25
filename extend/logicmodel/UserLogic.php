@@ -317,6 +317,7 @@ class UserLogic
      */
     public function userInfo($userInfo)
     {
+        $data['id'] = $userInfo['id'];
         $data['nick_name'] = $userInfo['nick_name'];
         $data['role_id'] = $userInfo['role_id'];
         $data['phone'] = $userInfo['phone'];

@@ -50,12 +50,12 @@ function CreateChainClasses($account, $goods_id, $userid, $users)
         $res = requests("/v1beta1/nft/classes", [], $body, "POST", []);
         return $res;
     }
-    return CreateChainAccount([], $users['wallet_address']);
+    return CreateChainAccount([], $users['wallet_private_key']);
 }
 
 
 //发行 NFT
-function CreateChainNfts($user, $goods_id, $url)
+function CreateChainNfts($user, $goods_id, $url, $count = 1)
 {
     if (!config('?site.tichain_appid')) {
         $body = [
@@ -73,15 +73,19 @@ function CreateChainNfts($user, $goods_id, $url)
     $chain = new \commonChain\CommonChain();
     $config = [
         'name' => 'nft' . $goods_id,
-        'pieceCount' => 1,
+        'pieceCount' => $count,
         'feature' => $url,
         'productIds' => [$goods_id],
     ];
     $res = $chain->publish($name, md5($name), $config);
     if (intval($res['code']) != 0) {
-        return [
-            'error' => $res['message'],
-        ];
+        try {
+            return [
+                'error' => array_key_exists('message', $res) ? $res['message'] : $res['msg'],
+            ];
+        } catch (\Exception $exception) {
+            throw new \think\Exception(var_export($res, true));
+        }
     }
     return [
         'data' => [

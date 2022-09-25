@@ -468,7 +468,11 @@ class GoodsLogic
                 //     return Response::fail('订单支付失败');
                 // }
 
-                $goods_user_number = $goodsUsersData->where(['goods_id' => $info['goods_id']])->whereNotNull('number')->order('id', 'desc')->value('number');
+                $goods_user_number = $goodsUsersData
+                    ->where(['goods_id' => $info['goods_id']])
+                    ->whereNotNull('number')
+                    ->order('id', 'desc')
+                    ->value('number');
 
                 if ($goods_user_number) {
                     $goods_user_number = str_pad($goods_user_number + 1, 6, '0', STR_PAD_LEFT);
@@ -484,6 +488,17 @@ class GoodsLogic
                 $usersGoods['number'] = $goods_user_number;
                 $usersGoods['status'] = 1;
                 $goods = Goods::where('id', $info['goods_id'])->find();
+
+                // 上链
+                try {
+                    $chain = CreateChainNfts($userInfo, $info['goods_id'], $info['goods_id']);
+                    $usersGoods['operation_id'] = $chain['operation_id'];
+                    $usersGoods['contract_address'] = $chain['contractAddress'];
+                    $usersGoods['state'] = 1;
+                } catch (\Exception $exception) {
+                    Db::rollback();
+                    return Response::fail('上链失败');
+                }
 
 
                 $result = $goodsUsersData->insertGetId($usersGoods);
@@ -754,7 +769,8 @@ class GoodsLogic
         $where['gu.status'] = 2;
         $where['gu.is_del'] = 0;
         $where['gu.is_show'] = 1;
-        $where['u.id'] = ['<>', 1];
+        $where['gu.state'] = '1';
+        $where['gu.uid'] = ['<>', 0];
 //        if (!empty($uid)) $where['gu.uid'] = ['<>', $uid];
         if (!empty($goods_category_id)) $where['g.goods_category_id'] = $goods_category_id;
         if (!empty($search)) $where['g.name|g.label'] = ['like', '%' . $search . '%'];
@@ -762,13 +778,13 @@ class GoodsLogic
         $count = $goodsUsersData->alias('gu')
             ->join('goods g', 'g.id = gu.goods_id')
             ->join('goods_category gc', 'gc.id = g.goods_category_id', 'left')
-            ->join('users u', 'u.id = gu.uid')
+            ->join('users u', 'u.id = gu.uid', 'left')
             ->where($where)
             ->count();
         $data = $goodsUsersData->alias('gu')
             ->join('goods g', 'g.id = gu.goods_id')
             ->join('goods_category gc', 'gc.id = g.goods_category_id', 'left')
-            ->join('users u', 'u.id = gu.uid')
+            ->join('users u', 'u.id = gu.uid', 'left')
             ->where($where)
             ->order(['gu.order asc'])
             ->page($page, $pagesize)
@@ -987,6 +1003,7 @@ class GoodsLogic
         $goodsUsersData = new GoodsUsers();
         $info = $goodsUsersData->where(['status' => 1, 'uid' => $uid, 'id' => $id])->find();
         if (empty($info)) return Response::fail('藏品信息错误');
+        if (intval($info['state']) !== 1) return Response::fail('藏品未上链');
         $trade_day = config('site.trade_day');
         $end_time = date('Y-m-d H:i:s', strtotime("{$trade_day} days"));
         if ($end_time < $info['create_time']) {
@@ -1001,6 +1018,31 @@ class GoodsLogic
         $result = $goodsUsersData->where(['id' => $id])->update(['price' => $price, 'status' => 2]);
         if ($result) return Response::success('出售成功');
         return Response::fail('出售失败');
+    }
+
+    /**
+     * 赎回藏品
+     * @param $uid
+     * @param $id
+     * @return array
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function redeem($uid, $id)
+    {
+        $goodsUsersData = new GoodsUsers();
+        $where['status'] = 2;
+        $where['is_del'] = 0;
+        $where['is_show'] = 1;
+        $where['state'] = '1';
+        $where['uid'] = $uid;
+        $where['id'] = $id;
+        $info = $goodsUsersData->where($where)->find();
+        if (empty($info)) return Response::fail('藏品信息错误');
+        $result = GoodsUsers::update(['status' => 1], ['id' => $id]);
+        if ($result) return Response::success('赎回成功');
+        return Response::fail('赎回失败');
     }
 
     /**
