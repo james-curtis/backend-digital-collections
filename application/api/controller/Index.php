@@ -220,7 +220,11 @@ class Index extends BaseController
 
         $count = $goods->where(['hcstatus' => 1, 'is_manghe' => 2])->count();
         //合成列表
-        $goodslist = $goods->where(['hcstatus' => 1, 'is_manghe' => 2, 'is_del' => 0])->page($page, $pagesize)->field('id,image,hcgoods_id,name,stock limitnum,surplus')->select();
+        $goodslist = $goods
+            ->where(['hcstatus' => 1, 'is_manghe' => 2, 'is_del' => 0])
+            ->page($page, $pagesize)
+            ->field('id,image,hcgoods_id,name,stock limitnum,surplus')
+            ->select();
 
         $hc_list = array();
 
@@ -244,7 +248,8 @@ class Index extends BaseController
             //用户持有合成藏品个数
             $goodsusers = Db::name('goods_users')->where(['uid' => $this->uid, 'status' => 1, 'is_del' => 0])->whereIn('goods_id', $value['hcgoods_id'])->count();
 
-            $value['image'] = 'http://' . $_SERVER['HTTP_HOST'] . $value['image'];
+            $value['image'] = addWebSiteUrl(['image' => $value['image']], ['image'])['image'];
+//            $value['image'] = 'http://' . $_SERVER['HTTP_HOST'] . $value['image'];
             if ($goodsusers >= $hccpcounts) {
 
                 $num = $goodsusers % $hccpcounts;
