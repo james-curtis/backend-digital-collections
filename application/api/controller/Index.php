@@ -282,7 +282,8 @@ class Index extends BaseController
         $goodsusers = new GoodsUsers();
         $chipComposeRecordModel = new ChipComposeRecord();
         $goodslist = $goods->where('id', $id)->field('id,image,hcgoods_id,name,content')->find();
-        $goodslist['image'] = 'http://' . $_SERVER['HTTP_HOST'] . $goodslist['image'];
+//        $goodslist['image'] = 'http://' . $_SERVER['HTTP_HOST'] . $goodslist['image'];
+        $goodslist['image'] = addWebSiteUrl(['image' => $goodslist['image']], ['image'])['image'];
         $data['goodslist'] = $goodslist;
         $hccs = $chipComposeRecordModel->where(['goods_id' => $id, 'user_id' => $this->uid])->count();
         $counts = explode(',', $goodslist['hcgoods_id']);
