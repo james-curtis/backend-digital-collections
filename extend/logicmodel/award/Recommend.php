@@ -32,14 +32,23 @@ class Recommend extends Award
             ->where(['type' => 1, 'status' => 1, "total_number" => ['<=', $total]])
             ->order("total_number desc")
             ->select();
+        // 需求：拉新1人的奖励是可以重复获取，其他奖励只有一次机会
         foreach ($award_now_arr as $award_now) {
             //匹配奖励的id
             $award_id = $award_now['id'];
             //取推荐奖励 看是否开启了
             $awardInfo = $this->awardIsOpen($award_id);
-            if ($awardInfo === false) return false;//奖项未开起
-            $info = $this->awardRecordData->where(['uid' => $uid, 'award_id' => $award_id])->find();
-            if ($info) return Response::fail('已领取奖励');
+            if ($awardInfo === false) return false;
+
+            // 排除拉新1人的情况。这里需要允许重复获取
+            if ($award_now['total_number'] == 1) {
+                //奖项未开起
+                $info = $this->awardRecordData->where(['uid' => $uid, 'award_id' => $award_id])->find();
+//            if ($info) return Response::fail('已领取奖励');
+                // 已领取奖励
+                if ($info) continue;
+            }
+
             if (!$awardInfo['goods_id']) {
                 return Response::fail('无产品');
             }
