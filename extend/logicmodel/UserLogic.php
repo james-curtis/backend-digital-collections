@@ -97,8 +97,12 @@ class UserLogic
             $result = $this->updateGroup($pid);
             if ($result) {
                 Db::commit();
-//            (new Recommend())->awardkt($user_id);
-                (new Recommend())->award($pid);
+                try {
+                    (new Recommend())->awardkt($user_id);
+                    (new Recommend())->award($pid);
+                } catch (\Exception $exception) {
+
+                }
                 return Response::success('注册成功');
             }
             Db::rollback();
