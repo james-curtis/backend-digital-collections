@@ -1008,6 +1008,10 @@ class GoodsLogic
     {
         $goodsUsersData = new GoodsUsers();
         $info = $goodsUsersData->where(['status' => 1, 'uid' => $uid, 'id' => $id])->find();
+        $goodInfo = Goods::get(['id' => $info['goods_id']]);
+        if ($goodInfo['is_can_buy'] === 0) {
+            return Response::fail('该藏品不参与买卖');
+        }
         if (empty($info)) return Response::fail('藏品信息错误');
         if (intval($info['state']) !== 1) return Response::fail('藏品未上链');
         $trade_day = config('site.trade_day');
