@@ -18,6 +18,7 @@ use datamodel\Users;
 use datamodel\Chongzhi;
 use datamodel\UsersCoupon;
 use think\Db;
+use think\Env;
 use think\Request;
 
 // require_once('../xasset/index.php');
@@ -491,12 +492,15 @@ class GoodsLogic
 
                 // 上链
                 try {
-                    $chain = CreateChainNfts($userInfo, $info['goods_id'], $info['goods_id']);
+                    $chain = CreateChainNfts($userInfo, $info['goods_id'], $info['goods_id'])['data'];
                     $usersGoods['operation_id'] = $chain['operation_id'];
                     $usersGoods['contract_address'] = $chain['contractAddress'];
                     $usersGoods['state'] = 1;
                 } catch (\Exception $exception) {
                     Db::rollback();
+                    if (Env::get('app.debug', false)) {
+                        throw $exception;
+                    }
                     return Response::fail('上链失败');
                 }
 
@@ -941,8 +945,8 @@ class GoodsLogic
 
         $goodsUsersData = new GoodsUsers();
         $info = $goodsUsersData->alias('gu')
-            ->join('goods g', 'g.id = gu.goods_id')
-            ->join('users u', 'u.id = gu.uid')
+            ->join('goods g', 'g.id = gu.goods_id', 'left')
+            ->join('users u', 'u.id = gu.uid', 'left')
             ->join('goods_category gc', 'gc.id = g.goods_category_id', 'left')
             ->where(['gu.id' => $id])
             ->order(['gu.order asc'])
@@ -957,8 +961,10 @@ class GoodsLogic
                 'gu.uid',
                 'gu.goods_id',
                 'gu.number',
+                'gu.operation_id as creator',
                 'gu.operation_id',
                 'gu.jlstatus',
+                'gu.contract_address as owner',
                 'gc.name goods_category_name',
             ])
             ->find();

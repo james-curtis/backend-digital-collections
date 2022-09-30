@@ -55,7 +55,7 @@ function CreateChainClasses($account, $goods_id, $userid, $users)
 
 
 //发行 NFT
-function CreateChainNfts($user, $goods_id, $url, $count = 1)
+function CreateChainNfts($user, $goods_id, $url, $count = 1, $config = [])
 {
     if (!config('?site.tichain_appid')) {
         $body = [
@@ -71,13 +71,13 @@ function CreateChainNfts($user, $goods_id, $url, $count = 1)
     }
     $name = $user['wallet_private_key'];
     $chain = new \commonChain\CommonChain();
-    $config = [
+    $config_ = [
         'name' => 'nft' . $goods_id,
         'pieceCount' => $count,
-        'feature' => $url,
+        'feature' => $url . '#' . uuid(),
         'productIds' => [$goods_id],
     ];
-    $res = $chain->publish($name, md5($name), $config);
+    $res = $chain->publish($name, md5($name), array_merge($config_, $config));
     if (intval($res['code']) != 0) {
         try {
             return [
