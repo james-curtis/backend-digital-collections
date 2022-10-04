@@ -98,7 +98,7 @@ class UserLogic
             if ($result) {
                 Db::commit();
                 try {
-                    (new Recommend())->awardkt($user_id);
+//                    (new Recommend())->awardkt($user_id);
                     (new Recommend())->award($pid);
                 } catch (\Exception $exception) {
 
