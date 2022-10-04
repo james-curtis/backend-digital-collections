@@ -14,7 +14,7 @@
         <label class="control-label col-xs-12 col-sm-2">是否参与购买:</label>
         <div class="col-xs-12 col-sm-8">
 
-            <select disabled="disabled" id="c-is_can_buy" class="form-control selectpicker" name="row[is_can_buy]">
+            <select id="c-is_can_buy" class="form-control selectpicker" name="row[is_can_buy]">
                 {foreach name="isCanBuyList" item="vo"}
                 <option value="{$key}" {in name="key" value="$row.is_can_buy"}selected{/in}>{$vo}</option>
                 {/foreach}
