@@ -1605,6 +1605,11 @@ class GoodsLogic
             ->where(['id' => $goods_id, 'is_del' => 0])
             ->find();
 
+        if ($goods['is_manghe'] == 0)
+            $this->redis->setItem('goods_kc_' . $goods['id'], $goods['surplus']);
+        else
+            $this->redis->setItem('goods_mh_' . $goods['id'], $goods['surplus']);
+
         return Response::success('success', ['surplus' => $goods['surplus']]);
     }
 

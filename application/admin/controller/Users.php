@@ -366,99 +366,111 @@ class Users extends Backend
             $price = $data['price'];
             if (empty($price)) $price = $goods['price'];
 
-            $goodsData = new Goods();
+            $size = $data['size'];
+            if (empty($size)) $price = 1;
 
-            //生成
+            function gen($goods, $idlist, $goodsUsersData, $goods_id, $price, $redis)
+            {
+                $goodsData = new Goods();
 
-            if ($goods['is_manghe'] == 0) {
-                foreach ($idlist as $value) {
+                //生成
 
-                    $users = Db::name('users')->where('id', $value)->find();
+                if ($goods['is_manghe'] == 0) {
+                    foreach ($idlist as $value) {
+
+                        $users = Db::name('users')->where('id', $value)->find();
 
 
-                    $goods_user_number = $goodsUsersData->where(['goods_id' => $goods_id])->whereNotNull('number')->order('id', 'desc')->value('number');
+                        $goods_user_number = $goodsUsersData->where(['goods_id' => $goods_id])->whereNotNull('number')->order('id', 'desc')->value('number');
 
-                    if ($goods_user_number) {
-                        $goods_user_number = str_pad($goods_user_number + 1, 6, '0', STR_PAD_LEFT);
-                    } else {
-                        $goods_user_number = '000001';
+                        if ($goods_user_number) {
+                            $goods_user_number = str_pad($goods_user_number + 1, 6, '0', STR_PAD_LEFT);
+                        } else {
+                            $goods_user_number = '000001';
+                        }
+                        $user = ['uid' => $value, 'goods_id' => $goods_id, 'price' => $price, 'number' => $goods_user_number, 'create_time' => date('Y-m-d H:i:s'), 'is_send' => 1];
+                        Db::startTrans();
+                        $results = (new \app\admin\model\GoodsUsers())->insertGetId($user);
+                        if (!$results) {
+                            Db::rollback();
+                            return json(['code' => 0, 'msg' => '赠送失败']);
+                        }
+                        $send = ['uid' => $value, 'goods_id' => $goods_id, 'price' => $price, 'create_time' => date('Y-m-d H:i:s')];
+
+                        Db::name('goods_users')->where('id', $results)->update(['jlstatus' => 1]);
+                        $result = (new \app\admin\model\GoodsSend())->insertGetId($send);
+                        if (!$result) {
+                            Db::rollback();
+                            return json(['code' => 0, 'msg' => '赠送失败']);
+                        }
+
+//                        // redis 减少库存
+//                        $goods_kc_count = $redis->rpop('goods_kc_' . $goods['id']);
+//
+//                        if (!$goods_kc_count) {
+//                            Db::rollback();
+//                            return Response::fail('没有库存了');
+//                        }
+
+                        //库存剩余递减 销量递增
+                        $goodsData->where(['id' => $goods['id']])->setDec('surplus', 1);
+                        $goodsData->where(['id' => $goods['id']])->setInc('sales', 1);
+
+                        Db::commit();
                     }
-                    $user = ['uid' => $value, 'goods_id' => $goods_id, 'price' => $price, 'number' => $goods_user_number, 'create_time' => date('Y-m-d H:i:s'), 'is_send' => 1];
-                    Db::startTrans();
-                    $results = (new \app\admin\model\GoodsUsers())->insertGetId($user);
-                    if (!$results) {
-                        Db::rollback();
-                        return json(['code' => 0, 'msg' => '赠送失败']);
-                    }
-                    $send = ['uid' => $value, 'goods_id' => $goods_id, 'price' => $price, 'create_time' => date('Y-m-d H:i:s')];
 
-                    Db::name('goods_users')->where('id', $results)->update(['jlstatus' => 1]);
-                    $result = (new \app\admin\model\GoodsSend())->insertGetId($send);
-                    if (!$result) {
-                        Db::rollback();
-                        return json(['code' => 0, 'msg' => '赠送失败']);
-                    }
-
-                    // redis 减少库存
-                    $goods_kc_count = $redis->rpop('goods_kc_' . $goods['id']);
-
-                    if (!$goods_kc_count) {
-                        Db::rollback();
-                        return Response::fail('没有库存了');
-                    }
-
-                    //库存剩余递减 销量递增
-                    $goodsData->where(['id' => $goods['id']])->setDec('surplus', 1);
-                    $goodsData->where(['id' => $goods['id']])->setInc('sales', 1);
-
-                    Db::commit();
+                    return json(['code' => 1, 'msg' => '赠送成功']);
                 }
 
-                return json(['code' => 1, 'msg' => '赠送成功']);
-            }
 
+                //生成
+                if ($goods['is_manghe'] == 1) {
+                    foreach ($idlist as $value) {
+                        $mhid = Db::name('goods_manghe_users')->max('id');
+                        $mhstr = "mh" . str_pad(($mhid + 1), 5, "0", STR_PAD_LEFT);
+                        $users = Db::name('users')->where('id', $value)->find();
+                        //调用地址方法
+                        //创建nft类别
 
-            //生成
-            if ($goods['is_manghe'] == 1) {
-                foreach ($idlist as $value) {
-                    $mhid = Db::name('goods_manghe_users')->max('id');
-                    $mhstr = "mh" . str_pad(($mhid + 1), 5, "0", STR_PAD_LEFT);
-                    $users = Db::name('users')->where('id', $value)->find();
-                    //调用地址方法
-                    //创建nft类别
+                        $user = ['user_id' => $value, 'goods_id' => $goods_id, 'createtime' => time(), 'updatetime' => time(), 'status' => 2, 'state' => 1];
+                        Db::startTrans();
+                        $results = (new \app\admin\model\GoodsMangheUsers())->insertGetId($user);
+                        if (!$results) {
+                            Db::rollback();
+                            return json(['code' => 0, 'msg' => '赠送失败']);
+                        }
+                        $send = ['uid' => $value, 'goods_id' => $goods_id, 'price' => $price, 'status' => 1, 'create_time' => date('Y-m-d H:i:s')];
+                        $result = (new \app\admin\model\GoodsSend())->insertGetId($send);
+                        if (!$result) {
+                            Db::rollback();
+                            return json(['code' => 0, 'msg' => '赠送失败']);
+                        }
 
-                    $user = ['user_id' => $value, 'goods_id' => $goods_id, 'createtime' => time(), 'updatetime' => time(), 'status' => 2, 'state' => 1];
-                    Db::startTrans();
-                    $results = (new \app\admin\model\GoodsMangheUsers())->insertGetId($user);
-                    if (!$results) {
-                        Db::rollback();
-                        return json(['code' => 0, 'msg' => '赠送失败']);
+//                        // redis 减少库存
+//                        $goods_kc_count = $redis->rpop('goods_mh_' . $goods['id']);
+//
+//                        if (!$goods_kc_count) {
+//                            Db::rollback();
+//                            return Response::fail('没有库存了');
+//                        }
+
+                        //库存剩余递减 销量递增
+                        //库存剩余递减 销量递增
+                        $goodsData->where(['id' => $goods['id']])->setDec('surplus', 1);
+                        $goodsData->where(['id' => $goods['id']])->setInc('sales', 1);
+
+                        Db::commit();
                     }
-                    $send = ['uid' => $value, 'goods_id' => $goods_id, 'price' => $price, 'status' => 1, 'create_time' => date('Y-m-d H:i:s')];
-                    $result = (new \app\admin\model\GoodsSend())->insertGetId($send);
-                    if (!$result) {
-                        Db::rollback();
-                        return json(['code' => 0, 'msg' => '赠送失败']);
-                    }
 
-                    // redis 减少库存
-                    $goods_kc_count = $redis->rpop('goods_mh_' . $goods['id']);
-
-                    if (!$goods_kc_count) {
-                        Db::rollback();
-                        return Response::fail('没有库存了');
-                    }
-
-                    //库存剩余递减 销量递增
-                    //库存剩余递减 销量递增
-                    $goodsData->where(['id' => $goods['id']])->setDec('surplus', 1);
-                    $goodsData->where(['id' => $goods['id']])->setInc('sales', 1);
-
-                    Db::commit();
+                    return json(['code' => 1, 'msg' => '赠送成功']);
                 }
-
-                return json(['code' => 1, 'msg' => '赠送成功']);
             }
+
+            $res = null;
+            while ($size--) {
+                $res = gen($goods, $idlist, $goodsUsersData, $goods_id, $price, $redis);
+            }
+            return $res;
 
         }
         return $this->fetch();
