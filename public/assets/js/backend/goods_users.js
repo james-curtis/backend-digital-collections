@@ -21,6 +21,10 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
 
             var table = $("#table");
 
+            $(document).on('click', '#btn-import-file-template', function () {
+                open('/business/import-good-user-template.xlsx')
+            });
+
             //上链
             $(document).on("click", ".btn-type1", function () {
                 var data = table.bootstrapTable('getSelections');

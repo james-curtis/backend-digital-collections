@@ -2,9 +2,16 @@
 
 namespace app\admin\controller;
 
+use app\admin\library\Auth;
 use app\common\controller\Backend;
 use comservice\Response;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Reader\Csv;
+use PhpOffice\PhpSpreadsheet\Reader\Xls;
+use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
 use think\Db;
+use think\Exception;
+use think\exception\PDOException;
 
 /**
  *
@@ -32,7 +39,207 @@ class GoodsUsers extends Backend
 
     public function import()
     {
-        parent::import();
+        $file = $this->request->request('file');
+        if (!$file) {
+            $this->error(__('Parameter %s can not be empty', 'file'));
+        }
+        $filePath = ROOT_PATH . DS . 'public' . DS . $file;
+        if (!is_file($filePath)) {
+            $this->error(__('No results were found'));
+        }
+        //实例化reader
+        $ext = pathinfo($filePath, PATHINFO_EXTENSION);
+        if (!in_array($ext, ['csv', 'xls', 'xlsx'])) {
+            $this->error(__('Unknown data format'));
+        }
+        if ($ext === 'csv') {
+            $file = fopen($filePath, 'r');
+            $filePath = tempnam(sys_get_temp_dir(), 'import_csv');
+            $fp = fopen($filePath, "w");
+            $n = 0;
+            while ($line = fgets($file)) {
+                $line = rtrim($line, "\n\r\0");
+                $encoding = mb_detect_encoding($line, ['utf-8', 'gbk', 'latin1', 'big5']);
+                if ($encoding != 'utf-8') {
+                    $line = mb_convert_encoding($line, 'utf-8', $encoding);
+                }
+                if ($n == 0 || preg_match('/^".*"$/', $line)) {
+                    fwrite($fp, $line . "\n");
+                } else {
+                    fwrite($fp, '"' . str_replace(['"', ','], ['""', '","'], $line) . "\"\n");
+                }
+                $n++;
+            }
+            fclose($file) || fclose($fp);
+
+            $reader = new Csv();
+        } elseif ($ext === 'xls') {
+            $reader = new Xls();
+        } else {
+            $reader = new Xlsx();
+        }
+
+        //导入文件首行类型,默认是注释,如果需要使用字段名称请使用name
+        $importHeadType = isset($this->importHeadType) ? $this->importHeadType : 'comment';
+
+        $table = $this->model->getQuery()->getTable();
+        $database = \think\Config::get('database.database');
+        $fieldArr = [];
+        $list = db()->query("SELECT COLUMN_NAME,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND TABLE_SCHEMA = ?", [$table, $database]);
+        /**
+         * @example
+         * Array
+         * (
+         * [0] => Array
+         * (
+         * [COLUMN_NAME] => phone
+         * [COLUMN_COMMENT] => 手机号
+         * )
+         * )
+         */
+        $userTableList = db()->query("SELECT COLUMN_NAME,COLUMN_COMMENT FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME = ? AND TABLE_SCHEMA = ? and COLUMN_NAME='phone' limit 1",
+            [(new \app\admin\model\Users())->getQuery()->getTable(), $database]);
+        $userTablePhoneColumnComment = $userTableList[0]['COLUMN_COMMENT'];
+        foreach ($list as $k => $v) {
+            if ($importHeadType == 'comment') {
+                $fieldArr[$v['COLUMN_COMMENT']] = $v['COLUMN_NAME'];
+            } else {
+                $fieldArr[$v['COLUMN_NAME']] = $v['COLUMN_NAME'];
+            }
+        }
+
+        //加载文件
+        $insert = [];
+        try {
+            if (!$PHPExcel = $reader->load($filePath)) {
+                $this->error(__('Unknown data format'));
+            }
+            $currentSheet = $PHPExcel->getSheet(0);  //读取文件中的第一个工作表
+            $allColumn = $currentSheet->getHighestDataColumn(); //取得最大的列号
+            $allRow = $currentSheet->getHighestRow(); //取得一共有多少行
+            $maxColumnNumber = Coordinate::columnIndexFromString($allColumn);
+            /**
+             * @description excel文件每一列名称
+             * @example Array ( [0] => 会员手机号 [1] => 会员ID [2] => 拍品ID )
+             */
+            $fields = [];
+            for ($currentRow = 1; $currentRow <= 1; $currentRow++) {
+                for ($currentColumn = 1; $currentColumn <= $maxColumnNumber; $currentColumn++) {
+                    $val = $currentSheet->getCellByColumnAndRow($currentColumn, $currentRow)->getValue();
+                    $fields[] = $val;
+                }
+            }
+
+            $userCacheList = [];
+            $goodCacheList = [];
+            for ($currentRow = 2; $currentRow <= $allRow; $currentRow++) {
+                /**
+                 * @description 每一行的值
+                 * @example Array ( [0] => 15977774444 [1] => [2] => 96 )
+                 */
+                $values = [];
+                for ($currentColumn = 1; $currentColumn <= $maxColumnNumber; $currentColumn++) {
+                    $val = $currentSheet->getCellByColumnAndRow($currentColumn, $currentRow)->getValue();
+                    $values[] = is_null($val) ? '' : $val;
+                }
+                /**
+                 * @description 关联数组 键值对
+                 * @examp Array ( [会员手机号] => 15977774444 [会员ID] => [拍品ID] => 96 )
+                 */
+                $temp = array_combine($fields, $values);
+
+                /**
+                 * @description 数据库列名 => 值
+                 * @example Array ( [uid] => [goods_id] => 96 )
+                 */
+                $row = [];
+                foreach ($temp as $k => $v) {
+                    if (isset($fieldArr[$k]) && $k !== '') {
+                        $row[$fieldArr[$k]] = $v;
+                    }
+                }
+
+                // 优先 `会员ID`
+                if (!empty($temp[$userTablePhoneColumnComment]) && empty($row['uid'])) {
+                    $phone = $temp[$userTablePhoneColumnComment];
+                    if (empty($userCacheList[$phone])) {
+                        $currentUser = (\app\admin\model\Users::get(['phone' => $phone]));
+                        $userCacheList[$phone] = $currentUser->toArray();
+                    }
+                    $currentUser = $userCacheList[$phone];
+
+
+                    $row['uid'] = $currentUser['id'];
+                    if (empty($row['goods_id'])) {
+                        throw new Exception('拍品ID【goods_id】不能为空');
+                    }
+                    if (empty($goodCacheList[$row['goods_id']])) {
+                        $goodCacheList[$row['goods_id']] = \app\admin\model\Goods::get(['id' => $row['goods_id']])->toArray();
+                    }
+                    $currentGood = $goodCacheList[$row['goods_id']];
+                    $row['price'] = $currentGood['price'];
+//                    $row['goods_number'] = uniqueNum();
+
+                    $goods_user_number = \app\admin\model\GoodsUsers::get(['goods_id' => $row['goods_id']])
+                        ->whereNotNull('number')
+                        ->order('id', 'desc')
+                        ->value('number');
+                    if ($goods_user_number) {
+                        $goods_user_number = str_pad($goods_user_number + 1, 6, '0', STR_PAD_LEFT);
+                    } else {
+                        $goods_user_number = '000001';
+                    }
+                    $row['number'] = str_pad(intval($goods_user_number) + 1, 6, '0', STR_PAD_LEFT);
+
+                    // 上链
+                    if (!empty($temp['上链'])) {
+                        $data = CreateChainNfts($currentUser, $currentGood['id'], $currentGood['id']);
+                        $row['operation_id'] = $data['data']['operation_id'];
+                        $row['contractAddress'] = $data['data']['contractAddress'];
+                    }
+                }
+                $row['create_time'] = datetime(time());
+
+                if ($row) {
+                    $insert[] = $row;
+                }
+            }
+        } catch (\Exception $exception) {
+            $this->error($exception->getMessage());
+        }
+        if (!$insert) {
+            $this->error(__('No rows were updated'));
+        }
+
+        try {
+            //是否包含admin_id字段
+            $has_admin_id = false;
+            foreach ($fieldArr as $name => $key) {
+                if ($key == 'admin_id') {
+                    $has_admin_id = true;
+                    break;
+                }
+            }
+            if ($has_admin_id) {
+                $auth = Auth::instance();
+                foreach ($insert as &$val) {
+                    if (!isset($val['admin_id']) || empty($val['admin_id'])) {
+                        $val['admin_id'] = $auth->isLogin() ? $auth->id : 0;
+                    }
+                }
+            }
+            $this->model->saveAll($insert);
+        } catch (PDOException $exception) {
+            $msg = $exception->getMessage();
+            if (preg_match("/.+Integrity constraint violation: 1062 Duplicate entry '(.+)' for key '(.+)'/is", $msg, $matches)) {
+                $msg = "导入失败，包含【{$matches[1]}】的记录已存在";
+            };
+            $this->error($msg);
+        } catch (\Exception $e) {
+            $this->error($e->getMessage());
+        }
+
+        $this->success();
     }
 
     /**
