@@ -132,6 +132,7 @@ class GoodsUsers extends Backend
 
             $userCacheList = [];
             $goodCacheList = [];
+            $goodUserNumberCacheList = [];
             for ($currentRow = 2; $currentRow <= $allRow; $currentRow++) {
                 /**
                  * @description 每一行的值
@@ -180,16 +181,22 @@ class GoodsUsers extends Backend
                     $row['price'] = $currentGood['price'];
 //                    $row['goods_number'] = uniqueNum();
 
-                    $goods_user_number = \app\admin\model\GoodsUsers::get(['goods_id' => $row['goods_id']])
-                        ->whereNotNull('number')
-                        ->order('id', 'desc')
-                        ->value('number');
+                    $goods_user_number = '000001';
+                    if (empty($goodUserNumberCacheList[$row['goods_id']])) {
+                        $goods_user_number = \app\admin\model\GoodsUsers::where(['goods_id' => $row['goods_id']])
+                            ->whereNotNull('number')
+                            ->order('id', 'desc')
+                            ->value('number');
+                    } else {
+                        $goods_user_number = $goodUserNumberCacheList[$row['goods_id']];
+                    }
                     if ($goods_user_number) {
-                        $goods_user_number = str_pad($goods_user_number + 1, 6, '0', STR_PAD_LEFT);
+                        $goods_user_number = str_pad(intval($goods_user_number) + 1, 6, '0', STR_PAD_LEFT);
                     } else {
                         $goods_user_number = '000001';
                     }
-                    $row['number'] = str_pad(intval($goods_user_number) + 1, 6, '0', STR_PAD_LEFT);
+                    $goodUserNumberCacheList[$row['goods_id']] = $goods_user_number;
+                    $row['number'] = $goods_user_number;
 
                     // 上链
                     if (!empty($temp['上链'])) {
