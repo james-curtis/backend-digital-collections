@@ -126,7 +126,7 @@
     <div class="form-group" id="hiddenDiv">
         <label class="control-label col-xs-12 col-sm-2">{:__('Goods_id')}:</label>
         <div class="col-xs-12 col-sm-8">
-          <input id="c-goods_id"  data-source="goods/fnindex" data-field="name"  data-multiple="true" data-params='{"custom[is_manghe]":"0"}' class="form-control selectpage" name="row[goods_id]" type="text" value="{$row.goods_id|htmlentities}" >
+          <input id="c-goods_id"  data-source="goods/fnindex" data-field="name"  data-multiple="true" class="form-control selectpage" name="row[goods_id]" type="text" value="{$row.goods_id|htmlentities}" >
         </div>
     </div>
     {if $row.is_manghe==2}
