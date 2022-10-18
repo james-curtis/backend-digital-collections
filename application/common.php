@@ -316,16 +316,27 @@ function getMillisecond()
 
 //身份证 手机号 姓名验证
 //身份证 手机号 姓名验证
+
+/**
+ * @link https://market.aliyun.com/products/57000002/cmapi026109.html
+ * @link https://market.aliyun.com/products/57000002/cmapi026100.html
+ */
 function beckoning($idcard, $mobile, $name)
 {
 //    $config = Db::name('config')->where('group', 'beckoning')->field('id,value')->select();
+    // 认证方式:two=两要素认证,three=三要素认证
+    $type = config('site.beckoning_switch');
 
     $host = config('site.host');
+    $appcode = config('site.appcode');
+    if ($type == 'three') {
+        $host = config('site.two_beckoning_host');
+        $appcode = config('site.two_beckoning_appcode');
+    }
 //    $path = "/mobile/3-validate";
     $path = "";
 
     $method = "POST";
-    $appcode = config('site.appcode');
 
 
     $headers = array();

@@ -158,4 +158,7 @@ return array (
   'smsbao_password' => 'qweasdqwe123',
   'sale_max_money' => '50000',
   'sms_template' => '【Space9 】您的验证码是{code}。3分钟内有效，请勿泄露他人！',
+  'two_beckoning_host' => 'http://eid.shumaidata.com/eid/check',
+  'two_beckoning_appcode' => 'e9a6c70b50da424d9736ba4ddb754b72',
+  'beckoning_switch' => 'three',
 );
