@@ -410,12 +410,12 @@ class GoodsLogic
 
                 // redis 减少库存
 //                $goods_kc_count = $this->redis->rpop('goods_mh_' . $og_data['id']);
-                $goods_kc_count = $this->redis->decrease('goods_mh_' . $og_data['id']);
-
-                if (!$goods_kc_count) {
-                    Db::rollback();
-                    return Response::fail('没有库存了');
-                }
+//                $goods_kc_count = $this->redis->decrease('goods_mh_' . $og_data['id']);
+//
+//                if (!$goods_kc_count) {
+//                    Db::rollback();
+//                    return Response::fail('没有库存了');
+//                }
 
                 $goodsMangheUsersData = new GoodsMangheUsers();
                 $result = $goodsMangheUsersData->where(['id' => $info['goods_manghe_users_id']])->update(['status' => 2]);
@@ -523,12 +523,12 @@ class GoodsLogic
 
                     // redis 减少库存
 //                    $goods_kc_count = $this->redis->rpop('goods_kc_' . $og_data['id']);
-                    $goods_kc_count = $this->redis->increase('goods_kc_' . $og_data['id']);
-
-                    if (!$goods_kc_count) {
-                        Db::rollback();
-                        return Response::fail('没有库存了');
-                    }
+//                    $goods_kc_count = $this->redis->increase('goods_kc_' . $og_data['id']);
+//
+//                    if (!$goods_kc_count) {
+//                        Db::rollback();
+//                        return Response::fail('没有库存了');
+//                    }
                 }
 
                 $result = $this->ordersData->updateByWhere(['id' => $order_id], ['pay_time' => $time, 'status' => 2, 'pay_type' => $pay_type]);
