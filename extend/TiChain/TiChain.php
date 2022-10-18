@@ -79,6 +79,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }
@@ -100,6 +101,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }
@@ -125,6 +127,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }
@@ -148,6 +151,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }
@@ -172,6 +176,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }
@@ -194,6 +199,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }
@@ -215,6 +221,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }
@@ -238,6 +245,7 @@ class TiChain
         $res = $this->getClientInstance()->post($this->parseApi(__FUNCTION__), [
             \GuzzleHttp\RequestOptions::JSON => $param,
             \GuzzleHttp\RequestOptions::HTTP_ERRORS => false,
+            \GuzzleHttp\RequestOptions::VERIFY => false,
         ]);
         return self::response2json($res);
     }

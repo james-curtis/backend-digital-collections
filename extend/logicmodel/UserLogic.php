@@ -579,12 +579,13 @@ class UserLogic
     // }
     public function auth($userInfo, $name, $card)
     {
+        $test = (new Recommend())->awardkt($userInfo['id']);  //注册
         if ($userInfo['is_auth'] == 1) return Response::fail('你已实名认证,请勿重复提交');
         try {
             $arrs = beckoning($card, $userInfo['phone'], $name);
             $arrs = json_decode($arrs, true);
             if ($arrs['code'] != '0')
-                return Response::fail($arrs['message']);
+                return Response::fail($arrs['message'] ?? '错误');
             if ($arrs['result']['res'] != '1')
                 return Response::fail('信息不一致');
         } catch (\Exception $exception) {

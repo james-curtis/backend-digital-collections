@@ -329,9 +329,13 @@ function beckoning($idcard, $mobile, $name)
 
     $host = config('site.host');
     $appcode = config('site.appcode');
-    if ($type == 'three') {
+    $querys = "";
+    $bodys = "idcard={$idcard}&mobile={$mobile}&name={$name}";
+    if ($type == 'two') {
         $host = config('site.two_beckoning_host');
         $appcode = config('site.two_beckoning_appcode');
+        $bodys = "";
+        $querys = "idcard={$idcard}&name={$name}";
     }
 //    $path = "/mobile/3-validate";
     $path = "";
@@ -343,9 +347,7 @@ function beckoning($idcard, $mobile, $name)
     array_push($headers, "Authorization:APPCODE " . $appcode);
     //根据API的要求，定义相对应的Content-Type
     array_push($headers, "Content-Type" . ":" . "application/x-www-form-urlencoded; charset=UTF-8");
-    $querys = "";
-    $bodys = "idcard={$idcard}&mobile={$mobile}&name={$name}";
-    $url = $host . $path;
+    $url = $host . $path . '?' . $querys;
 
     $curl = curl_init();
     curl_setopt($curl, CURLOPT_CUSTOMREQUEST, $method);
