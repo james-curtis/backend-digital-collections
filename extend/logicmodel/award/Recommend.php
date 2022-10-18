@@ -66,11 +66,11 @@ class Recommend extends Award
                     } else {
                         $goods_kc_count = $redis->rpop('goods_kc_' . $awardInfo['goods_id']);
                     }
-
-                    if (!$goods_kc_count) {
-                        Db::rollback();
-                        return Response::fail('没有库存了');
-                    }
+//
+//                    if (!$goods_kc_count) {
+//                        Db::rollback();
+//                        return Response::fail('没有库存了');
+//                    }
 
                     //库存剩余递减 销量递增
                     $goodsData->where(['id' => $awardInfo['goods_id']])->setDec('surplus', 1);
