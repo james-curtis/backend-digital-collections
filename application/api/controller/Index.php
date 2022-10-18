@@ -62,6 +62,8 @@ class Index extends BaseController
             // 云盾验证码
             'yundunAppKey' => config('site.yundun_app_key'),
             'yundunScene' => config('site.yundun_scene'),
+
+            'beckoningTips' => config('site.beckoning_tips'),
         ];
         return json(addWebSiteUrl($config));
     }
