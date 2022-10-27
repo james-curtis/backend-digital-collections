@@ -538,8 +538,10 @@ class Users extends Backend
         // 启动事务
         Db::startTrans();
         try {
-            $result = $this->model->where(['id' => ['in', $ids]])->update(['is_del' => 1]);
-            $resultdel = Db::name('goods_users')->where(['uid' => ['in', $ids]])->update(['is_del' => 1]);
+            $result = $this->model->where(['id' => ['in', $ids]])->delete();
+            // ->update(['is_del' => 1])
+            $resultdel = Db::name('goods_users')->where(['uid' => ['in', $ids]])->delete();
+            //->delete(['is_del' => 1]);
             // 提交事务
             Db::commit();
             return json(['code' => 1, 'msg' => '删除成功']);
