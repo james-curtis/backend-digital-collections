@@ -40,6 +40,12 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                             formatter: Table.api.formatter.status
                         },
                         {
+                            field: 'is_need_auth',
+                            title: __('需要实名'),
+                            searchList: {"0": __('否'), "1": __('是')},
+                            formatter: Table.api.formatter.status
+                        },
+                        {
                             field: 'type', title: __('Type'), formatter: function (value) {
                                 if (value == 0) {
                                     return __('Type 0')

@@ -85,6 +85,7 @@ class UserLogic
                     return Response::fail($account['error']);
             } else {
                 $data['wallet_address'] = $account['data']['account'];
+                $data['Nftstatus'] = 1;
             }
         } catch (\Exception $exception) {
             return Response::fail('钱包地址生成失败');
@@ -98,8 +99,8 @@ class UserLogic
             if ($result) {
                 Db::commit();
                 try {
-//                    (new Recommend())->awardkt($user_id);
-                    (new Recommend())->award($pid);
+                    (new Recommend())->awardkt($user_id, 0);
+//                    (new Recommend())->award($pid, 0);
                 } catch (\Exception $exception) {
 
                 }
@@ -579,7 +580,6 @@ class UserLogic
     // }
     public function auth($userInfo, $name, $card)
     {
-        $test = (new Recommend())->awardkt($userInfo['id']);  //注册
         if ($userInfo['is_auth'] == 1) return Response::fail('你已实名认证,请勿重复提交');
         try {
             $arrs = beckoning($card, $userInfo['phone'], $name);
@@ -605,11 +605,11 @@ class UserLogic
         // $data = trimWebUrl($data,['card_front_image','card_back_image']);
         $result = $this->usersData->updateByWhere(['id' => $userInfo['id']], $data);
         if ($result) {
-            if ($userInfo['pid'] !== 1) {
+            if ($userInfo['pid'] != 0) {
                 $result = $this->updateGroup_auth($userInfo['pid']);
                 (new Recommend())->award($userInfo['pid']);   //拉新
             }
-            (new Recommend())->awardkt($userInfo['id']);  //注册
+            (new Recommend())->awardkt($userInfo['id'], 1);  //注册
 
             Db::commit();
             return Response::success('提交成功');

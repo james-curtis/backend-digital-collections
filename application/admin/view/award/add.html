@@ -31,6 +31,18 @@
         </div>
     </div>
     <div class="form-group">
+        <label class="control-label col-xs-12 col-sm-2">{:__('获奖人需要实名')}:</label>
+        <div class="col-xs-12 col-sm-8">
+
+            <div class="radio">
+            {foreach name="isNeedAuthList" item="vo"}
+            <label for="row[is_need_auth]-{$key}"><input id="row[is_need_auth]-{$key}" name="row[is_need_auth]" type="radio" value="{$key}" {in name="key" value="1"}checked{/in} /> {$vo}</label>
+            {/foreach}
+            </div>
+
+        </div>
+    </div>
+    <div class="form-group">
         <label class="control-label col-xs-12 col-sm-2">{:__('奖励类型')}:</label>
         <div class="col-xs-12 col-sm-8">
             

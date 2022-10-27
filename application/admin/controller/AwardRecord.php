@@ -5,13 +5,13 @@ namespace app\admin\controller;
 use app\common\controller\Backend;
 
 /**
- * 
+ *
  *
  * @icon fa fa-circle-o
  */
 class AwardRecord extends Backend
 {
-    
+
     /**
      * AwardRecord模型对象
      * @var \app\admin\model\AwardRecord
@@ -35,7 +35,7 @@ class AwardRecord extends Backend
      * 因此在当前控制器中可不用编写增删改查的代码,除非需要自己控制这部分逻辑
      * 需要将application/admin/library/traits/Backend.php中对应的方法复制到当前控制器,然后进行修改
      */
-    
+
 
     /**
      * 查看
@@ -54,17 +54,17 @@ class AwardRecord extends Backend
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 
             $list = $this->model
-                    ->with(['users','goods'])
-                    ->where($where)
-                    ->order($sort, $order)
-                    ->paginate($limit);
+                ->with(['users', 'goods', 'award'])
+                ->where($where)
+                ->order($sort, $order)
+                ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','price','create_time']);
+                $row->visible(['id', 'price', 'create_time', 'award']);
                 $row->visible(['users']);
-				$row->getRelation('users')->visible(['phone']);
-				$row->visible(['goods']);
-				$row->getRelation('goods')->visible(['name']);
+                $row->getRelation('users')->visible(['phone']);
+                $row->visible(['goods']);
+                $row->getRelation('goods')->visible(['name']);
             }
 
             $result = array("total" => $list->total(), "rows" => $list->items());

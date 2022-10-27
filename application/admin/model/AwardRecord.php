@@ -47,4 +47,9 @@ class AwardRecord extends Model
     {
         return $this->belongsTo('Goods', 'goods_id', 'id', [], 'LEFT')->setEagerlyType(0);
     }
+
+    public function award()
+    {
+        return $this->belongsTo('Award', 'award_id', 'id', [], 'LEFT')->setEagerlyType(0);
+    }
 }

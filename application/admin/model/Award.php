@@ -40,6 +40,11 @@ class Award extends Model
         return ['0' => __('否'), '1' => __('是')];
     }
 
+    public function getIsNeedAuthList(): array
+    {
+        return ['0' => __('否'), '1' => __('是')];
+    }
+
 
     public function getStatusTextAttr($value, $data)
     {

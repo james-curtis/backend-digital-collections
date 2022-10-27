@@ -25,6 +25,7 @@ class Award extends Backend
         $this->model = new \app\admin\model\Award;
         $this->view->assign("statusList", $this->model->getStatusList());
         $this->view->assign("isRepeatList", $this->model->getIsRepeatList());
+        $this->view->assign("isNeedAuthList", $this->model->getIsNeedAuthList());
         $this->view->assign("typeList", $this->model->getTypeList());
 
     }
@@ -112,7 +113,7 @@ class Award extends Backend
                 ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id', 'name', 'status', 'total_number', "type", 'is_repeat']);
+                $row->visible(['id', 'name', 'status', 'total_number', "type", 'is_repeat', 'is_need_auth']);
                 $row->visible(['goods']);
                 $row->getRelation('goods')->visible(['name']);
             }

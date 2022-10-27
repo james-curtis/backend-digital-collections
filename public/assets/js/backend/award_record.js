@@ -31,6 +31,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                         {field: 'users.phone', title: __('Users.phone'), operate: 'LIKE'},
                         {field: 'goods.name', title: __('Goods.name'), operate: false},
                         {field: 'price', title: __('Price'), operate:false},
+                        {field: 'award.name', title: __('触发规则'), operate:false},
                         {field: 'create_time', title: __('Create_time'), operate:'RANGE', addclass:'datetimerange', autocomplete:false},
                     ]
                 ]

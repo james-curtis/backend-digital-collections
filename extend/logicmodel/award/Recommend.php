@@ -4,6 +4,7 @@
 namespace logicmodel\award;
 
 
+use app\admin\model\Users;
 use comservice\Response;
 use datamodel\AwardRecommend;
 use think\Db;
@@ -29,13 +30,23 @@ class Recommend extends Award
         $inviteTotal = $this->usersData->where($where)->count();
         //再看设置的邀请人数 哪个符合
         $award_now_arr = Db::name("award")
-            ->where(['type' => 1, 'status' => 1, "total_number" => ['<=', $inviteTotal]])
+            ->where([
+                'type' => 1,
+                'status' => 1,
+                "total_number" => ['<=', $inviteTotal],
+            ])
             ->order("total_number desc")
             ->select();
-        // 需求：拉新1人的奖励是可以重复获取，其他奖励只有一次机会
+        $user = Users::get($uid);
+        if (!$user)
+            return Response::fail('用户不存在');
         foreach ($award_now_arr as $awardInfo) {
             //匹配奖励的id
             $award_id = $awardInfo['id'];
+
+            if ($awardInfo['is_need_auth'] && !$user->is_auth) {
+                continue;
+            }
 
             // 排除拉新1人的情况。这里需要允许重复获取
             if (!$awardInfo['is_repeat']) {
@@ -81,29 +92,46 @@ class Recommend extends Award
     }
 
     //注册空投
-    public function awardkt($uid)
+    public function awardkt($uid, $isNeedAuth = 0)
     {
-        $award_id = 1;
-        $awardInfo = $this->awardIsOpen($award_id);
+        $awardInfo = Db::name("award")
+            ->where([
+                'type' => 0,
+                'status' => 1,
+                'is_need_auth' => $isNeedAuth
+            ])
+            ->find();
+        $award_id = $awardInfo['id'];
 
         if ($awardInfo === false) return false;//奖项未开起
-        $info = $this->awardRecordData->where(['uid' => $uid, 'award_id' => 1])->find();
+        $info = $this->awardRecordData
+            ->where(['uid' => $uid, 'award_id' => $award_id])
+            ->find();
 
         if ($info) return Response::fail('已领取奖励');
         if (!$awardInfo['goods_id']) {
             return Response::fail('无产品');
         }
+
+        $user = Users::get($uid);
+        if (!$user)
+            return Response::fail('用户不存在');
+
+        if ($awardInfo['is_need_auth'] && !$user->is_auth) {
+            return Response::fail('需要实名认证');
+        }
+
         $cz = Db::name('goods')->where(['id' => $awardInfo['goods_id']])->find();
         if ($cz) {
 
-            $redis = GetRedis::getRedis();
+//            $redis = GetRedis::getRedis();
             $goodsData = new Goods();
 
-            if ($cz['is_manghe'] == 1) {
-                $goods_kc_count = $redis->rpop('goods_mh_' . $awardInfo['goods_id']);
-            } else {
-                $goods_kc_count = $redis->rpop('goods_kc_' . $awardInfo['goods_id']);
-            }
+//            if ($cz['is_manghe'] == 1) {
+//                $goods_kc_count = $redis->rpop('goods_mh_' . $awardInfo['goods_id']);
+//            } else {
+//                $goods_kc_count = $redis->rpop('goods_kc_' . $awardInfo['goods_id']);
+//            }
 //
 //            if (!$goods_kc_count) {
 //                Db::rollback();
