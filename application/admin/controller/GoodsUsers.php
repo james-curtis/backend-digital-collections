@@ -311,6 +311,10 @@ class GoodsUsers extends Backend
             $users = Db::name('users')->where('id', $goodsusers['uid'])->find();
             $url = config('site.server_url') . $goods['image'];
 
+            if ($users['Nftstatus'] == 0) {
+                return json(['code' => 0, 'msg' => '用户账号未上链']);
+            }
+
             if ($goodsusers['state'] == 0 || true) {
                 $nfsfx = CreateChainNfts($users, $goodsusers['goods_id'], $url);
                 //  print_r($nfsfx);
