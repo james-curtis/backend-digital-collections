@@ -4,14 +4,15 @@ namespace app\admin\controller;
 
 use app\common\controller\Backend;
 use think\Db;
+
 /**
- * 
+ *
  *
  * @icon fa fa-circle-o
  */
 class Award extends Backend
 {
-    
+
     /**
      * Award模型对象
      * @var \app\admin\model\Award
@@ -23,7 +24,8 @@ class Award extends Backend
         parent::_initialize();
         $this->model = new \app\admin\model\Award;
         $this->view->assign("statusList", $this->model->getStatusList());
-                $this->view->assign("typeList", $this->model->getTypeList());
+        $this->view->assign("isRepeatList", $this->model->getIsRepeatList());
+        $this->view->assign("typeList", $this->model->getTypeList());
 
     }
 
@@ -53,9 +55,9 @@ class Award extends Backend
                 $result = false;
                 Db::startTrans();
                 try {
-                    $same_award=Db::name("award")->where(['type'=>$params['type'],'total_number'=>$params['total_number']])->count();
-                    if($same_award>0){
-                       return $this->error("奖励类型一样，直推邀请人数设置须不同");
+                    $same_award = Db::name("award")->where(['type' => $params['type'], 'total_number' => $params['total_number']])->count();
+                    if ($same_award > 0) {
+                        return $this->error("奖励类型一样，直推邀请人数设置须不同");
                     }
                     //是否采用模型验证
                     if ($this->modelValidate) {
@@ -104,19 +106,19 @@ class Award extends Backend
             list($where, $sort, $order, $offset, $limit) = $this->buildparams();
 
             $list = $this->model
-                    ->with(['goods'])
-                    ->where($where)
-                    ->order($sort, $order)
-                    ->paginate($limit);
+                ->with(['goods'])
+                ->where($where)
+                ->order($sort, $order)
+                ->paginate($limit);
 
             foreach ($list as $row) {
-                $row->visible(['id','name','status','total_number',"type"]);
+                $row->visible(['id', 'name', 'status', 'total_number', "type", 'is_repeat']);
                 $row->visible(['goods']);
-				$row->getRelation('goods')->visible(['name']);
+                $row->getRelation('goods')->visible(['name']);
             }
-            $newitem=$list->items();
-            for ($i=0;$i<count($newitem);$i++){
-                if ($newitem[$i]['id']==1){
+            $newitem = $list->items();
+            for ($i = 0; $i < count($newitem); $i++) {
+                if ($newitem[$i]['id'] == 1) {
 //                    $newitem[$i]['total_number']="--";
                 }
             }
@@ -126,14 +128,14 @@ class Award extends Backend
         }
         return $this->view->fetch();
     }
-    
+
     /**
      * 编辑
      */
     public function edit($ids = null)
     {
         $row = $this->model->get($ids);
-        
+
         if (!$row) {
             $this->error(__('No Results were found'));
         }
@@ -147,9 +149,9 @@ class Award extends Backend
             $params = $this->request->post("row/a");
             if ($params) {
                 $params = $this->preExcludeFields($params);
-                if (isset($params['total_number'])){
-                    $same_award=Db::name("award")->where(['type'=>$row['type'],'total_number'=>$params['total_number'],"id"=>["<>",$ids]])->count();
-                    if($same_award>0){
+                if (isset($params['total_number'])) {
+                    $same_award = Db::name("award")->where(['type' => $row['type'], 'total_number' => $params['total_number'], "id" => ["<>", $ids]])->count();
+                    if ($same_award > 0) {
                         return $this->error("奖励类型一样，直推邀请人数设置须不同");
                     }
                 }

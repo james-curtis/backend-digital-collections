@@ -35,6 +35,11 @@ class Award extends Model
         return ['0' => __('Status 0'), '1' => __('Status 1')];
     }
 
+    public function getIsRepeatList(): array
+    {
+        return ['0' => __('否'), '1' => __('是')];
+    }
+
 
     public function getStatusTextAttr($value, $data)
     {
