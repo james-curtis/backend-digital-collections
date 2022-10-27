@@ -389,9 +389,24 @@ class Users extends Backend
                         } else {
                             $goods_user_number = '000001';
                         }
-                        $user = ['uid' => $value, 'goods_id' => $goods_id, 'price' => $price, 'number' => $goods_user_number, 'create_time' => date('Y-m-d H:i:s'), 'is_send' => 1];
+
+                        $chain = CreateChainNfts($users, $goods['goods_id'], $goods['goods_id'])['data'];
+                        $operation_id = $chain['operation_id'];
+                        $contract_address = $chain['contractAddress'];
+
+                        $goodsUsers = [
+                            'uid' => $value,
+                            'goods_id' => $goods_id,
+                            'price' => $price,
+                            'number' => $goods_user_number,
+                            'create_time' => date('Y-m-d H:i:s'),
+                            'is_send' => 1,
+                            'state' => 1,
+                            'operation_id' => $operation_id,
+                            'contract_address' => $contract_address,
+                        ];
                         Db::startTrans();
-                        $results = (new \app\admin\model\GoodsUsers())->insertGetId($user);
+                        $results = (new \app\admin\model\GoodsUsers())->insertGetId($goodsUsers);
                         if (!$results) {
                             Db::rollback();
                             return json(['code' => 0, 'msg' => '赠送失败']);
@@ -433,9 +448,9 @@ class Users extends Backend
                         //调用地址方法
                         //创建nft类别
 
-                        $user = ['user_id' => $value, 'goods_id' => $goods_id, 'createtime' => time(), 'updatetime' => time(), 'status' => 2, 'state' => 1];
+                        $goodsUsers = ['user_id' => $value, 'goods_id' => $goods_id, 'createtime' => time(), 'updatetime' => time(), 'status' => 2, 'state' => 1];
                         Db::startTrans();
-                        $results = (new \app\admin\model\GoodsMangheUsers())->insertGetId($user);
+                        $results = (new \app\admin\model\GoodsMangheUsers())->insertGetId($goodsUsers);
                         if (!$results) {
                             Db::rollback();
                             return json(['code' => 0, 'msg' => '赠送失败']);
