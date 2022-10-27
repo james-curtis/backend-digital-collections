@@ -384,10 +384,13 @@ class GoodsLogic
         $time = date('Y-m-d H:i:s');
 
         if ($pay_type == 1) {
-
             //判断是否是盲盒支付
             if ($info['order_type'] == 3) {
-                $gmcount = Db::name('goods_manghe_users')->where('user_id', $uid)->where('goods_id', $info['goods_id'])->count();
+                // 进入盲盒订单流程
+                $gmcount = Db::name('goods_manghe_users')
+                    ->where('user_id', $uid)
+                    ->where('goods_id', $info['goods_id'])
+                    ->count();
                 //限购
                 $mhxgstatus = config('site.mhxgstatus') ? config('site.mhxgstatus') : 1;
                 if ($gmcount == $mhxgstatus) {
@@ -408,6 +411,7 @@ class GoodsLogic
                     ->field(['g.type,g.id', 'o.goods_config_id'])
                     ->find();
 
+                $darkBoxInfo = \app\admin\model\Goods::get($og_data['id']);
                 // redis 减少库存
 //                $goods_kc_count = $this->redis->rpop('goods_mh_' . $og_data['id']);
 //                $goods_kc_count = $this->redis->decrease('goods_mh_' . $og_data['id']);
@@ -416,12 +420,16 @@ class GoodsLogic
 //                    Db::rollback();
 //                    return Response::fail('没有库存了');
 //                }
+                if ($darkBoxInfo->surplus <= 0) {
+                    Db::rollback();
+                    return Response::fail('没有库存了');
+                }
 
                 $goodsMangheUsersData = new GoodsMangheUsers();
                 $result = $goodsMangheUsersData->where(['id' => $info['goods_manghe_users_id']])->update(['status' => 2]);
                 if (!$result) {
                     // redis 回滚库存
-                    $this->redis->rpush('goods_mh_' . $og_data['id'], 1);
+//                    $this->redis->rpush('goods_mh_' . $og_data['id'], 1);
                     Db::rollback();
                     return Response::fail('订单支付失败');
                 }
@@ -440,7 +448,7 @@ class GoodsLogic
                 Db::rollback();
                 return Response::fail('订单支付失败');
             } else {
-                //sleep(10);
+                // 非盲盒支付
                 Db::startTrans();
                 $accountLogic = new AccountLogic();
                 $result = $accountLogic->subAccount($uid, 1, $price, '购买藏品', '购买藏品');

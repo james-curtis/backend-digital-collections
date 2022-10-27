@@ -330,29 +330,29 @@ class Manghe extends BaseController
 
                 //   减少库存
                 //减少 藏品份额
-                $goodsModel = new Goods();
-                $goodsModel->where(['id' => $winInfo['combination_goods_id']])->setDec('surplus', 1);
-                $goodsModel->where(['id' => $winInfo['combination_goods_id']])->setInc('sales', 1);
-
-                // redis 减少库存
-                //盲盒开出的商品的库存减少
-                $kc1 = $this->redis->rpop('goods_kc_' . $winInfo['combination_goods_id']);
-                //盲盒的库存减少
-                $kc2 = $this->redis->rpop('goods_mh_' . $winInfo['combination_goods_id']);
-                if (!$kc1 || $kc2) {
+                $goodsModelWhere = ['id' => $winInfo['combination_goods_id']];
+                $surplus = Goods::where($goodsModelWhere)->value('surplus');
+                if ($surplus <= 0) {
                     Db::rollback();
-                    return json('盲盒开启失败!库存不足');
+                    return json(Response::fail('盲盒开启失败!库存不足'));
                 }
+                $goodsModel = new Goods();
+                $goodsModel->where($goodsModelWhere)->setDec('surplus', 1);
+                $goodsModel->where($goodsModelWhere)->setInc('sales', 1);
+
+//                // redis 减少库存
+//                //盲盒开出的商品的库存减少
+//                $kc1 = $this->redis->rpop('goods_kc_' . $winInfo['combination_goods_id']);
+//                //盲盒的库存减少
+//                $kc2 = $this->redis->rpop('goods_mh_' . $winInfo['combination_goods_id']);
                 Db::commit();
             }
 
             Db::commit();
             $winInfo = addWebSiteUrl($winInfo, ['goods_image']);
-            $responsData = Response::success('success', $winInfo);
-            return json($responsData);
+            return json(Response::success('success', $winInfo));
         } else {
-            $responsData = Response::fail('盲盒出问题了，请联系客服!');
-            return json($responsData);
+            return json(Response::fail('盲盒出问题了，请联系客服!'));
         }
     }
 }
