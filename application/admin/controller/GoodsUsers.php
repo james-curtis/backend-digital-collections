@@ -108,6 +108,7 @@ class GoodsUsers extends Backend
             }
         }
 
+        Db::startTrans();
         //加载文件
         $insert = [];
         try {
@@ -209,13 +210,22 @@ class GoodsUsers extends Backend
                 $row['create_time'] = datetime(time());
 
                 if ($row) {
+                    if ($currentGood['surplus'] <= 0) {
+                        throw new Exception("{$currentGood['name']}库存不足");
+                    }
+                    \datamodel\Goods::where(['id' => $currentGood['id']])->setDec('surplus');
+                    \datamodel\Goods::where(['id' => $currentGood['id']])->setInc('sales');
+                    --$currentGood['surplus'];
+                    ++$currentGood['sales'];
                     $insert[] = $row;
                 }
             }
         } catch (\Exception $exception) {
+            Db::rollback();
             $this->error($exception->getMessage());
         }
         if (!$insert) {
+            Db::rollback();
             $this->error(__('No rows were updated'));
         }
 
@@ -238,15 +248,17 @@ class GoodsUsers extends Backend
             }
             $this->model->saveAll($insert);
         } catch (PDOException $exception) {
+            Db::rollback();
             $msg = $exception->getMessage();
             if (preg_match("/.+Integrity constraint violation: 1062 Duplicate entry '(.+)' for key '(.+)'/is", $msg, $matches)) {
                 $msg = "导入失败，包含【{$matches[1]}】的记录已存在";
             };
             $this->error($msg);
         } catch (\Exception $e) {
+            Db::rollback();
             $this->error($e->getMessage());
         }
-
+        Db::commit();
         $this->success();
     }
 
