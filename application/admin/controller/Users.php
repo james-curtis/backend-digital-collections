@@ -30,6 +30,7 @@ use PhpOffice\PhpSpreadsheet\Style\Color;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
+use think\Env;
 
 // require_once('../xasset/index.php');
 
@@ -718,56 +719,83 @@ class Users extends Backend
             } else {
                 $goods_user_number = '000001';
             }
-            $user = ['uid' => $ids, 'goods_id' => $goods_id, 'price' => $price, 'number' => $goods_user_number, 'create_time' => date('Y-m-d H:i:s'), 'is_send' => 1, 'jlstatus' => 1];
+            $user = [
+                'uid' => $ids,
+                'goods_id' => $goods_id,
+                'price' => $price,
+                'number' => $goods_user_number,
+                'create_time' => date('Y-m-d H:i:s'),
+                'is_send' => 1,
+                'jlstatus' => 1
+            ];
             Db::startTrans();
 
 
-            if ($goods['is_manghe'] == 1) {
-                $redisname_str = "goods_mh_";
-                //start
-                //盲盒id
-                $mhid = Db::name('goods_manghe_users')->max('id');
-                $mhstr = "mh" . str_pad(($mhid + 1), 5, "0", STR_PAD_LEFT);
-                $currentTime = time();
-                $goods_manghe_number = uniqueNum();
-                $goodsManghe['user_id'] = $ids;
-                $goodsManghe['goods_id'] = $goods_id;
-                $goodsManghe['goods_number'] = $goods_manghe_number;
-                $goodsManghe['status'] = 2;
-                $goodsManghe['createtime'] = $currentTime;
-                $goodsManghe['updatetime'] = $currentTime;
-                $goodsManghe['orderNo'] = $mhstr;
-                $goodsMangheUsersData = new GoodsMangheUsers();
-                // $class_id=session_create_id();
+            // 上链
+            $userInfo = Db::name('users')->where('id', $ids)->find();
+            try {
 
-                // //创建nft类别
-                // $mhclasses=CreateChainClasses($users['wallet_address'],$class_id,$uid);
-                // if($mhclasses){
-                //     if(array_key_exists('error', $mhclasses)){
-                //         return Response::fail('抢购人数过多,请重新抢购');
-                //     }
-                //     $goodsManghe['class_id']  = $class_id;
-                // }
+                if ($goods['is_manghe'] == 1) {
+                    $redisname_str = "goods_mh_";
+                    //start
+                    //盲盒id
+                    $mhid = Db::name('goods_manghe_users')->max('id');
+                    $mhstr = "mh" . str_pad(($mhid + 1), 5, "0", STR_PAD_LEFT);
+                    $currentTime = time();
+                    $goods_manghe_number = uniqueNum();
+                    $goodsManghe['user_id'] = $ids;
+                    $goodsManghe['goods_id'] = $goods_id;
+                    $goodsManghe['goods_number'] = $goods_manghe_number;
+                    $goodsManghe['status'] = 2;
+                    $goodsManghe['createtime'] = $currentTime;
+                    $goodsManghe['updatetime'] = $currentTime;
+                    $goodsManghe['orderNo'] = $mhstr;
+                    $goodsMangheUsersData = new GoodsMangheUsers();
+                    // $class_id=session_create_id();
 
-                $goods_manghe_users_id = $goodsMangheUsersData->insertGetId($goodsManghe);
-                if (!$goods_manghe_users_id) {
-                    Db::rollback();
-                    return json(['code' => 0, 'msg' => '赠送失败']);
-                }
-                //end
-            } else {
-                $results = (new \app\admin\model\GoodsUsers())->insertGetId($user);
-                $redisname_str = "goods_kc_";
-                if (!$results) {
-                    Db::rollback();
-                    return json(['code' => 0, 'msg' => '赠送失败']);
-                }
+                    // //创建nft类别
+                    // $mhclasses=CreateChainClasses($users['wallet_address'],$class_id,$uid);
+                    // if($mhclasses){
+                    //     if(array_key_exists('error', $mhclasses)){
+                    //         return Response::fail('抢购人数过多,请重新抢购');
+                    //     }
+                    //     $goodsManghe['class_id']  = $class_id;
+                    // }
+
+                    $goods_manghe_users_id = $goodsMangheUsersData->insertGetId($goodsManghe);
+                    if (!$goods_manghe_users_id) {
+                        Db::rollback();
+                        return json(['code' => 0, 'msg' => '赠送失败']);
+                    }
+                    //end
+                } else {
+                    $chain = CreateChainNfts($userInfo, $goods['goods_id'], $goods['goods_id'])['data'];
+                    $operation_id = $chain['operation_id'];
+                    $contract_address = $chain['contractAddress'];
+
+
+                    $results = (new \app\admin\model\GoodsUsers())->insertGetId(array_merge($user, [
+                        'operation_id' => $operation_id,
+                        'contract_address' => $contract_address,
+                        'state' => 1
+                    ]));
+                    $redisname_str = "goods_kc_";
+                    if (!$results) {
+                        Db::rollback();
+                        return json(['code' => 0, 'msg' => '赠送失败']);
+                    }
 //                Db::name('goods_users')->where('id',$results)->update(['jlstatus'=>1]);
+                }
+            } catch (\Exception $exception) {
+                Db::rollback();
+                if (Env::get('app.debug', false)) {
+                    throw $exception;
+                }
+                return Response::fail('上链失败');
             }
 
 
             $send = ['uid' => $ids, 'goods_id' => $goods_id, 'price' => $price, 'create_time' => date('Y-m-d H:i:s')];
-            $users = Db::name('users')->where('id', $ids)->find();
 
 
             $result = (new \app\admin\model\GoodsSend())->insertGetId($send);
@@ -775,15 +803,20 @@ class Users extends Backend
 
                 // redis 减少库存
 
-                $goods_kc_count = $redis->rpop($redisname_str . $goods['id']);
-                if (!$goods_kc_count) {
+//                $goods_kc_count = $redis->rpop($redisname_str . $goods['id']);
+//                if (!$goods_kc_count) {
+//                    Db::rollback();
+//                    return Response::fail('没有库存了');
+//                }
+
+                if ($goods['surplus'] > 1) {
+                    //库存剩余递减 销量递增
+                    $goodsData->where(['id' => $goods['id']])->setDec('surplus', 1);
+                    $goodsData->where(['id' => $goods['id']])->setInc('sales', 1);
+                } else {
                     Db::rollback();
                     return Response::fail('没有库存了');
                 }
-
-                //库存剩余递减 销量递增
-                $goodsData->where(['id' => $goods['id']])->setDec('surplus', 1);
-                $goodsData->where(['id' => $goods['id']])->setInc('sales', 1);
 
                 Db::commit();
                 return json(['code' => 1, 'msg' => '赠送成功']);
