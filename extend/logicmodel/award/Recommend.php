@@ -25,6 +25,10 @@ class Recommend extends Award
     //推荐奖励
     public function award($uid)
     {
+        if ($uid == 0) {
+            // 排除系统账号
+            return true;
+        }
         //看已经邀请了几个了
         $where = ['pid' => $uid, 'is_del' => 0, 'is_auth' => 1];
         $inviteTotal = $this->usersData->where($where)->count();
