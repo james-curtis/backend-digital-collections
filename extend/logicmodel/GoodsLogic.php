@@ -19,6 +19,7 @@ use datamodel\Chongzhi;
 use datamodel\UsersCoupon;
 use think\Db;
 use think\Env;
+use think\Exception;
 use think\Request;
 
 // require_once('../xasset/index.php');
@@ -346,13 +347,37 @@ class GoodsLogic
 
     public function resetExpiredShoppingCart($uid)
     {
-        $data = $this->ordersData
+        $orderData = $this->ordersData
             ->where([
                 'buy_uid' => $uid,
                 'status' => 1,
             ])
             ->whereTime('create_time', '<', date('Y-m-d H:i:s', strtotime("-3 minutes")))
-            ->update(['status' => 3]);
+            ->select();
+        if (empty($orderData)) {
+            return true;
+        }
+//        $orderData = collection()->toArray();
+        foreach ($orderData as $datum) {
+            switch ($datum['order_type']) {
+                case 1:
+                    // 平台订单
+                    break;
+                case 2:
+                    // 二手交易订单
+                    // 还原二手商品交易状态
+                    GoodsUsers::update([
+                        'id' => $datum['goods_users_id'],
+                        'status' => 2
+                    ]);
+                    break;
+                case 3:
+                    // 盲盒订单
+                    break;
+            }
+        }
+
+//            ->update(['status' => 3]);
     }
 
     /**
@@ -496,11 +521,15 @@ class GoodsLogic
                 $usersGoods['create_time'] = $time;
                 $usersGoods['number'] = $goods_user_number;
                 $usersGoods['status'] = 1;
-                $goods = Goods::where('id', $info['goods_id'])->find();
+//                $goods = Goods::where('id', $info['goods_id'])->find();
 
                 // 上链
                 try {
-                    $chain = CreateChainNfts($userInfo, $info['goods_id'], $info['goods_id'])['data'];
+                    $chain = CreateChainNfts($userInfo, $info['goods_id'], $info['goods_id']);
+                    if (empty($chain['data'])) {
+                        throw new Exception($chain['error']);
+                    }
+                    $chain = $chain['data'];
                     $usersGoods['operation_id'] = $chain['operation_id'];
                     $usersGoods['contract_address'] = $chain['contractAddress'];
                     $usersGoods['state'] = 1;
@@ -886,6 +915,7 @@ class GoodsLogic
         $order['goods_config_id'] = 0;
         $order['buy_goods_id'] = $goodsInfo['goods_id'];
         $order['order_type'] = 2;
+        $order['expiration_time'] = date('Y-m-d H:i:s', strtotime("+5 minutes"));
         $order['orderNo'] = $str;
         $order_id = $this->ordersData->insertGetId($order);
         if (!$order_id) {

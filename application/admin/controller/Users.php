@@ -212,14 +212,15 @@ class Users extends Backend
         foreach ($ids as $key => $value) {
             $users = Db::name('users')->where('id', $value)->find();
             if ($users['class_id'] == null or true) {
-                if (empty($users['wallet_private_key'])) {
-                    $this->model->where('id', $value)->update([
-                        'wallet_private_key' => uuid() . uuid(),
-                    ]);
-                }
+                Db::startTrans();
+                $updateData = [
+                    'wallet_private_key' => uuid() . uuid(),
+                ];
+                $users = $this->model->where('id', $value)->update($updateData);
                 $class_id = uniqueNum();
-                $classes = CreateChainClasses($users['wallet_address'], $class_id, $users['id'], $users);
+                $classes = CreateChainClasses($users['wallet_address'], $class_id, $users['id'], $updateData);
                 if (array_key_exists('error', $classes)) {
+                    Db::rollback();
                     return Response::fail($classes['error']);
                 }
                 $result = $this->model->where('id', $value)->update([
@@ -227,6 +228,7 @@ class Users extends Backend
                     'wallet_address' => $classes['data']['account'],
                     'Nftstatus' => 1
                 ]);
+                Db::commit();
             } else {
                 return json(['code' => 0, 'msg' => '请选择未上链的数据！']);
             }
