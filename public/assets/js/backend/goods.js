@@ -33,41 +33,46 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form'], function ($, undefin
                     ids[i] = data[i]['id']
                 }
 
-                Layer.confirm(
-                    '确认选中的' + ids.length + '条修改成上链吗?', {
-                        icon: 3,
-                        title: __('Warning'),
-                        offset: '40%',
-                        shadeClose: true
-                    },
-                    function (index) {
-                        Layer.close(index);
-                        Backend.api.ajax({
-                            //url: "lgwy/attrchg/approve?ids=" + JSON.stringify(ids),
-                            //方法一：传参方式，后台需要转换变成数组
-                            /*url: "lgwy/attrchg/approve?ids=" + (ids),
-                            data: {}*/
-                            //方法二：传参方式，直接是数组传递给后台
-                            url: "goods/slupdate",
-                            data: {
-                                ids: ids,
-                            }
-                        }, function (data, ret) { //成功的回调
-                            if (ret.code === 1) {
 
-                                table.bootstrapTable('refresh');
-                                Layer.close(index);
-                            } else {
-                                Layer.close(index);
-                                Toastr.error(ret.msg);
-                            }
-                        }, function (data, ret) { //失败的回调
-                            console.log(ret);
-                            // Toastr.error(ret.msg);
+                function slupdate(index, force = false) {
+                    Layer.close(index);
+                    Backend.api.ajax({
+                        //url: "lgwy/attrchg/approve?ids=" + JSON.stringify(ids),
+                        //方法一：传参方式，后台需要转换变成数组
+                        /*url: "lgwy/attrchg/approve?ids=" + (ids),
+                        data: {}*/
+                        //方法二：传参方式，直接是数组传递给后台
+                        url: "goods/slupdate",
+                        data: {
+                            ids: ids,
+                            force: Number(force),
+                        }
+                    }, function (data, ret) { //成功的回调
+                        if (ret.code === 1) {
+
+                            table.bootstrapTable('refresh');
                             Layer.close(index);
-                        });
-                    }
-                );
+                        } else {
+                            Layer.close(index);
+                            Toastr.error(ret.msg);
+                        }
+                    }, function (data, ret) { //失败的回调
+                        console.log(ret);
+                        // Toastr.error(ret.msg);
+                        Layer.close(index);
+                    });
+                }
+
+                Layer.open({
+                    content: '确认选中的' + ids.length + '条修改成上链吗?',
+                    icon: 3,
+                    title: __('Warning'),
+                    offset: '40%',
+                    shadeClose: true,
+                    btn: ['确认', '强制上链', '关闭'],
+                    yes: (i) => slupdate(i),
+                    btn2: (i) => slupdate(i, true),
+                });
             });
 
             // 初始化表格

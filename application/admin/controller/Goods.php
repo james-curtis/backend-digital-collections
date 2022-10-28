@@ -175,8 +175,18 @@ class Goods extends Backend
     }
 
 
-    //上链
-    public function slupdate($ids = "")
+    /**
+     * 上链
+     * @param $ids
+     * @param $force
+     * 重新上链
+     * @return array|\think\response\Json
+     * @throws \think\Exception
+     * @throws \think\db\exception\DataNotFoundException
+     * @throws \think\db\exception\ModelNotFoundException
+     * @throws \think\exception\DbException
+     */
+    public function slupdate($ids = "", $force = 0)
     {
         $sys_uid = 0;
         foreach ($ids as $key => $value) {
@@ -184,7 +194,7 @@ class Goods extends Backend
             $users = Db::name('users')->where('id', $sys_uid)->find();
             $url = config('site.server_url') . $goods['image'];
 
-            if ($goods['chain_state'] == 0) {
+            if ($goods['chain_state'] == 0 || $force) {
                 $nfsfx = CreateChainNfts($users, $goods['goods_id'], $url);
                 if (array_key_exists('error', $nfsfx)) {
                     return Response::fail($nfsfx['error']);
