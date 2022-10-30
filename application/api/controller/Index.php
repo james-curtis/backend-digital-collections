@@ -55,7 +55,7 @@ class Index extends BaseController
             'appRegisterBackgroundImage' => config('site.app_register_background_image'),
             'contactPhone' => config('site.contact_phone_1'),
             'contactQR' => config('site.zqh'),
-            'isOpenIndexPageCalendar' => config('site.buy_ri_handle') === '1',
+            'isOpenIndexPageCalendar' => intval(config('site.buy_ri_handle')) === 1,
             'goodEnd' => config('site.good_end'),
             'checkoutTips' => config('site.checkout_tips'),
 
@@ -64,7 +64,13 @@ class Index extends BaseController
             'yundunScene' => config('site.yundun_scene'),
 
             'beckoningTips' => config('site.beckoning_tips'),
-            'showRemainingItems' => config('site.show_remaining_items'),
+            'showRemainingItems' => intval(config('site.show_remaining_items')) === 1,
+
+            // 商品余量描述
+            'descSurplusOnPersonal' => config('site.desc_surplus_on_personal'),
+            'descTotalOnPersonal' => config('site.desc_total_on_personal'),
+            'descSurplusOnMall' => config('site.desc_surplus_on_mall'),
+            'descTotalOnMall' => config('site.desc_total_on_mall'),
         ];
         return json(addWebSiteUrl($config));
     }
