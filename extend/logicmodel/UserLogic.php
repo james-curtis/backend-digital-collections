@@ -492,7 +492,7 @@ class UserLogic
         }
         $data['bank_name'] = $bank_name;
         $data['bank_number'] = $bank_number;
-        $data['bank_owner'] = $bank_owner;
+        $data['bank_owner'] = $userInfo['name'];
         $data['bank_branch'] = $bank_branch;
         $data['bank_comment'] = $bank_comment;
         if (!empty($bank_name) && !empty($bank_number) && !empty($bank_owner)) {
