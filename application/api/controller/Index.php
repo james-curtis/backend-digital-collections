@@ -64,6 +64,7 @@ class Index extends BaseController
             'yundunScene' => config('site.yundun_scene'),
 
             'beckoningTips' => config('site.beckoning_tips'),
+            'showRemainingItems' => config('site.show_remaining_items'),
         ];
         return json(addWebSiteUrl($config));
     }

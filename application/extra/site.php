@@ -162,4 +162,5 @@ return array (
   'two_beckoning_appcode' => 'e9a6c70b50da424d9736ba4ddb754b72',
   'beckoning_switch' => 'two',
   'beckoning_tips' => '<p>进行实名认证,需要本人亲自完成!<br></p>',
+  'show_remaining_items' => '',
 );
