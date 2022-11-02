@@ -6,9 +6,14 @@ use app\admin\library\Auth;
 use app\common\controller\Backend;
 use comservice\Response;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Reader\Csv;
 use PhpOffice\PhpSpreadsheet\Reader\Xls;
 use PhpOffice\PhpSpreadsheet\Reader\Xlsx;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
+use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Fill;
 use think\Db;
 use think\Exception;
 use think\exception\PDOException;
@@ -108,7 +113,10 @@ class GoodsUsers extends Backend
             }
         }
 
+        $failedList = [];
+
         Db::startTrans();
+        $batchId = uuid() . uuid();
         //加载文件
         $insert = [];
         try {
@@ -167,7 +175,13 @@ class GoodsUsers extends Backend
                     if (empty($userCacheList[$phone])) {
                         $currentUser = (\app\admin\model\Users::get(['phone' => $phone]));
                         if (empty($currentUser)) {
-                            throw new Exception("$phone 不存在");
+                            $failedList[] = [
+                                'phone' => $phone,
+                                'goods_id' => $row['goods_id'],
+                                'batch_id' => $batchId
+                            ];
+                            continue;
+//                            throw new Exception("$phone 不存在");
                         }
                         $userCacheList[$phone] = $currentUser->toArray();
                     }
@@ -250,6 +264,11 @@ class GoodsUsers extends Backend
                 }
             }
             $this->model->saveAll($insert);
+
+            // 保存失败的列表
+            $failedModel = new \app\admin\model\GoodsUsersImportFailed();
+            $failedModel->where('1=1')->delete();
+            $failedModel->saveAll($failedList);
         } catch (PDOException $exception) {
             Db::rollback();
             $msg = $exception->getMessage();
@@ -262,7 +281,7 @@ class GoodsUsers extends Backend
             $this->error($e->getMessage());
         }
         Db::commit();
-        $this->success();
+        $this->success('本次导入批次：' . $batchId);
     }
 
     /**
