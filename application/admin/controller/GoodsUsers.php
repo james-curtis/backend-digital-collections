@@ -267,7 +267,7 @@ class GoodsUsers extends Backend
 
             // 保存失败的列表
             $failedModel = new \app\admin\model\GoodsUsersImportFailed();
-            $failedModel->where('1=1')->delete();
+//            $failedModel->where('1=1')->delete();
             $failedModel->saveAll($failedList);
         } catch (PDOException $exception) {
             Db::rollback();
