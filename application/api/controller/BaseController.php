@@ -66,6 +66,9 @@ class BaseController extends Api
 
     protected function awscValid()
     {
+        if (!\config('site.yundun_is_open')) {
+            return true;
+        }
         if (!session(Validate::$RequestIdConstant) and !Cache::get(session(Validate::$RequestIdConstant))) {
             $this->error('无权限', null, 601);
         }
