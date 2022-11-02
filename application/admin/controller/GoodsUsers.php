@@ -200,12 +200,12 @@ class GoodsUsers extends Backend
                     $row['number'] = $goods_user_number;
 
                     // 上链
-//                    if (!empty($temp['上链'])) {
-                    $data = CreateChainNfts($currentUser, $currentGood['id'], $currentGood['id']);
-                    $row['operation_id'] = $data['data']['operation_id'];
-                    $row['contract_address'] = $data['data']['contractAddress'];
-                    $row['state'] = 1;
-//                    }
+                    if (!empty($temp['上链'])) {
+                        $data = CreateChainNfts($currentUser, $currentGood['id'], $currentGood['id']);
+                        $row['operation_id'] = $data['data']['operation_id'];
+                        $row['contract_address'] = $data['data']['contractAddress'];
+                        $row['state'] = 1;
+                    }
                 }
                 $row['create_time'] = datetime(time());
 
