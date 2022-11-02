@@ -12,3 +12,4 @@
 node_modules
 /.user.ini
 /public/uploads
+/application/extra/site.php
