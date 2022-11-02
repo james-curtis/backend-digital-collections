@@ -16,8 +16,8 @@
                            class="btn btn-danger btn-del btn-disabled disabled {:$auth->check('goods_users_import_failed/del')?'':'hide'}"
                            title="{:__('Delete')}"><i class="fa fa-trash"></i> {:__('Delete')}</a>
                         <!--                        <a href="javascript:;" class="btn btn-danger btn-import {:$auth->check('goods_users_import_failed/import')?'':'hide'}" title="{:__('Import')}" id="btn-import-file" data-url="ajax/upload" data-mimetype="csv,xls,xlsx" data-multiple="false"><i class="fa fa-upload"></i> {:__('Import')}</a>-->
-                        <a href="javascript:;" data-export-url="users/export"
-                           class="btn btn-success btn-export {:$auth->check('users/export')?'':'hide'}"
+                        <a href="javascript:;" data-export-url="goods_users_import_failed/export"
+                           class="btn btn-success btn-export {:$auth->check('goods_users_import_failed/export')?'':'hide'}"
                            title="{:__('Export')}" id="btn-export-file"><i class="fa fa-download"></i>
                             {:__('Export')}</a>
 
