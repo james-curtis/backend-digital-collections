@@ -166,6 +166,9 @@ class GoodsUsers extends Backend
                     $phone = $temp[$userTablePhoneColumnComment];
                     if (empty($userCacheList[$phone])) {
                         $currentUser = (\app\admin\model\Users::get(['phone' => $phone]));
+                        if (empty($currentUser)) {
+                            throw new Exception("$phone 不存在");
+                        }
                         $userCacheList[$phone] = $currentUser->toArray();
                     }
                     $currentUser = $userCacheList[$phone];
