@@ -771,10 +771,16 @@ class GoodsLogic
                 break;
             case 4:
                 // h5 支付宝
+                if (config('site.recharge_alipay_is_open') == 0) {
+                    return Response::fail('支付宝通道暂时关闭');
+                }
                 $pay = (new AliLogic())->wapPay($order_num, $body, $money);
                 break;
             case 5:
                 // h5 微信
+                if (config('site.recharge_wxpay_is_open') == 0) {
+                    return Response::fail('微信通道暂时关闭');
+                }
                 $token = Request::instance()->header('token');
                 $url = config('site.server_url') . "/index/vip?order_num=$order_num&body=$body&price=$money&token=$token";
                 return Response::success('下单成功', ['pay' => $url]);

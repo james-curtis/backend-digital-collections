@@ -73,6 +73,8 @@ class Index extends BaseController
             'descTotalOnMall' => config('site.desc_total_on_mall'),
 
             'rechargeQuickList' => array_values(config('site.recharge_quick_list')),
+            'rechargeAlipayIsOpen' => config('site.recharge_alipay_is_open') == 1,
+            'rechargeWxpayIsOpen' => config('site.recharge_wxpay_is_open') == 1,
         ];
         return json(addWebSiteUrl($config));
     }
