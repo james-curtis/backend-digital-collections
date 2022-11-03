@@ -4,6 +4,7 @@
 namespace app\api\controller;
 
 
+use comservice\Response;
 use logicmodel\GoodsLogic;
 use think\Request;
 
@@ -71,6 +72,9 @@ class Order extends BaseController
      */
     public function toUp($money, $pay_type = 1)
     {
+        if (config('site.recharge_is_open') == 0) {
+            return json(Response::fail('暂停充值'));
+        }
         return json($this->goodsLogic->toUp($this->userInfo, $money, $pay_type));
     }
 
