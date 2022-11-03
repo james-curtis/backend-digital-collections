@@ -4,6 +4,7 @@
 namespace logicmodel;
 
 
+use addons\epay\library\Service;
 use app\admin\model\GoodsMangheUsers;
 use comservice\GetRedis;
 use comservice\Response;
@@ -17,6 +18,9 @@ use datamodel\Orders;
 use datamodel\Users;
 use datamodel\Chongzhi;
 use datamodel\UsersCoupon;
+use EasyWeChat\Kernel\Exceptions\InvalidArgumentException;
+use EasyWeChat\Kernel\Exceptions\InvalidConfigException;
+use GuzzleHttp\Exception\GuzzleException;
 use think\Db;
 use think\Env;
 use think\Exception;
@@ -741,9 +745,11 @@ class GoodsLogic
      * @throws \think\db\exception\ModelNotFoundException
      * @throws \think\exception\DbException
      * @throws \think\exception\PDOException
+     * @deprecated 接口废弃
      */
-    public function toUp($userInfo, $money, $pay_type)
+    public function toUpOld($userInfo, $money, $pay_type)
     {
+        return Response::fail('接口废弃');
         $uid = $userInfo['id'];
         $order_num = uniqueNum();
         $data = array(
@@ -778,6 +784,59 @@ class GoodsLogic
                 break;
             case 7:
                 $pay = (new AliLogic())->webPay($order_num, $body, $money);
+                break;
+            default:
+                $pay = false;
+                break;
+        }
+        if ($pay !== false) {
+            return Response::success('下单成功', ['pay' => $pay]);
+        }
+        return Response::fail('支付失败1');
+
+    }
+
+
+    /**
+     * 付款
+     * @param $userInfo
+     * @param $money
+     * @param $pay_type
+     * @return array
+     * @throws InvalidArgumentException
+     * @throws InvalidConfigException
+     * @throws GuzzleException
+     */
+    public function toUp($userInfo, $money, $pay_type): array
+    {
+        $uid = $userInfo['id'];
+        $order_num = uniqueNum();
+        $data = array(
+            'pay_type' => $pay_type,
+            'money' => $money,
+            'uid' => $userInfo['id'],
+            'create_time' => time(),
+            'status' => 0,
+            'order_num' => $order_num
+        );
+        $result = db::name('chongzhi')->insertGetId($data);
+        $body = '用户充值';
+        $return_url = config('site.frontend_server') . '/#/pages/my/topUpRecord';
+        $notify_url = \request()->root(true);
+        switch ($pay_type) {
+            case 4:
+                // h5 支付宝
+                $notify_url .= '/api/notify/aliNotify';
+                $pay = Service::submitOrder($money, $order_num, 'alipay', $body, $notify_url, $return_url);
+//                $pay = (new AliLogic())->wapPay($order_num, $body, $money);
+                break;
+            case 5:
+                // h5 微信
+                $notify_url .= '/api/notify/wxGzhNotify';
+                $pay = Service::submitOrder($money, $order_num, 'wechat', $body, $notify_url, $return_url);
+//                $token = Request::instance()->header('token');
+//                $url = config('site.server_url') . "/index/vip?order_num=$order_num&body=$body&price=$money&token=$token";
+//                return Response::success('下单成功', ['pay' => $url]);
                 break;
             default:
                 $pay = false;

@@ -52,7 +52,7 @@ class Service
 
         //检测易支付
         if (self::check_way($type)) {
-            return self::epaymentSubmit($notifyurl, $returnurl, $type, $amount,$orderid,$title,config('site.name'));
+            return self::epaymentSubmit($notifyurl, $returnurl, $type, $amount, $orderid, $title, config('site.name'));
         }
 
         if ($type == 'alipay') {
@@ -95,8 +95,7 @@ class Service
                 default:
                     //其它支付类型请参考：https://docs.pay.yansongda.cn/alipay
             }
-        }
-        else {
+        } else {
             //如果是PC支付,判断当前环境,进行跳转
             if ($method == 'web') {
                 if ((strpos($request->server('HTTP_USER_AGENT'), 'MicroMessenger') !== false)) {
@@ -203,16 +202,16 @@ class Service
         $submit_config = self::getEpaymentConf();
 //        trace($submit_config);
 
-    //构造要请求的参数数组，无需改动
+        //构造要请求的参数数组，无需改动
         $parameter = array(
             "pid" => $submit_config['partner'],
-            "type" => $type=='wechat'?'wxpay':$type,
-            "notify_url"	=> $notify_url,
-            "return_url"	=> $return_url,
-            "out_trade_no"	=> $out_trade_no,
-            "name"	=> $name,
-            "money"	=> $money,
-            "sitename"	=> $sitename
+            "type" => $type == 'wechat' ? 'wxpay' : $type,
+            "notify_url" => $notify_url,
+            "return_url" => $return_url,
+            "out_trade_no" => $out_trade_no,
+            "name" => $name,
+            "money" => $money,
+            "sitename" => $sitename
         );
 
 //        trace($parameter);
@@ -220,7 +219,7 @@ class Service
         $obj = new EpaySubmit($submit_config);
         $return = $obj->buildRequestForm($parameter);
 //        var_dump($return);
-        echo $return;
+//        echo $return;
         return $return;
 
     }
@@ -236,9 +235,9 @@ class Service
         $submit_config['apiurl'] = $epay_config['api'];//支付API地址
         $submit_config['partner'] = $epay_config['pid'];//商户ID
         $submit_config['key'] = $epay_config['key'];//商户KEY
-        $submit_config['transport'] = request() -> scheme();//访问模式,根据自己的服务器是否支持ssl访问，若支持请选择https；若不支持请选择http
+        $submit_config['transport'] = request()->scheme();//访问模式,根据自己的服务器是否支持ssl访问，若支持请选择https；若不支持请选择http
 //        var_dump($submit_config);
-        $submit_config = (array)array_map('trim',$submit_config);
+        $submit_config = (array)array_map('trim', $submit_config);
         return $submit_config;
     }
 
@@ -248,35 +247,30 @@ class Service
      * @param string $type
      * @return bool|object
      */
-    public static function epaymentNotify($data,$type='alipay')
+    public static function epaymentNotify($data, $type = 'alipay')
     {
         if (empty($data))
             return false;
+        if ($type == 'wechat') {
+            request()->get(['type' => 'wxpay']);
+            $type = 'wechat';
+        }
 
         $data = EpayService::notifyArrayFitter($data);
-//        var_dump($data);
-//        exit();
-        $data['type'] = $type;
-
         $notify = new EpayNotify(self::getEpaymentConf());
-        $result = $notify -> verifyNotify($data);
-        if ($result !== true)
-        {
+        $result = $notify->verifyNotify($data);
+        if ($result !== true) {
             return false;
-        }
-        else
-        {
-            $class = (new class ($data,$type)
-            {
+        } else {
+            $class = (new class ($data, $type) {
                 public $notify_result = [];
 
                 public $type = 'alipay';
 
-                public function __construct($data,$type='alipay')
+                public function __construct($data, $type = 'alipay')
                 {
                     $this->type = $type;
-                    if ($type == 'alipay')
-                    {
+                    if ($type == 'alipay') {
                         //公共响应参数
                         $this->notify_result['code'] = '10000';//网关返回码
                         $this->notify_result['msg'] = 'Success';//网关返回码描述
@@ -304,9 +298,7 @@ class Service
 //                        $this->notify_result['price'] = $data['money'];
 //                        $this->notify_result['total_fee'] = $data['money'];
 //                        $this->notify_result['quantity'] = 1;
-                    }
-                    elseif ($type == 'wechat')
-                    {
+                    } elseif ($type == 'wechat') {
                         //公共响应参数
                         $this->notify_result['return_code'] = 'SUCCESS';//返回状态码
 
@@ -320,11 +312,11 @@ class Service
                         $this->notify_result['is_subscribe'] = 'N';//用户是否关注公众账号，Y-关注，N-未关注
                         $this->notify_result['trade_type'] = 'NATIVE';//交易类型
                         $this->notify_result['bank_type'] = 'CMC';//付款银行
-                        $this->notify_result['total_fee'] = $data['money']*100;//订单金额
-                        $this->notify_result['cash_fee'] = $data['money']*100;//现金支付金额
+                        $this->notify_result['total_fee'] = $data['money'] * 100;//订单金额
+                        $this->notify_result['cash_fee'] = $data['money'] * 100;//现金支付金额
                         $this->notify_result['transaction_id'] = $data['trade_no'];//微信支付订单号
                         $this->notify_result['out_trade_no'] = $data['out_trade_no'];//商户订单号
-                        $this->notify_result['time_end'] = datetime(time(),'YmdHis');//商户订单号
+                        $this->notify_result['time_end'] = datetime(time(), 'YmdHis');//商户订单号
                     }
                 }
 
@@ -348,7 +340,6 @@ class Service
                 }
 
             });
-
 
 
             return $class;
@@ -389,7 +380,7 @@ class Service
         try {
             //检测易支付
             if (self::check_way($type)) {
-                return self::epaymentNotify(input('',null,'trim'),$type);
+                return self::epaymentNotify(input('', null, 'trim'), $type);
             }
 
             $pay = new Pay(self::getConfig($type));
@@ -430,7 +421,7 @@ class Service
         try {
             //检测易支付
             if (self::check_way($type)) {
-                return self::epaymentNotify(input('',null,'trim'),$type);
+                return self::epaymentNotify(input('', null, 'trim'), $type);
             }
 
             $pay = new Pay(self::getConfig($type));

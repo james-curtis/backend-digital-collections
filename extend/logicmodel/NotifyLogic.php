@@ -51,7 +51,7 @@ class NotifyLogic
     //     }
     //     return $alipay->success()->send();
     // }
-    public function aliNotify()
+    public function aliNotifyOld()
     {
         $config = (new AliLogic())->getConfig();
         $alipay = Pay::alipay($config);
@@ -68,6 +68,28 @@ class NotifyLogic
             return 'FAIL';
         }
         return $alipay->success()->send();
+    }
+
+    public function aliNotify()
+    {
+        $paytype = 'alipay';
+        $pay = \addons\epay\library\Service::checkNotify($paytype);
+        if (!$pay) {
+            echo '签名错误';
+            return;
+        }
+        $data = $pay->verify();
+        try {
+            $payamount = $paytype == 'alipay' ? $data['total_amount'] : $data['total_fee'] / 100;
+            $out_trade_no = $data['out_trade_no'];
+            $info = Db::name('chongzhi')->where(['order_num' => $out_trade_no, 'status' => 0])->find();
+            if (empty($info)) return 'FAIL';
+            $result = $this->cz($info['order_num']);
+            //你可以在此编写订单逻辑
+        } catch (\Exception $e) {
+            return 'FAIL';
+        }
+        return $pay->success();
     }
 
     public function cz($order_num)
@@ -133,7 +155,7 @@ class NotifyLogic
     //     });
     //   return   $response->send();
     // }
-    public function wxGzhNotify()
+    public function wxGzhNotifyOld()
     {
         $payConfig = [
             'app_id' => config('site.wx_appid'),
@@ -149,6 +171,29 @@ class NotifyLogic
             if (!$result) return 'FAIL';
         });
         return $response->send();
+    }
+    public function wxGzhNotify()
+    {
+        $paytype = 'wechat';
+        $pay = \addons\epay\library\Service::checkNotify($paytype);
+        if (!$pay) {
+            echo '签名错误';
+            return;
+        }
+        $data = $pay->verify();
+        try {
+            $payamount = $paytype == 'alipay' ? $data['total_amount'] : $data['total_fee'] / 100;
+            $out_trade_no = $data['out_trade_no'];
+
+            //你可以在此编写订单逻辑
+            $info = Db::name('chongzhi')->where(['order_num' => $out_trade_no, 'status' => 0])->find();
+            if (empty($info)) return 'FAIL';
+            $result = $this->cz($info['order_num']);
+            if (!$result) return 'FAIL';
+        } catch (\Exception $e) {
+            echo 'FAIL';
+        }
+        echo $pay->success();
     }
 
     /**
