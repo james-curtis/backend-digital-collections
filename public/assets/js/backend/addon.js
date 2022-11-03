@@ -194,6 +194,7 @@ define(['jquery', 'bootstrap', 'backend', 'table', 'form', 'template'], function
 
                 //检测是否登录
                 $(document).on("mousedown", "#faupload-addon", function (e) {
+                    return false;
                     var userinfo = Controller.api.userinfo.get();
                     var uid = userinfo ? userinfo.id : 0;
 

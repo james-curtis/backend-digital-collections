@@ -1,6 +1,4 @@
 /nbproject/
-/thinkphp/
-/vendor/
 /runtime/*
 .idea
 *.log

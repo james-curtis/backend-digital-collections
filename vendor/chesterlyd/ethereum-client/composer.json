@@ -1,0 +1,18 @@
+{
+    "name": "chesterlyd/ethereum-client",
+    "description": "ethereum rpc client, offline sign, php",
+    "authors": [{
+        "name": "chesterlyd",
+        "email": "1621259898@qq.com"
+    }],
+    "require": {
+        "simplito/elliptic-php": "^1.0",
+        "kornrunner/keccak": "^1.0",
+        "guzzlehttp/guzzle": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "xtype\\": "src/"
+        }
+    }
+}
