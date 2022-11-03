@@ -71,6 +71,8 @@ class Index extends BaseController
             'descTotalOnPersonal' => config('site.desc_total_on_personal'),
             'descSurplusOnMall' => config('site.desc_surplus_on_mall'),
             'descTotalOnMall' => config('site.desc_total_on_mall'),
+
+            'rechargeQuickList' => array_values(config('site.recharge_quick_list')),
         ];
         return json(addWebSiteUrl($config));
     }
