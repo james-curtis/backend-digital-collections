@@ -833,13 +833,13 @@ class GoodsLogic
             case 4:
                 // h5 支付宝
                 $notify_url .= '/api/notify/aliNotify';
-                $pay = Service::submitOrder($money, $order_num, 'alipay', $body, $notify_url, $return_url);
+                $pay = Service::submitOrder($money, $order_num, 'alipay', $body, $notify_url, $return_url, 'link');
 //                $pay = (new AliLogic())->wapPay($order_num, $body, $money);
                 break;
             case 5:
                 // h5 微信
                 $notify_url .= '/api/notify/wxGzhNotify';
-                $pay = Service::submitOrder($money, $order_num, 'wechat', $body, $notify_url, $return_url);
+                $pay = Service::submitOrder($money, $order_num, 'wechat', $body, $notify_url, $return_url, 'link');
 //                $token = Request::instance()->header('token');
 //                $url = config('site.server_url') . "/index/vip?order_num=$order_num&body=$body&price=$money&token=$token";
 //                return Response::success('下单成功', ['pay' => $url]);

@@ -52,7 +52,7 @@ class Service
 
         //检测易支付
         if (self::check_way($type)) {
-            return self::epaymentSubmit($notifyurl, $returnurl, $type, $amount, $orderid, $title, config('site.name'));
+            return self::epaymentSubmit($notifyurl, $returnurl, $type, $amount, $orderid, $title, config('site.name'), $method);
         }
 
         if ($type == 'alipay') {
@@ -190,7 +190,7 @@ class Service
      * @param string $sitename
      * @return string
      */
-    public static function epaymentSubmit($notify_url = '', $return_url = '', $type = 'aplipay', $money = 0.1, $out_trade_no = 0, $name = 'test', $sitename = 'test')
+    public static function epaymentSubmit($notify_url = '', $return_url = '', $type = 'aplipay', $money = 0.1, $out_trade_no = 0, $name = 'test', $sitename = 'test', $method = null)
     {
 //        $submit_config = EpayService::getBaseConfig();
 //        $epay_config = Service::getConfig('epay')['epay'];
@@ -214,12 +214,25 @@ class Service
             "sitename" => $sitename
         );
 
-//        trace($parameter);
-
         $obj = new EpaySubmit($submit_config);
-        $return = $obj->buildRequestForm($parameter);
-//        var_dump($return);
-//        echo $return;
+        $return = '';
+        switch ($method) {
+            case 'api':
+                // API接口支付
+                // 此接口可用于服务器后端发起支付请求，会返回支付二维码链接或支付跳转url。
+                $return = $obj->apiPay(array_merge($parameter, [
+                    'clientip' => request()->ip(),
+                    'device' => request()->header('user-agent'),
+                ]));
+                break;
+            case 'link':
+                // 获取GET形式请求Submit的链接
+                $return = $obj->getPayLink($parameter);
+                break;
+            case null:
+            default:
+                $return = $obj->buildRequestForm($parameter);
+        }
         return $return;
 
     }
