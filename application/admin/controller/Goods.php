@@ -188,7 +188,7 @@ class Goods extends Backend
      */
     public function slupdate($ids = "", $force = 0)
     {
-        $sys_uid = 0;
+        $sys_uid = config('site.system_user_id');
         foreach ($ids as $key => $value) {
             $goods = Db::name('goods')->where('id', $value)->find();
             $users = Db::name('users')->where('id', $sys_uid)->find();
