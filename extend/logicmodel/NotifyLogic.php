@@ -75,8 +75,7 @@ class NotifyLogic
         $paytype = 'alipay';
         $pay = \addons\epay\library\Service::checkNotify($paytype);
         if (!$pay) {
-            echo '签名错误';
-            return;
+            return '签名错误';
         }
         $data = $pay->verify();
         try {
@@ -177,8 +176,7 @@ class NotifyLogic
         $paytype = 'wechat';
         $pay = \addons\epay\library\Service::checkNotify($paytype);
         if (!$pay) {
-            echo '签名错误';
-            return;
+            return '签名错误';
         }
         $data = $pay->verify();
         try {
@@ -191,9 +189,9 @@ class NotifyLogic
             $result = $this->cz($info['order_num']);
             if (!$result) return 'FAIL';
         } catch (\Exception $e) {
-            echo 'FAIL';
+            return 'FAIL';
         }
-        echo $pay->success();
+        return $pay->success();
     }
 
     /**
